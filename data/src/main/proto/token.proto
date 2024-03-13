@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_package = "com.dennytech.data";
+option java_multiple_files = true;
+
+message TokenPreferences {
+    string token = 1;
+    uint64 unread = 2;
+    uint64 expiresIn = 3;
+}
