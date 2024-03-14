@@ -15,75 +15,76 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.dennytech.resamopro.models.KeyValueModel
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun CustomExposedDropdown(
-//    modifier: Modifier = Modifier,
-//    placeholder: String,
-//    items: List<KeyValueModel>,
-//    onValueChange: (String) -> Unit,
-//    errorMessage: String = "",
-//) {
-//    val first = when {
-//        placeholder.isEmpty() && items.isEmpty() -> ""
-//        placeholder.isEmpty() && items.isNotEmpty() -> items[0].value
-//        else -> ""
-//    }
-//
-//    LaunchedEffect(Unit) {
-//        onValueChange(first)
-//    }
-//
-//    var isExpanded by remember {
-//        mutableStateOf(false)
-//    }
-//
-//    var value by remember {
-//        mutableStateOf(first)
-//    }
-//
-//    Column {
-//        ExposedDropdownMenuBox(
-//            modifier = modifier,
-//            expanded = isExpanded,
-//            onExpandedChange = { newValue ->
-//                isExpanded = newValue
-//            }
-//        ) {
-//            CustomTextField(
-//                value = value,
-//                onValueChange = {onValueChange(it)},
-//                readOnly = true,
-//                isError = errorMessage.isNotEmpty(),
-//                errorMessage = errorMessage,
-//                placeholder = placeholder,
-//                modifier = modifier.menuAnchor(),
-//                trailingIcon = {
-//                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-//                },
-//            )
-//
-//            ExposedDropdownMenu(
-//                expanded = isExpanded,
-//                modifier = Modifier.background(Color.White),
-//                onDismissRequest = {
-//                    isExpanded = false
-//                }
-//            ) {
-//                items.map { item ->
-//                    DropdownMenuItem(
-//                        text = {
-//                            Text(text = item.value)
-//                        },
-//                        onClick = {
-//                            value = item.value
-//                            onValueChange(item.key)
-//                            isExpanded = false
-//                        }
-//                    )
-//                }
-//            }
-//        }
-//    }
-//}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomExposedDropdown(
+    modifier: Modifier = Modifier,
+    placeholder: String,
+    items: List<KeyValueModel>,
+    onValueChange: (String) -> Unit,
+    errorMessage: String = "",
+) {
+    val first = when {
+        placeholder.isEmpty() && items.isEmpty() -> ""
+        placeholder.isEmpty() && items.isNotEmpty() -> items[0].value
+        else -> ""
+    }
+
+    LaunchedEffect(Unit) {
+        onValueChange(first)
+    }
+
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    var value by remember {
+        mutableStateOf(first)
+    }
+
+    Column {
+        ExposedDropdownMenuBox(
+            modifier = modifier,
+            expanded = isExpanded,
+            onExpandedChange = { newValue ->
+                isExpanded = newValue
+            }
+        ) {
+            CustomTextField(
+                value = value,
+                onValueChange = {onValueChange(it)},
+                readOnly = true,
+                isError = errorMessage.isNotEmpty(),
+                errorMessage = errorMessage,
+                placeholder = placeholder,
+                modifier = modifier.menuAnchor(),
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+                },
+            )
+
+            ExposedDropdownMenu(
+                expanded = isExpanded,
+                modifier = Modifier.background(Color.White),
+                onDismissRequest = {
+                    isExpanded = false
+                }
+            ) {
+                items.map { item ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = item.value)
+                        },
+                        onClick = {
+                            value = item.value
+                            onValueChange(item.key)
+                            isExpanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}

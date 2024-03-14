@@ -42,9 +42,12 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.resamopro.R
+import com.dennytech.resamopro.models.ProductFilerModel.Companion.isNoEmpty
 import com.dennytech.resamopro.ui.components.ErrorLabel
+import com.dennytech.resamopro.ui.components.FilterDialog
 import com.dennytech.resamopro.ui.components.ProductItem
 import com.dennytech.resamopro.ui.theme.Dimens
+import com.dennytech.resamopro.ui.theme.TruliBlue
 import com.google.gson.GsonBuilder
 import timber.log.Timber
 
@@ -79,17 +82,31 @@ fun ProductsFragment(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { navigateUp() }) {
+                    IconButton(onClick = { viewModel.onEvent(ProductEvent.ToggleFilterDialog)}) {
                         Icon(
                             imageVector = Icons.Rounded.FilterList,
                             contentDescription = stringResource(id = R.string.filter),
-                            tint = Color.Black
+                            tint = if(viewModel.state.filters.isNoEmpty()) TruliBlue else Color.Black
                         )
                     }
                 }
             )
         }
     ) { padding ->
+
+        when {
+            viewModel.state.showFilterDialog -> {
+                FilterDialog(
+                    dismissDialog = { viewModel.onEvent(ProductEvent.ToggleFilterDialog)},
+                    confirm = {
+                        viewModel.onEvent(ProductEvent.ToggleFilterDialog)
+                        viewModel.onEvent(ProductEvent.GetProducts)
+                    }
+
+                )
+            }
+        }
+
         Column(
             modifier = Modifier.padding(padding)
         ) {

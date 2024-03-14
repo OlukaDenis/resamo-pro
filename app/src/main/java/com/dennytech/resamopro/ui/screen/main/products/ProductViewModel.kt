@@ -1,11 +1,15 @@
 package com.dennytech.resamopro.ui.screen.main.products
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.domain.usecases.products.GetProductsUseCase
+import com.dennytech.resamopro.models.ProductFilerModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -17,8 +21,10 @@ class ProductViewModel @Inject constructor(
     private val getProductsUseCase: GetProductsUseCase
 ) : ViewModel() {
 
-    private val _productsState: MutableStateFlow<PagingData<ProductDomainModel>> = MutableStateFlow(value = PagingData.empty())
+    private val _productsState: MutableStateFlow<PagingData<ProductDomainModel>> =
+        MutableStateFlow(value = PagingData.empty())
     val productsState get() = _productsState
+    var state by mutableStateOf(ProductState())
 
 
     init {
@@ -27,19 +33,50 @@ class ProductViewModel @Inject constructor(
 
 
     fun onEvent(event: ProductEvent) {
-        when(event) {
+        when (event) {
 
             is ProductEvent.GetProducts -> {
                 getProducts()
+            }
+
+            is ProductEvent.ToggleFilterDialog -> {
+                state = state.copy(showFilterDialog = !state.showFilterDialog)
+            }
+
+            is ProductEvent.SetBrandFilter -> {
+                state = state.copy(filters = state.filters.copy(brand = event.value))
+            }
+
+            is ProductEvent.SetColorFilter -> {
+                state = state.copy(filters = state.filters.copy(color = event.value))
+            }
+
+            is ProductEvent.SetSizeFilter -> {
+                state = state.copy(filters = state.filters.copy(size = event.value))
+            }
+
+            is ProductEvent.SetTypeFilter -> {
+                state = state.copy(filters = state.filters.copy(type = event.value))
+            }
+
+            is ProductEvent.ClearFilters -> {
+                state = state.copy(filters = ProductFilerModel())
             }
         }
     }
 
     private fun getProducts() {
+        val filter = state.filters
+        val param = GetProductsUseCase.Param(
+            inStock = true,
+            brand = filter.brand,
+            color = filter.color,
+            size = filter.size,
+            type = filter.type
+        )
+
         viewModelScope.launch {
-            getProductsUseCase(param = GetProductsUseCase.Param(
-                inStock = true
-            ))
+            getProductsUseCase(param = param)
                 .distinctUntilChanged()
                 .cachedIn(viewModelScope)
                 .collect {
@@ -49,6 +86,17 @@ class ProductViewModel @Inject constructor(
     }
 }
 
+data class ProductState(
+    val showFilterDialog: Boolean = false,
+    val filters: ProductFilerModel = ProductFilerModel()
+)
+
 sealed class ProductEvent {
-    data object GetProducts: ProductEvent()
+    data object GetProducts : ProductEvent()
+    data object ToggleFilterDialog : ProductEvent()
+    data class SetBrandFilter(val value: String) : ProductEvent()
+    data class SetColorFilter(val value: String) : ProductEvent()
+    data class SetTypeFilter(val value: String) : ProductEvent()
+    data class SetSizeFilter(val value: String) : ProductEvent()
+    data object ClearFilters : ProductEvent()
 }

@@ -1,5 +1,6 @@
 package com.dennytech.resamopro.utils
 
+import com.dennytech.resamopro.models.KeyValueModel
 import timber.log.Timber
 import java.text.NumberFormat
 import java.text.ParseException
@@ -9,6 +10,17 @@ import java.util.Currency
 import java.util.Locale
 
 object Helpers {
+
+    fun shoeTypes(): List<KeyValueModel> {
+        val list = mutableListOf<KeyValueModel>().apply {
+            this.add(KeyValueModel("", ""))
+            this.add(KeyValueModel("open", "Open"))
+            this.add(KeyValueModel("closed", "Closed"))
+            this.add(KeyValueModel("heel", "Heels"))
+        }
+
+        return list.toList()
+    }
 
     fun millisecondsToDate(millis: Long): String {
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -63,4 +75,6 @@ object Helpers {
             ) else it.toString()
         }
     }
+
+
 }
