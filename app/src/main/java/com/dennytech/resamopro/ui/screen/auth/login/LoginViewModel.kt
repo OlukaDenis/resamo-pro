@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dennytech.domain.models.Resource
 import com.dennytech.domain.usecases.auth.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -38,11 +39,46 @@ class LoginViewModel @Inject constructor(
                 } else if (formState.password.isEmpty()) {
                     formState = formState.copy(error = "Password required")
                 }  else {
-
+                    login()
                 }
             }
 
-            else -> {}
+            else -> {
+
+            }
+        }
+    }
+
+    private fun login() {
+        viewModelScope.launch {
+
+            val param = LoginUseCase.Param(
+                email = formState.email,
+                password = formState.password
+            )
+
+            loginUseCase(param).collect {
+                when(it) {
+                    is Resource.Loading -> formState = formState.copy(loading = true)
+                    is Resource.Success -> {
+                        formState = formState.copy(
+                            loading = false,
+                            error = ""
+                        )
+                        loginComplete = true
+                    }
+
+                    is Resource.Error -> {
+                        formState = formState.copy(
+                            loading = false,
+                            errorDialog = true,
+                            error = it.exception
+                        )
+                        loginComplete = false
+                    }
+                }
+            }
+
         }
     }
 

@@ -3,8 +3,11 @@ syntax = "proto3";
 option java_package = "com.dennytech.data";
 option java_multiple_files = true;
 
-message TokenPreferences {
-    string token = 1;
-    uint64 unread = 2;
-    uint64 expiresIn = 3;
+message UserPreferences {
+    string id = 1;
+    uint32 role = 2;
+    string email = 3;
+    string firstName = 4;
+    string lastName = 5;
+    string phone = 6;
 }

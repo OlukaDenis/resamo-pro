@@ -4,6 +4,7 @@ import com.dennytech.domain.base.BaseFlowUseCase
 import com.dennytech.domain.dispacher.AppDispatcher
 import com.dennytech.domain.models.Resource
 import com.dennytech.domain.models.TokenDomainModel
+import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.repository.AuthRepository
 import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.UtilRepository
@@ -16,16 +17,14 @@ class LoginUseCase @Inject constructor(
     private val dispatcher: AppDispatcher,
     private val utilRepository: UtilRepository,
     private val authRepository: AuthRepository,
-    private val profileRepository: ProfileRepository
-) : BaseFlowUseCase<LoginUseCase.Param, Resource<TokenDomainModel>>(dispatcher) {
+) : BaseFlowUseCase<LoginUseCase.Param, Resource<UserDomainModel>>(dispatcher) {
 
     data class Param(
-        val email: String?,
-        val phone: String?,
+        val email: String,
         val password: String
     )
 
-    override fun run(param: Param?): Flow<Resource<TokenDomainModel>> = flow {
+    override fun run(param: Param?): Flow<Resource<UserDomainModel>> = flow {
         emit(Resource.Loading)
 
         try {
@@ -33,23 +32,15 @@ class LoginUseCase @Inject constructor(
 
             val map: HashMap<String, Any> = HashMap()
             map["password"] = param.password
-
-//            when(param.type) {
-//                "email" -> map["email"] = param.email!!
-//                "phone" -> {
-//                    map["mobileCountryCode"] = param.countryCode!!
-//                    map["mobileNumber"] = param.phone!!.trimStart('0')
-//                }
-//            }
+            map["email"] = param.email
 
             val response = runBlocking { authRepository.login(map) }
 
-            runBlocking {profileRepository.fetchUser(HashMap())  }
+//            runBlocking {profileRepository.fetchUser(HashMap())  }
 
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {
-            Timber.e(throwable)
             emit(Resource.Error(utilRepository.getNetworkError(throwable)))
         }
     }

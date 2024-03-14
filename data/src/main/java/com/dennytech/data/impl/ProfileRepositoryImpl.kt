@@ -44,63 +44,6 @@ class ProfileRepositoryImpl @Inject constructor(
 
             runBlocking { userDao.insert(userEntityMapper.toLocal(user)) }
 
-            if (user.senders.isNotEmpty()) {
-                Timber.d("Saving senders...%s", user.senders)
-                user.senders.forEach {
-                    runBlocking { profileDao.insert(profileEntityMapper.toLocal(it)) }
-
-                    it.paymentMethods.map {
-                        runBlocking {
-                            paymentMethodDao.insert(
-                                paymentMethodEntityMapper.toLocal(it)
-                            )
-                        }
-                    }
-
-
-                    it.address?.let {
-                        runBlocking { addressDao.insert(addressEntityMapper.toLocal(it)) }
-                    }
-                }
-                Timber.d("Done Saving senders...")
-            }
-
-            if (user.receivers.isNotEmpty()) {
-
-                Timber.d("Saving receivers...%s", user.receivers)
-                user.receivers.forEach {
-                    runBlocking { profileDao.insert(profileEntityMapper.toLocal(it)) }
-
-                    it.paymentMethods.map {
-                        runBlocking {
-                            paymentMethodDao.insert(
-                                paymentMethodEntityMapper.toLocal(it)
-                            )
-                        }
-                    }
-
-                    it.address?.let {
-                        runBlocking { addressDao.insert(addressEntityMapper.toLocal(it)) }
-                    }
-
-                }
-                Timber.d("Done Saving receivers...")
-            }
-
-            user.address?.let {
-                runBlocking { addressDao.insert(addressEntityMapper.toLocal(it)) }
-            }
-
-            if (user.paymentMethods.isNotEmpty()) {
-                user.paymentMethods.map {
-                    runBlocking {
-                        paymentMethodDao.insert(
-                            paymentMethodEntityMapper.toLocal(it)
-                        )
-                    }
-                }
-            }
-
             user
         } catch (throwable: Throwable) {
             throw throwable

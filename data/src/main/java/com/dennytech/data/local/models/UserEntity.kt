@@ -9,16 +9,11 @@ import androidx.room.PrimaryKey
 data class UserEntity(
     @PrimaryKey(autoGenerate = false)
     val id: String,
-    val name: String,
-    val username: String,
+    val firstName: String,
+    val lastName: String,
     val email: String,
-    val mobileCountryCode: String,
-    val mobileNumber: String,
-    val faceIdEnabled: Boolean,
-    val pinSetup: Boolean,
-    val accountBalance: Double,
-    val dob: String,
-    val currency: String,
-    val kycStatus: String,
-    val profileImage: String
+    val token: String,
+    val phone: String,
+    val fullName: String,
+    val role: Int,
 )

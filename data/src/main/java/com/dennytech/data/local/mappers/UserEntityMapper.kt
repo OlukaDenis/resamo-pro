@@ -1,6 +1,7 @@
 package com.dennytech.data.local.mappers
 
 import com.dennytech.data.local.models.UserEntity
+import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomain
 import com.dennytech.domain.models.UserDomainModel
 import javax.inject.Inject
 
@@ -8,40 +9,26 @@ class UserEntityMapper @Inject constructor() : BaseLocalMapper<UserEntity, UserD
     override fun toDomain(entity: UserEntity): UserDomainModel {
         return UserDomainModel(
             id = entity.id,
-            name = entity.name,
-            username = entity.username,
+            firstName = entity.firstName,
+            lastName = entity.lastName,
+            phone = entity.phone,
             email = entity.email,
-            mobileCountryCode = entity.mobileCountryCode,
-            mobileNumber = entity.mobileNumber,
-            faceIdEnabled = entity.faceIdEnabled,
-            address = null,
-            dob = entity.dob,
-            accountBalance = entity.accountBalance,
-            pinSetup = entity.pinSetup,
-            currency = entity.currency,
-            kycStatus = entity.kycStatus,
-            profileImage = entity.profileImage,
-            receivers = emptyList(),
-            senders = emptyList(),
-            paymentMethods = emptyList()
+            token = entity.token,
+            role = entity.role,
+            fullName = "${entity.firstName} ${entity.lastName}"
         )
     }
 
     override fun toLocal(entity: UserDomainModel): UserEntity {
         return UserEntity(
             id = entity.id,
-            name = entity.name,
-            username = entity.username,
+            firstName = entity.firstName,
+            lastName = entity.lastName,
+            phone = entity.phone,
             email = entity.email,
-            mobileCountryCode = entity.mobileCountryCode,
-            mobileNumber = entity.mobileNumber,
-            faceIdEnabled = entity.faceIdEnabled,
-            dob = entity.dob,
-            accountBalance = entity.accountBalance,
-            pinSetup = entity.pinSetup,
-            currency = entity.currency,
-            kycStatus = entity.kycStatus,
-            profileImage = entity.profileImage,
+            token = entity.token,
+            role = entity.role,
+            fullName = "${entity.firstName} ${entity.lastName}"
         )
     }
 }

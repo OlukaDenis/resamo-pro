@@ -4,14 +4,15 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.dennytech.data.TokenPreferences
+import com.dennytech.data.UserPreferences
 import com.dennytech.data.local.di.APP_PREFERENCES_NAME
-import com.dennytech.data.local.serializer.TokenPreferenceSerializer
+import com.dennytech.data.local.serializer.UserPreferenceSerializer
 
-val Context.tokenProtoDataStore: DataStore<TokenPreferences> by dataStore(
+val Context.userProtoDataStore: DataStore<UserPreferences> by dataStore(
     fileName = "token_pref_db",
-    serializer = TokenPreferenceSerializer
+    serializer = UserPreferenceSerializer
 )
 
 val Context.appThemeDatastore by preferencesDataStore(
@@ -20,4 +21,4 @@ val Context.appThemeDatastore by preferencesDataStore(
 
 val IS_ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
 
-val IS_SYSTEM_DEFAULT  = booleanPreferencesKey("is_system_default")
+val ACCESS_TOKEN_KEY  = stringPreferencesKey("token")

@@ -112,8 +112,8 @@ private fun TitleText(
     transaction: TransactionDomainModel
 ) {
     val label = when {
-        transaction.receiver != null -> transaction.receiver!!.name
-        transaction.sender != null -> transaction.sender!!.name
+        transaction.receiver != null -> transaction.receiver!!.fullName
+        transaction.sender != null -> transaction.sender!!.fullName
         transaction.type == "payment" -> "Wallet Charge"
         else -> transaction.type.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
     }
@@ -133,8 +133,8 @@ private fun TranImage(
 
 
     val url = when {
-        transaction.receiver != null -> transaction.receiver!!.profileImage
-        transaction.sender != null -> transaction.sender!!.profileImage
+        transaction.receiver != null -> transaction.receiver!!.fullName
+        transaction.sender != null -> transaction.sender!!.fullName
         else -> ""
     }
 
@@ -176,8 +176,8 @@ fun TranImagePlaceHolder(
 ) {
 
     val username = when {
-        transaction.receiver != null -> transaction.receiver?.name!!.pickInitials()
-        transaction.sender != null -> transaction.sender?.name!!.pickInitials()
+        transaction.receiver != null -> transaction.receiver?.fullName!!.pickInitials()
+        transaction.sender != null -> transaction.sender?.fullName!!.pickInitials()
         else -> "TP"
     }
     Card(

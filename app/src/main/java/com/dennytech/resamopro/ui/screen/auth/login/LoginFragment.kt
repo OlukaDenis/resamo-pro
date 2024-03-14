@@ -43,7 +43,8 @@ import com.dennytech.resamopro.ui.theme.Dimens
 
 @Composable
 fun LoginFragment(
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
+    navigateToHome: () -> Unit,
 ) {
 
     Scaffold { padding ->
@@ -53,6 +54,10 @@ fun LoginFragment(
                 .fillMaxHeight()
                 .verticalScroll(rememberScrollState())
         ) {
+
+            if (viewModel.loginComplete) {
+                navigateToHome()
+            }
 
             var passwordVisible by remember { mutableStateOf(false) }
 

@@ -11,7 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-val APP_DATABASE_DB = if(BuildConfig.DEBUG) "trp9.db" else "truli1.db" // "trulipay.db"
+val APP_DATABASE_DB = if(BuildConfig.DEBUG) "rsm.db" else "resamo.db"
 
 @Module
 @InstallIn(SingletonComponent::class)

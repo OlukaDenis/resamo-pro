@@ -39,7 +39,18 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         startDestination = AuthScreen.Login.route
     ) {
         composable(AuthScreen.Login.route) {
-            LoginFragment()
+            LoginFragment(
+                navigateToHome = {
+                    navController.popBackStack()
+                    navController.navigate(Graph.MAIN)
+
+//                    navController.navigate(Graph.MAIN) {
+//                        popUpTo(Graph.AUTH) {
+//                            inclusive = true
+//                        }
+//                    }
+                },
+            )
         }
     }
 }

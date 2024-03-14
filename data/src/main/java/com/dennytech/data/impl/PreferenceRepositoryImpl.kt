@@ -3,6 +3,7 @@ package com.dennytech.data.impl
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.dennytech.data.utils.ACCESS_TOKEN_KEY
 import com.dennytech.data.utils.IS_ONBOARDING_COMPLETE
 import com.dennytech.domain.repository.PreferenceRepository
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,19 @@ class PreferenceRepositoryImpl @Inject constructor(
         return dataStore.data
             .map { preferences ->
                 preferences[IS_ONBOARDING_COMPLETE]?: false
+            }
+    }
+
+    override suspend fun setAccessToken(value: String) {
+        dataStore.edit { preferences ->
+            preferences[ACCESS_TOKEN_KEY] = value
+        }
+    }
+
+    override fun getAccessToken(): Flow<String> {
+        return dataStore.data
+            .map { preferences ->
+                preferences[ACCESS_TOKEN_KEY]?: ""
             }
     }
 }

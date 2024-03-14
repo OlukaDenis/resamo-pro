@@ -5,8 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.dennytech.data.TokenPreferences
-import com.dennytech.data.utils.tokenProtoDataStore
+import com.dennytech.data.UserPreferences
+import com.dennytech.data.utils.userProtoDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,9 +22,9 @@ class DataStoreModule {
 
     @Provides
     @Singleton
-    internal fun provideTokenPreferenceDatastore(
+    internal fun provideUserPreferenceDatastore(
         @ApplicationContext context: Context
-    ): DataStore<TokenPreferences> = context.tokenProtoDataStore
+    ): DataStore<UserPreferences> = context.userProtoDataStore
 
 
     @Provides
