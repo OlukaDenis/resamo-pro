@@ -1,4 +1,4 @@
-package com.dennnytech.resamopro
+package com.dennytech.resamopro
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

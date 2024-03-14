@@ -1,15 +1,25 @@
-package com.dennnytech.resamopro.ui.theme
+package com.dennytech.resamopro.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.dennytech.resamopro.R
 
-// Set of Material typography styles to start with
+val latoFamily = FontFamily(
+    Font(R.font.lato_light, FontWeight.Light),
+    Font(R.font.lato_regular, FontWeight.Normal),
+    Font(R.font.lato_italic, FontWeight.Normal, FontStyle.Italic),
+    Font(R.font.lato_medium, FontWeight.Medium),
+    Font(R.font.lato_bold, FontWeight.Bold)
+)
+
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = latoFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,

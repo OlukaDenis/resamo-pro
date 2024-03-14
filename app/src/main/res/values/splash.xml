@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.App.First" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#ffffff</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <!--        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/transparent_image</item>-->
+        <!--        <item name="android:windowSplashScreenAnimationDuration">1000</item>-->
+        <item name="postSplashScreenTheme">@style/Theme.ResamoPro</item>
+    </style>
+
+</resources>

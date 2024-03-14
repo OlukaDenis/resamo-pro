@@ -2,16 +2,28 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "edce2b7784b108fc2d9bb526559b9f3b",
+    "identityHash": "f584c8a6a16b8da4e9e67641e9ff4bb0",
     "entities": [
       {
         "tableName": "user",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `email` TEXT NOT NULL, `guid` INTEGER NOT NULL, `name` TEXT NOT NULL, `phone` TEXT NOT NULL, `userGroup` TEXT NOT NULL, `username` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `username` TEXT NOT NULL, `email` TEXT NOT NULL, `mobileCountryCode` TEXT NOT NULL, `mobileNumber` TEXT NOT NULL, `faceIdEnabled` INTEGER NOT NULL, `pinSetup` INTEGER NOT NULL, `accountBalance` REAL NOT NULL, `dob` TEXT NOT NULL, `currency` TEXT NOT NULL, `kycStatus` TEXT NOT NULL, `profileImage` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -21,135 +33,57 @@
             "notNull": true
           },
           {
-            "fieldPath": "guid",
-            "columnName": "guid",
+            "fieldPath": "mobileCountryCode",
+            "columnName": "mobileCountryCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mobileNumber",
+            "columnName": "mobileNumber",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "faceIdEnabled",
+            "columnName": "faceIdEnabled",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "phone",
-            "columnName": "phone",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "userGroup",
-            "columnName": "userGroup",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "username",
-            "columnName": "username",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_user_guid",
-            "unique": true,
-            "columnNames": [
-              "guid"
-            ],
-            "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_user_guid` ON `${TABLE_NAME}` (`guid`)"
-          }
-        ],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "scheme",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `active` INTEGER NOT NULL, `code` TEXT NOT NULL, `guid` INTEGER NOT NULL, `lastMonthlyData` TEXT NOT NULL, `locUtmX` REAL NOT NULL, `locUtmY` REAL NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `utmZone` TEXT NOT NULL, `name` TEXT NOT NULL, `puc` TEXT NOT NULL, `loaded` INTEGER NOT NULL, PRIMARY KEY(`id`))",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
+            "fieldPath": "pinSetup",
+            "columnName": "pinSetup",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "active",
-            "columnName": "active",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "code",
-            "columnName": "code",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "guid",
-            "columnName": "guid",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lastMonthlyData",
-            "columnName": "lastMonthlyData",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "locUtmX",
-            "columnName": "locUtmX",
+            "fieldPath": "accountBalance",
+            "columnName": "accountBalance",
             "affinity": "REAL",
             "notNull": true
           },
           {
-            "fieldPath": "locUtmY",
-            "columnName": "locUtmY",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "latitude",
-            "columnName": "latitude",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "longitude",
-            "columnName": "longitude",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "utmZone",
-            "columnName": "utmZone",
+            "fieldPath": "dob",
+            "columnName": "dob",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "name",
-            "columnName": "name",
+            "fieldPath": "currency",
+            "columnName": "currency",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "puc",
-            "columnName": "puc",
+            "fieldPath": "kycStatus",
+            "columnName": "kycStatus",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "loaded",
-            "columnName": "loaded",
-            "affinity": "INTEGER",
+            "fieldPath": "profileImage",
+            "columnName": "profileImage",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -159,32 +93,16 @@
             "id"
           ]
         },
-        "indices": [
-          {
-            "name": "index_scheme_guid",
-            "unique": true,
-            "columnNames": [
-              "guid"
-            ],
-            "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_scheme_guid` ON `${TABLE_NAME}` (`guid`)"
-          }
-        ],
+        "indices": [],
         "foreignKeys": []
       },
       {
-        "tableName": "measurement_group",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `guid` INTEGER NOT NULL, `name` TEXT NOT NULL, `label` TEXT NOT NULL, `active` INTEGER NOT NULL)",
+        "tableName": "province",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `abbreviation` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "guid",
-            "columnName": "guid",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -195,15 +113,9 @@
             "notNull": true
           },
           {
-            "fieldPath": "label",
-            "columnName": "label",
+            "fieldPath": "abbreviation",
+            "columnName": "abbreviation",
             "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "active",
-            "columnName": "active",
-            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -217,84 +129,12 @@
         "foreignKeys": []
       },
       {
-        "tableName": "measurement",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`guid` INTEGER NOT NULL, `active` INTEGER NOT NULL, `code` TEXT NOT NULL, `dailyForm` INTEGER NOT NULL, `decimals` INTEGER NOT NULL, `description` TEXT NOT NULL, `displayOrder` INTEGER NOT NULL, `measurementGroupId` INTEGER NOT NULL, `maxValue` REAL NOT NULL, `minToleranceFailPerc` INTEGER NOT NULL, `minToleranceOkPerc` INTEGER NOT NULL, `minValue` REAL NOT NULL, `monthlyForm` INTEGER NOT NULL, `name` TEXT NOT NULL, `obligatory` INTEGER NOT NULL, `showDefault` INTEGER NOT NULL, `sms` INTEGER NOT NULL, `stdb2ref` TEXT NOT NULL, `umbrellaCollection` INTEGER NOT NULL, `unit` TEXT NOT NULL, `validation` INTEGER NOT NULL, PRIMARY KEY(`guid`), FOREIGN KEY(`measurementGroupId`) REFERENCES `measurement_group`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "tableName": "state",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `abbreviation` TEXT NOT NULL)",
         "fields": [
           {
-            "fieldPath": "guid",
-            "columnName": "guid",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "active",
-            "columnName": "active",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "code",
-            "columnName": "code",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "dailyForm",
-            "columnName": "dailyForm",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "decimals",
-            "columnName": "decimals",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "description",
-            "columnName": "description",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "displayOrder",
-            "columnName": "displayOrder",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "measurementGroupId",
-            "columnName": "measurementGroupId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "maxValue",
-            "columnName": "maxValue",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "minToleranceFailPerc",
-            "columnName": "minToleranceFailPerc",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "minToleranceOkPerc",
-            "columnName": "minToleranceOkPerc",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "minValue",
-            "columnName": "minValue",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "monthlyForm",
-            "columnName": "monthlyForm",
+            "fieldPath": "id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -305,44 +145,250 @@
             "notNull": true
           },
           {
-            "fieldPath": "obligatory",
-            "columnName": "obligatory",
+            "fieldPath": "abbreviation",
+            "columnName": "abbreviation",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "country",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `countryCode` TEXT NOT NULL, `name` TEXT NOT NULL, `currency` TEXT NOT NULL, `dialCode` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "showDefault",
-            "columnName": "showDefault",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "sms",
-            "columnName": "sms",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "stdb2ref",
-            "columnName": "stdb2ref",
+            "fieldPath": "countryCode",
+            "columnName": "countryCode",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "umbrellaCollection",
-            "columnName": "umbrellaCollection",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "unit",
-            "columnName": "unit",
+            "fieldPath": "name",
+            "columnName": "name",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "validation",
-            "columnName": "validation",
+            "fieldPath": "currency",
+            "columnName": "currency",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dialCode",
+            "columnName": "dialCode",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "payment_method",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `profileId` TEXT NOT NULL, `userId` TEXT NOT NULL, `accountNumber` TEXT NOT NULL, `bankCode` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `currency` TEXT NOT NULL, `accountBank` TEXT NOT NULL, `type` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profileId",
+            "columnName": "profileId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accountNumber",
+            "columnName": "accountNumber",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bankCode",
+            "columnName": "bankCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currency",
+            "columnName": "currency",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accountBank",
+            "columnName": "accountBank",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "address",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `profileId` TEXT NOT NULL, `userId` TEXT NOT NULL, `address` TEXT NOT NULL, `address2` TEXT NOT NULL, `city` TEXT NOT NULL, `countryCode` TEXT NOT NULL, `postalCode` TEXT NOT NULL, `province` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profileId",
+            "columnName": "profileId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "address2",
+            "columnName": "address2",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "city",
+            "columnName": "city",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countryCode",
+            "columnName": "countryCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "postalCode",
+            "columnName": "postalCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "province",
+            "columnName": "province",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "profile",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `userId` TEXT NOT NULL, `role` TEXT NOT NULL, `mobileCountryCode` TEXT NOT NULL, `mobileNumber` TEXT NOT NULL, `name` TEXT NOT NULL, `trulipayUser` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`userId`) REFERENCES `user`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "role",
+            "columnName": "role",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mobileCountryCode",
+            "columnName": "mobileCountryCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mobileNumber",
+            "columnName": "mobileNumber",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trulipayUser",
+            "columnName": "trulipayUser",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -350,282 +396,29 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "guid"
+            "id"
           ]
         },
-        "indices": [
-          {
-            "name": "index_measurement_measurementGroupId",
-            "unique": false,
-            "columnNames": [
-              "measurementGroupId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_measurement_measurementGroupId` ON `${TABLE_NAME}` (`measurementGroupId`)"
-          }
-        ],
+        "indices": [],
         "foreignKeys": [
           {
-            "table": "measurement_group",
+            "table": "user",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "measurementGroupId"
+              "userId"
             ],
             "referencedColumns": [
               "id"
             ]
           }
         ]
-      },
-      {
-        "tableName": "monthly_data_entry",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`entryId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `entryGuid` INTEGER NOT NULL, `measurementId` INTEGER NOT NULL, `schemeId` INTEGER NOT NULL, `userInsertId` INTEGER NOT NULL, `userConfirmedId` INTEGER NOT NULL, `dirty` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `month` INTEGER NOT NULL, `day` INTEGER, `year` INTEGER NOT NULL, `dataDate` TEXT NOT NULL, `dataInserted` TEXT NOT NULL, `dataRaw` REAL NOT NULL, `dataPredicted` REAL NOT NULL, `dataConfirmed` REAL NOT NULL, `dataComment` TEXT NOT NULL, `confirmed` INTEGER NOT NULL, `confirmationComment` TEXT NOT NULL, `valid` INTEGER NOT NULL, `locked` INTEGER NOT NULL, FOREIGN KEY(`measurementId`) REFERENCES `measurement`(`guid`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`schemeId`) REFERENCES `scheme`(`guid`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "entryId",
-            "columnName": "entryId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "entryGuid",
-            "columnName": "entryGuid",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "measurementId",
-            "columnName": "measurementId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "schemeId",
-            "columnName": "schemeId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "userInsertId",
-            "columnName": "userInsertId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "userConfirmedId",
-            "columnName": "userConfirmedId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "dirty",
-            "columnName": "dirty",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "deleted",
-            "columnName": "deleted",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "month",
-            "columnName": "month",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "day",
-            "columnName": "day",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "year",
-            "columnName": "year",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "dataDate",
-            "columnName": "dataDate",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "dataInserted",
-            "columnName": "dataInserted",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "dataRaw",
-            "columnName": "dataRaw",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "dataPredicted",
-            "columnName": "dataPredicted",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "dataConfirmed",
-            "columnName": "dataConfirmed",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "dataComment",
-            "columnName": "dataComment",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "confirmed",
-            "columnName": "confirmed",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "confirmationComment",
-            "columnName": "confirmationComment",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "valid",
-            "columnName": "valid",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "locked",
-            "columnName": "locked",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "entryId"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_monthly_data_entry_schemeId",
-            "unique": false,
-            "columnNames": [
-              "schemeId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_monthly_data_entry_schemeId` ON `${TABLE_NAME}` (`schemeId`)"
-          },
-          {
-            "name": "index_monthly_data_entry_measurementId",
-            "unique": false,
-            "columnNames": [
-              "measurementId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_monthly_data_entry_measurementId` ON `${TABLE_NAME}` (`measurementId`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "measurement",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "measurementId"
-            ],
-            "referencedColumns": [
-              "guid"
-            ]
-          },
-          {
-            "table": "scheme",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "schemeId"
-            ],
-            "referencedColumns": [
-              "guid"
-            ]
-          }
-        ]
-      },
-      {
-        "tableName": "cached_period",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `isMonthly` INTEGER NOT NULL, `schemeId` INTEGER NOT NULL, `measurementGroupId` INTEGER NOT NULL, `year` INTEGER NOT NULL, `month` INTEGER NOT NULL, `day` INTEGER)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isMonthly",
-            "columnName": "isMonthly",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "schemeId",
-            "columnName": "schemeId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "measurementGroupId",
-            "columnName": "measurementGroupId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "year",
-            "columnName": "year",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "month",
-            "columnName": "month",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "day",
-            "columnName": "day",
-            "affinity": "INTEGER",
-            "notNull": false
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
       }
     ],
-    "views": [
-      {
-        "viewName": "monthly_entry_measurement_view",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT * FROM measurement LEFT JOIN monthly_data_entry ON measurement.guid = monthly_data_entry.measurementId"
-      }
-    ],
+    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'edce2b7784b108fc2d9bb526559b9f3b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f584c8a6a16b8da4e9e67641e9ff4bb0')"
     ]
   }
 }

@@ -1,4 +1,4 @@
-package com.dennnytech.resamopro
+package com.dennytech.resamopro
 
 import org.junit.Test
 

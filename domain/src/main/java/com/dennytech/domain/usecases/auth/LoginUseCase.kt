@@ -22,8 +22,6 @@ class LoginUseCase @Inject constructor(
     data class Param(
         val email: String?,
         val phone: String?,
-        val countryCode: String?,
-        val type: String,
         val password: String
     )
 
@@ -36,13 +34,13 @@ class LoginUseCase @Inject constructor(
             val map: HashMap<String, Any> = HashMap()
             map["password"] = param.password
 
-            when(param.type) {
-                "email" -> map["email"] = param.email!!
-                "phone" -> {
-                    map["mobileCountryCode"] = param.countryCode!!
-                    map["mobileNumber"] = param.phone!!.trimStart('0')
-                }
-            }
+//            when(param.type) {
+//                "email" -> map["email"] = param.email!!
+//                "phone" -> {
+//                    map["mobileCountryCode"] = param.countryCode!!
+//                    map["mobileNumber"] = param.phone!!.trimStart('0')
+//                }
+//            }
 
             val response = runBlocking { authRepository.login(map) }
 

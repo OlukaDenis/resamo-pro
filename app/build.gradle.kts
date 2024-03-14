@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.dennnytech.resamopro"
+    namespace = "com.dennytech.resamopro"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.dennnytech.resamopro"
+        applicationId = "com.dennytech.resamopro"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -68,6 +68,9 @@ android {
 }
 
 dependencies {
+
+    implementation(project(":domain"))
+    implementation(project(":data"))
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
