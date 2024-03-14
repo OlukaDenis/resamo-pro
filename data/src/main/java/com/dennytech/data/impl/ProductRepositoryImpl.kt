@@ -3,37 +3,40 @@ package com.dennytech.data.impl
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.dennytech.data.remote.datasource.TransactionPagingSource
+import com.dennytech.data.remote.datasource.ProductPagingSource
+import com.dennytech.data.remote.models.RemoteProductModel.Companion.toDomain
 import com.dennytech.data.remote.models.RemoteTransactionModel.Companion.toDomain
 import com.dennytech.data.remote.services.ApiService
 import com.dennytech.data.utils.MAX_PAGE_SIZE
-import com.dennytech.domain.models.TransactionDomainModel
-import com.dennytech.domain.repository.TransactionRepository
+import com.dennytech.domain.models.ProductDomainModel
+import com.dennytech.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class TransactionRepositoryImpl @Inject constructor(
+class ProductRepositoryImpl @Inject constructor(
     private val apiService: ApiService
-) : TransactionRepository {
-    override suspend fun fetchTransactions(): Flow<PagingData<TransactionDomainModel>> {
+) : ProductRepository {
+    override suspend fun fetchProducts(filters: HashMap<String, Any>): Flow<PagingData<ProductDomainModel>> {
         return Pager(
             config = PagingConfig(
                 pageSize = MAX_PAGE_SIZE,
             ),
             pagingSourceFactory = {
-                TransactionPagingSource(apiService)
+                ProductPagingSource(apiService, filters)
             }
         ).flow
     }
 
-    override suspend fun fetchRecentTransactions(): List<TransactionDomainModel> {
+    override suspend fun fetchRecentProducts(): List<ProductDomainModel> {
         return try {
             val request = HashMap<String, Any>().apply {
                 this["page"] = 1
                 this["pageSize"] = 5
             }
 
-            val response = apiService.getTransactions(request)
+            val filter = HashMap<String, Any>()
+
+            val response = apiService.getProducts(request, filter)
             response.data.map { it.toDomain() }
         } catch (throwable: Throwable) {
             throw throwable

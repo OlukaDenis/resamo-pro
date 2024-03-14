@@ -1,10 +1,10 @@
-package com.dennytech.domain.usecases.transactions
+package com.dennytech.domain.usecases.products
 
 import com.dennytech.domain.base.BaseFlowUseCase
 import com.dennytech.domain.dispacher.AppDispatcher
+import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.domain.models.Resource
-import com.dennytech.domain.models.TransactionDomainModel
-import com.dennytech.domain.repository.TransactionRepository
+import com.dennytech.domain.repository.ProductRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,15 +14,15 @@ import javax.inject.Inject
 class GetRecentTransactionsUseCase @Inject constructor(
     private val dispatcher: AppDispatcher,
     private val utilRepository: UtilRepository,
-    private val transactionRepository: TransactionRepository,
-) : BaseFlowUseCase<Unit, Resource<List<TransactionDomainModel>>>(dispatcher) {
+    private val productRepository: ProductRepository,
+) : BaseFlowUseCase<Unit, Resource<List<ProductDomainModel>>>(dispatcher) {
 
-    override fun run(param: Unit?): Flow<Resource<List<TransactionDomainModel>>> = flow {
+    override fun run(param: Unit?): Flow<Resource<List<ProductDomainModel>>> = flow {
         emit(Resource.Loading)
 
         try {
 
-            val response = runBlocking { transactionRepository.fetchRecentTransactions() }
+            val response = runBlocking { productRepository.fetchRecentProducts() }
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {

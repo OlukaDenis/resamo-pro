@@ -27,8 +27,11 @@ fun MainNavGraph(
             ProfileFragment()
         }
 
-        composable(route = MainScreen.Notification.route) {
-            ProductsFragment()
+        composable(route = MainScreen.Products.route) {
+            ProductsFragment(
+                navController = navController,
+                navigateUp = { navController.navigateUp() },
+            )
         }
 
 //        composable("detail/{transaction}") { navBackStackEntry ->

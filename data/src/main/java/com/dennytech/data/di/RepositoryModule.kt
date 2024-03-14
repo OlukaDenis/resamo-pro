@@ -5,14 +5,14 @@ import com.dennytech.data.impl.LocationRepositoryImpl
 import com.dennytech.data.impl.PreferenceRepositoryImpl
 import com.dennytech.data.impl.ProfileRepositoryImpl
 import com.dennytech.data.impl.SyncRepositoryImpl
-import com.dennytech.data.impl.TransactionRepositoryImpl
+import com.dennytech.data.impl.ProductRepositoryImpl
 import com.dennytech.data.impl.UtilRepositoryImpl
 import com.dennytech.domain.repository.AuthRepository
 import com.dennytech.domain.repository.LocationRepository
 import com.dennytech.domain.repository.PreferenceRepository
 import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.SyncRepository
-import com.dennytech.domain.repository.TransactionRepository
+import com.dennytech.domain.repository.ProductRepository
 import com.dennytech.domain.repository.UtilRepository
 import dagger.Binds
 import dagger.Module
@@ -50,6 +50,6 @@ interface RepositoryModule {
 
     @Singleton
     @Binds
-    fun bindTransactionsRepository(impl: TransactionRepositoryImpl): TransactionRepository
+    fun bindTransactionsRepository(impl: ProductRepositoryImpl): ProductRepository
 
 }
