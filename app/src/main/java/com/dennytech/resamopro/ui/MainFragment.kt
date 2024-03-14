@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.rememberNavController
@@ -37,7 +38,9 @@ import com.dennytech.resamopro.ui.theme.TruliBlue
 import com.dennytech.resamopro.ui.theme.TruliBlueLight900
 
 @Composable
-fun MainFragment() {
+fun MainFragment(
+    viewModel: MainViewModel = hiltViewModel()
+) {
     val navController = rememberNavController()
     val currentSelectedScreen by navController.currentScreenAsState()
 
@@ -45,7 +48,6 @@ fun MainFragment() {
 
     SideEffect {
         val window = (view.context as Activity).window
-//        window.statusBarColor = Grey200.toArgb()
         window.statusBarColor = Color.White.toArgb()
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = true
     }
@@ -59,6 +61,7 @@ fun MainFragment() {
         },
         modifier = Modifier.fillMaxSize(),
     ) {
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -72,8 +75,9 @@ fun MainFragment() {
 
 @Composable
 private fun BottomNavBar(
+    viewModel: MainViewModel = hiltViewModel(),
     navController: NavController,
-    currentSelectedScreen: MainScreen
+    currentSelectedScreen: MainScreen,
 ) {
     val colors = NavigationBarItemDefaults.colors(
         selectedIconColor = MaterialTheme.colorScheme.primary,

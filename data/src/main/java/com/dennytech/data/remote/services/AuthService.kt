@@ -12,14 +12,18 @@ import retrofit2.http.QueryMap
 
 interface AuthService {
 
+
+    @POST("user/login")
+    suspend fun login(@Body request: HashMap<String, Any>): UserResponseModel
+
+
+
+
     @POST("user/otp")
     suspend fun sendToken(@Body request: HashMap<String, Any>): RemoteSuccessResponse
 
     @POST("user/waitlist")
     suspend fun joinWaitlist(@Body request: HashMap<String, Any>): RemoteSuccessResponse
-
-    @POST("user/login")
-    suspend fun login(@Body request: HashMap<String, Any>): UserResponseModel
 
     @POST("user")
     suspend fun signup(@Body request: HashMap<String, Any>): SignupResponseModel

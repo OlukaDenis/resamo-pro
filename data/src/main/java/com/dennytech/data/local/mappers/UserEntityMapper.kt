@@ -13,7 +13,6 @@ class UserEntityMapper @Inject constructor() : BaseLocalMapper<UserEntity, UserD
             lastName = entity.lastName,
             phone = entity.phone,
             email = entity.email,
-            token = entity.token,
             role = entity.role,
             fullName = "${entity.firstName} ${entity.lastName}"
         )
@@ -26,7 +25,6 @@ class UserEntityMapper @Inject constructor() : BaseLocalMapper<UserEntity, UserD
             lastName = entity.lastName,
             phone = entity.phone,
             email = entity.email,
-            token = entity.token,
             role = entity.role,
             fullName = "${entity.firstName} ${entity.lastName}"
         )

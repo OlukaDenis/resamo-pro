@@ -1,5 +1,6 @@
 package com.dennytech.resamopro.utils
 
+import timber.log.Timber
 import java.text.NumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -46,5 +47,12 @@ object Helpers {
         } else {
             if (parts.size == 1) "${parts[0].first()}" else "TP"
         }
+    }
+
+    fun Long.isAccessTokenExpired(): Boolean {
+        val currentTimeMillis = System.currentTimeMillis()
+        val expiry = this * 1000
+
+        return currentTimeMillis >= expiry
     }
 }

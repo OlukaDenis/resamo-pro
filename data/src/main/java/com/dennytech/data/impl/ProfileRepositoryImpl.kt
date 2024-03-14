@@ -1,5 +1,7 @@
 package com.dennytech.data.impl
 
+import androidx.datastore.core.DataStore
+import com.dennytech.data.UserPreferences
 import com.dennytech.data.local.dao.AddressDao
 import com.dennytech.data.local.dao.PaymentMethodDao
 import com.dennytech.data.local.dao.ProfileDao
@@ -8,9 +10,11 @@ import com.dennytech.data.local.mappers.AddressEntityMapper
 import com.dennytech.data.local.mappers.PaymentMethodEntityMapper
 import com.dennytech.data.local.mappers.ProfileEntityMapper
 import com.dennytech.data.local.mappers.UserEntityMapper
+import com.dennytech.data.local.mappers.UserPreferencesMapper
 import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomain
 import com.dennytech.data.remote.services.ApiService
 import com.dennytech.domain.models.UserDomainModel
+import com.dennytech.domain.repository.PreferenceRepository
 import com.dennytech.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -28,8 +32,11 @@ class ProfileRepositoryImpl @Inject constructor(
     private val profileEntityMapper: ProfileEntityMapper,
     private val addressEntityMapper: AddressEntityMapper,
     private val paymentMethodEntityMapper: PaymentMethodEntityMapper,
+    private val preferenceRepository: PreferenceRepository,
     private val userEntityMapper: UserEntityMapper,
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val userPreferences: DataStore<UserPreferences>,
+    private val userPreferencesMapper: UserPreferencesMapper
 ) : ProfileRepository {
     override suspend fun fetchUser(request: HashMap<String, Any>): UserDomainModel {
         return try {
@@ -50,9 +57,27 @@ class ProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getCurrentUser(): Flow<UserDomainModel?> = flow {
-        userDao.getTopUser().map {
-            if (it.isEmpty()) emit(null) else emit(userEntityMapper.toDomain(it[0]))
-        }.first()
+    override fun getCurrentUser(): Flow<UserDomainModel?> {
+        return try {
+            userPreferences.data.map { userPreferencesMapper.toDomain(it) }
+        } catch (throwable: Throwable) {
+            throw throwable
+        }
     }
+
+    override suspend fun refreshToken(): String {
+        return try {
+
+            val response = apiService.refreshToken()
+            val data  = response.data;
+
+            runBlocking { preferenceRepository.setAccessToken(data.refreshToken.orEmpty()) }
+            runBlocking { preferenceRepository.setTokenExpiry(data.expiresIn ?: 0L) }
+
+            data.refreshToken.orEmpty()
+        } catch (throwable: Throwable) {
+            throw throwable
+        }
+    }
+
 }

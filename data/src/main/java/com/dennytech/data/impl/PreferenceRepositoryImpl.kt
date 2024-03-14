@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.dennytech.data.utils.ACCESS_TOKEN_KEY
 import com.dennytech.data.utils.IS_ONBOARDING_COMPLETE
+import com.dennytech.data.utils.TOKEN_EXPIRY_KEY
 import com.dennytech.domain.repository.PreferenceRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -36,6 +37,19 @@ class PreferenceRepositoryImpl @Inject constructor(
         return dataStore.data
             .map { preferences ->
                 preferences[ACCESS_TOKEN_KEY]?: ""
+            }
+    }
+
+    override suspend fun setTokenExpiry(value: Long) {
+        dataStore.edit { preferences ->
+            preferences[TOKEN_EXPIRY_KEY] = value
+        }
+    }
+
+    override fun getTokenExpiry(): Flow<Long> {
+        return dataStore.data
+            .map { preferences ->
+                preferences[TOKEN_EXPIRY_KEY] ?: 0L
             }
     }
 }

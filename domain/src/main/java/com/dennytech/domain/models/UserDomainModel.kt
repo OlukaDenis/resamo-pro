@@ -5,7 +5,6 @@ data class UserDomainModel(
     val firstName: String,
     val lastName: String,
     val email: String,
-    val token: String,
     val phone: String,
     val fullName: String,
     val role: Int,

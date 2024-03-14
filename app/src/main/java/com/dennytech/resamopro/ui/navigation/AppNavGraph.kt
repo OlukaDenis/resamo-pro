@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.dennytech.resamopro.ui.screen.auth.login.LoginFragment
+import com.dennytech.resamopro.ui.screen.auth.onboarding.OnBoardingRootFragment
 import timber.log.Timber
 
 //fun NavGraphBuilder.onBoardingNavGraph(navController: NavHostController) {
@@ -36,19 +37,26 @@ import timber.log.Timber
 fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
     navigation(
         route = Graph.AUTH,
-        startDestination = AuthScreen.Login.route
+        startDestination = AuthScreen.Intro.route
     ) {
+
+        composable(AuthScreen.Intro.route) {
+            OnBoardingRootFragment(
+                navigateToLogin = {
+                    navController.navigate(AuthScreen.Login.route)
+                },
+                navigateToHome = {
+                    navController.popBackStack()
+                    navController.navigate(Graph.MAIN)
+                }
+            )
+        }
+
         composable(AuthScreen.Login.route) {
             LoginFragment(
                 navigateToHome = {
                     navController.popBackStack()
                     navController.navigate(Graph.MAIN)
-
-//                    navController.navigate(Graph.MAIN) {
-//                        popUpTo(Graph.AUTH) {
-//                            inclusive = true
-//                        }
-//                    }
                 },
             )
         }

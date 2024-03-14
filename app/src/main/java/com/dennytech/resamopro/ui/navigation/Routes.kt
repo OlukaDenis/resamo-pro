@@ -15,6 +15,7 @@ sealed class OnBoardingScreen(val route: String) {
 
 sealed class AuthScreen(val route: String) {
     data object Login : AuthScreen("login")
+    data object Intro : AuthScreen("intro")
     data object Otp : AuthScreen("otp")
     data object Register : AuthScreen("register")
 }

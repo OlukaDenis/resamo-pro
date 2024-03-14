@@ -8,4 +8,6 @@ interface PreferenceRepository {
     fun isOnboardingComplete(): Flow<Boolean>
     suspend fun setAccessToken(value: String);
     fun getAccessToken(): Flow<String>
+    suspend fun setTokenExpiry(value: Long);
+    fun getTokenExpiry(): Flow<Long>
 }
