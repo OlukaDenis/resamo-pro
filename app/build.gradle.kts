@@ -4,9 +4,20 @@ plugins {
     id("kotlin-parcelize")
     id("dagger.hilt.android.plugin")
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
+    signingConfigs {
+        create("resamoConfig") {
+            storeFile = file("$rootDir/resamo.jks")
+            storePassword = "FkhHU4QKxvbS"
+            keyAlias = "resamoKey"
+            keyPassword = "FkhHU4QKxvbS"
+        }
+    }
+
     namespace = "com.dennytech.resamopro"
     compileSdk = 34
 
@@ -25,12 +36,18 @@ android {
 
     buildTypes {
         debug {
-//            signingConfig = signingConfigs.getByName("trulipayConfig")
+            signingConfig = signingConfigs.getByName("resamoConfig")
+            applicationIdSuffix = ".uat"
+
+            resValue("string", "app_name", "Resamo Pro Dev")
+
         }
 
         create("staging") {
-//            signingConfig = signingConfigs.getByName("trulipayConfig")
+            signingConfig = signingConfigs.getByName("resamoConfig")
             applicationIdSuffix = ".uat"
+            isDebuggable = false
+            resValue("string", "app_name", "Resamo Pro Dev")
 
             isMinifyEnabled = false
             proguardFiles(
@@ -40,6 +57,9 @@ android {
         }
 
         release {
+            signingConfig = signingConfigs.getByName("resamoConfig")
+            resValue("string", "app_name", "Resamo Pro")
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

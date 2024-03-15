@@ -21,7 +21,7 @@ fun MainNavGraph(
     NavHost(
         navController = bottomNavController,
         route = Graph.MAIN,
-        startDestination = MainScreen.Home.route,
+        startDestination = MainScreen.Products.route,
     ) {
 
         composable(route = MainScreen.Home.route) {
@@ -42,16 +42,16 @@ fun MainNavGraph(
 
         composable(route = MainScreen.NewProduct.route) {
             CreateProductFragment(
-                navigateUp = { mainNavController.navigateUp() },
+                navigateUp = { bottomNavController.navigateUp() },
             )
         }
 
         composable(route = MainScreen.Products.route) {
             ProductsFragment(
-                navController = mainNavController,
-                navigateUp = { mainNavController.navigateUp() },
+                navController = bottomNavController,
+                navigateUp = { bottomNavController.navigateUp() },
                 navigateToNewProduct = {
-                    mainNavController.navigate(MainScreen.NewProduct.route)
+                    bottomNavController.navigate(MainScreen.NewProduct.route)
                 }
             )
         }
@@ -65,9 +65,9 @@ fun MainNavGraph(
             val transactionObj = gson.fromJson(userJson, ProductDomainModel::class.java)
             RecordSaleFragment(
                 product = transactionObj,
-                navigateUp = { mainNavController.navigateUp() },
+                navigateUp = { bottomNavController.navigateUp() },
                 navigateToProducts = {
-                    mainNavController.navigate(MainScreen.Products.route)
+                    bottomNavController.navigate(MainScreen.Products.route)
                 }
             )
         }

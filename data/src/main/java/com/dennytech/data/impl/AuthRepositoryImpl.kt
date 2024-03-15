@@ -18,32 +18,6 @@ class AuthRepositoryImpl @Inject constructor(
     private val preferenceRepository: PreferenceRepository,
     private val remoteTokenMapper: RemoteTokenMapper,
 ): AuthRepository {
-    override suspend fun sendOtp(request: HashMap<String, Any>): Boolean {
-        return try {
-            val response = authService.sendToken(request)
-            response.success!!
-        } catch (throwable: Throwable) {
-            throw throwable
-        }
-    }
-
-    override suspend fun checkUsername(request: HashMap<String, Any>): Boolean {
-        return try {
-            val response = authService.checkUsername(request)
-            response.data!!
-        } catch (throwable: Throwable) {
-            throw throwable
-        }
-    }
-
-    override suspend fun joinWaitList(request: HashMap<String, Any>): Boolean {
-        return try {
-            val response = authService.joinWaitlist(request)
-            response.success!!
-        } catch (throwable: Throwable) {
-            throw throwable
-        }
-    }
 
     override suspend fun saveUser(entity: UserDomainModel) {
         tokenPreferences.updateData { prefs ->

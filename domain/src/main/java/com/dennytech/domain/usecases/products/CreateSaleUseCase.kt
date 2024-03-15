@@ -1,16 +1,13 @@
 package com.dennytech.domain.usecases.products
 
-import android.net.Uri
 import com.dennytech.domain.base.BaseFlowUseCase
 import com.dennytech.domain.dispacher.AppDispatcher
-import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.domain.models.Resource
 import com.dennytech.domain.repository.ProductRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
-import timber.log.Timber
 import javax.inject.Inject
 
 class CreateSaleUseCase @Inject constructor(

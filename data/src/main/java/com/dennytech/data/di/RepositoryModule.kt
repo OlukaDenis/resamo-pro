@@ -1,14 +1,12 @@
 package com.dennytech.data.di
 
 import com.dennytech.data.impl.AuthRepositoryImpl
-import com.dennytech.data.impl.LocationRepositoryImpl
 import com.dennytech.data.impl.PreferenceRepositoryImpl
 import com.dennytech.data.impl.ProfileRepositoryImpl
 import com.dennytech.data.impl.SyncRepositoryImpl
 import com.dennytech.data.impl.ProductRepositoryImpl
 import com.dennytech.data.impl.UtilRepositoryImpl
 import com.dennytech.domain.repository.AuthRepository
-import com.dennytech.domain.repository.LocationRepository
 import com.dennytech.domain.repository.PreferenceRepository
 import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.SyncRepository
@@ -39,10 +37,6 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindSyncRepository(impl: SyncRepositoryImpl): SyncRepository
-
-    @Singleton
-    @Binds
-    fun bindLocationRepository(impl: LocationRepositoryImpl): LocationRepository
 
     @Singleton
     @Binds

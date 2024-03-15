@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "699568129161",
+    "project_id": "resamo-pro-dev5",
+    "storage_bucket": "resamo-pro-dev5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:699568129161:android:5c5b4ffa4df96dbc98b258",
+        "android_client_info": {
+          "package_name": "com.dennytech.resamopro.uat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFDlEwaVOVNjyqZFvpTH4stdddj0D-2CA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

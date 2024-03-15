@@ -33,27 +33,4 @@ object DatabaseModule {
     @Provides
     fun provideUserDao(database: AppDatabase) = database.userDao()
 
-    @Singleton
-    @Provides
-    fun provideStateDao(database: AppDatabase) = database.stateDao()
-
-    @Singleton
-    @Provides
-    fun provideProvinceDao(database: AppDatabase) = database.provinceDao()
-
-    @Singleton
-    @Provides
-    fun provideCountryDao(database: AppDatabase) = database.countryDao()
-
-    @Singleton
-    @Provides
-    fun providePaymentMethodDao(database: AppDatabase) = database.paymentMethodDao()
-
-    @Singleton
-    @Provides
-    fun provideProfileDao(database: AppDatabase) = database.profileDao()
-
-    @Singleton
-    @Provides
-    fun provideAddressDao(database: AppDatabase) = database.addressDao()
 }

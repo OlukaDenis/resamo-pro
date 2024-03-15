@@ -97,19 +97,19 @@ private fun BottomNavBar(
         containerColor = Color.White,
         tonalElevation = Dimens._8dp
     ) {
-        NavigationBarItem(
-            selected = currentSelectedScreen == MainScreen.Home,
-            onClick = { navController.navigateToMainScreen(MainScreen.Home) },
-            alwaysShowLabel = false,
-            colors = colors,
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_wallet),
-                    contentDescription = stringResource(id = R.string.home),
-                    tint = if (currentSelectedScreen == MainScreen.Home) TruliBlue else Color.Gray,
-                )
-            }
-        )
+//        NavigationBarItem(
+//            selected = currentSelectedScreen == MainScreen.Home,
+//            onClick = { navController.navigateToMainScreen(MainScreen.Home) },
+//            alwaysShowLabel = false,
+//            colors = colors,
+//            icon = {
+//                Icon(
+//                    painter = painterResource(id = R.drawable.ic_wallet),
+//                    contentDescription = stringResource(id = R.string.home),
+//                    tint = if (currentSelectedScreen == MainScreen.Home) TruliBlue else Color.Gray,
+//                )
+//            }
+//        )
 
         NavigationBarItem(
             selected = currentSelectedScreen == MainScreen.Products,

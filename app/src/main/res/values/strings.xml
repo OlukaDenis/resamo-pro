@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Resamo Pro</string>
+<!--    <string name="app_name">Resamo Pro</string>-->
     <string name="next">Next</string>
     <string name="get_started">Get started</string>
     <string name="sign_in">Sign In</string>
