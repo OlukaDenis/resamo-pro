@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dennytech.resamopro.ui.screen.main.home.HomeFragment
 import com.dennytech.resamopro.ui.screen.main.products.ProductsFragment
+import com.dennytech.resamopro.ui.screen.main.products.create.CreateProductFragment
 import com.dennytech.resamopro.ui.screen.main.profile.ProfileFragment
 import com.google.gson.GsonBuilder
 
@@ -27,10 +28,19 @@ fun MainNavGraph(
             ProfileFragment()
         }
 
+        composable(route = MainScreen.NewProduct.route) {
+            CreateProductFragment(
+                navigateUp = { navController.navigateUp() },
+            )
+        }
+
         composable(route = MainScreen.Products.route) {
             ProductsFragment(
                 navController = navController,
                 navigateUp = { navController.navigateUp() },
+                navigateToNewProduct = {
+                    navController.navigate(MainScreen.NewProduct.route)
+                }
             )
         }
 

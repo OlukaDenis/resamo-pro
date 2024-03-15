@@ -34,6 +34,8 @@ object Dimens {
     val _200dp = 200.dp
     val _300dp = 300.dp
     val _350dp = 350.dp
+    val _400dp = 400.dp
+    val _500dp = 500.dp
 
     val _4sp = 4.sp
     val _9sp = 9.sp

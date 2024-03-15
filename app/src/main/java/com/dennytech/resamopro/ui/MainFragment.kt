@@ -119,6 +119,20 @@ private fun BottomNavBar(
             }
         )
 
+//        NavigationBarItem(
+//            selected = currentSelectedScreen == MainScreen.NewProduct,
+//            onClick = { navController.navigateToMainScreen(MainScreen.NewProduct) },
+//            alwaysShowLabel = false,
+//            colors = colors,
+//            icon = {
+//                Icon(
+//                    painter = painterResource(id = R.drawable.ic_transfer),
+//                    contentDescription = stringResource(id = R.string.products),
+//                    tint = if (currentSelectedScreen == MainScreen.NewProduct) TruliBlue else Color.Gray,
+//                )
+//            }
+//        )
+
         NavigationBarItem(
             selected = currentSelectedScreen == MainScreen.Account,
             onClick = { navController.navigateToMainScreen(MainScreen.Account) },
@@ -142,11 +156,14 @@ private fun NavController.currentScreenAsState(): State<MainScreen> {
     DisposableEffect(key1 = this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
             when {
-                destination.hierarchy.any { it.route == MainScreen.Home.route } -> {
-                    selectedItem.value = MainScreen.Home
-                }
                 destination.hierarchy.any { it.route == MainScreen.Products.route } -> {
                     selectedItem.value = MainScreen.Products
+                }
+                destination.hierarchy.any { it.route == MainScreen.NewProduct.route } -> {
+                    selectedItem.value = MainScreen.NewProduct
+                }
+                destination.hierarchy.any { it.route == MainScreen.Home.route } -> {
+                    selectedItem.value = MainScreen.Home
                 }
                 destination.hierarchy.any { it.route == MainScreen.Account.route } -> {
                     selectedItem.value = MainScreen.Account

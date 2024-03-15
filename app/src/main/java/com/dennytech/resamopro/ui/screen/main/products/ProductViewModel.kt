@@ -43,6 +43,10 @@ class ProductViewModel @Inject constructor(
                 state = state.copy(showFilterDialog = !state.showFilterDialog)
             }
 
+            is ProductEvent.TogglePreviewDialog -> {
+                state = state.copy(showPreviewDialog = !state.showPreviewDialog)
+            }
+
             is ProductEvent.SetBrandFilter -> {
                 state = state.copy(filters = state.filters.copy(brand = event.value))
             }
@@ -61,6 +65,11 @@ class ProductViewModel @Inject constructor(
 
             is ProductEvent.ClearFilters -> {
                 state = state.copy(filters = ProductFilerModel())
+                onEvent(ProductEvent.GetProducts)
+            }
+
+            is ProductEvent.SelectImage -> {
+                state = state.copy(selectedImage = event.image)
             }
         }
     }
@@ -88,12 +97,16 @@ class ProductViewModel @Inject constructor(
 
 data class ProductState(
     val showFilterDialog: Boolean = false,
+    val showPreviewDialog: Boolean = false,
+    val selectedImage: String = "",
     val filters: ProductFilerModel = ProductFilerModel()
 )
 
 sealed class ProductEvent {
     data object GetProducts : ProductEvent()
     data object ToggleFilterDialog : ProductEvent()
+    data class SelectImage(val image: String): ProductEvent()
+    data object TogglePreviewDialog : ProductEvent()
     data class SetBrandFilter(val value: String) : ProductEvent()
     data class SetColorFilter(val value: String) : ProductEvent()
     data class SetTypeFilter(val value: String) : ProductEvent()

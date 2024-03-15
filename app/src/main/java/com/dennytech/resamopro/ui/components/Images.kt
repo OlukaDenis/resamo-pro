@@ -2,6 +2,7 @@ package com.dennytech.resamopro.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Cancel
@@ -164,6 +165,19 @@ fun CancelCircleIcon(
 ) {
     Icon(
         imageVector = Icons.Rounded.Cancel,
+        contentDescription = stringResource(id = R.string.account),
+        tint = tint,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun AddCircleIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = defaultIconTint()
+) {
+    Icon(
+        imageVector = Icons.Rounded.AddCircleOutline,
         contentDescription = stringResource(id = R.string.account),
         tint = tint,
         modifier = modifier

@@ -14,9 +14,13 @@ object Helpers {
     fun shoeTypes(): List<KeyValueModel> {
         val list = mutableListOf<KeyValueModel>().apply {
             this.add(KeyValueModel("", ""))
-            this.add(KeyValueModel("open", "Open"))
-            this.add(KeyValueModel("closed", "Closed"))
+            this.add(KeyValueModel("sandal", "Sandals"))
+            this.add(KeyValueModel("pump", "Pumps"))
             this.add(KeyValueModel("heel", "Heels"))
+            this.add(KeyValueModel("sneaker", "Sneakers"))
+            this.add(KeyValueModel("loafer", "Loafer"))
+            this.add(KeyValueModel("boot", "Boots"))
+            this.add(KeyValueModel("gentle", "Gentle"))
         }
 
         return list.toList()
@@ -76,5 +80,12 @@ object Helpers {
         }
     }
 
+    fun Long.toKiloBytes(): Int {
+        return (this / 1024).toInt()
+    }
+
+    fun Long.toMegaBytes(): Int {
+        return (this / 1024 / 1024).toInt()
+    }
 
 }

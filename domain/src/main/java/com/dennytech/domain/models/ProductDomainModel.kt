@@ -8,6 +8,7 @@ data class ProductDomainModel(
     val createdBy: String,
     val id: String,
     val image: String,
+    val thumbnail: String,
     val inStock: Boolean,
     val name: String,
     val price: Int,

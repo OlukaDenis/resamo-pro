@@ -2,9 +2,15 @@ package com.dennytech.data.remote.models
 
 import com.dennytech.domain.models.ProductDomainModel
 
-data class ProductsResponseModel(
+data class ProductListResponseModel(
     val data: List<RemoteProductModel>
 )
+
+
+data class ProductResponseModel(
+    val data: RemoteProductModel
+)
+
 
 data class RemoteProductModel(
     val brand: String?,
@@ -14,6 +20,7 @@ data class RemoteProductModel(
     val createdBy: String?,
     val id: String?,
     val image: String?,
+    val thumbnail: String?,
     val inStock: Boolean?,
     val name: String?,
     val price: Int?,
@@ -38,6 +45,7 @@ data class RemoteProductModel(
                 price = this.price ?: 0,
                 quantity = this.quantity ?: 0,
                 size = this.size ?: 0,
+                thumbnail = this.thumbnail.orEmpty(),
                 updatedAt = this.updatedAt.orEmpty(),
                 type = this.type.orEmpty(),
             )

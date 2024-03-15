@@ -22,20 +22,16 @@ fun OnBoardingRootFragment(
 //    }
 
     Scaffold {
-        Timber.d("Expiry: %s", viewModel.expiryTime)
 
         Box(modifier = Modifier.padding(it)) {
             when {
                 viewModel.expiryTime == 0L -> {
-                    Timber.d("Expiry: Zero")
                     navigateToLogin()
                 }
                 viewModel.expiryTime.isAccessTokenExpired() -> {
-                    Timber.d("Expiry: Expired")
                     navigateToLogin()
                 }
                 else -> {
-                    Timber.d("Expiry: Not expired")
                     navigateToHome()
                 }
             }

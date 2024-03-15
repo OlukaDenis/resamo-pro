@@ -38,7 +38,8 @@ import com.dennytech.resamopro.utils.Helpers.capitalize
 fun ProductItem(
     modifier: Modifier = Modifier,
     product: ProductDomainModel,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    preview: () -> Unit
 ) {
 
     Box(modifier = Modifier) {
@@ -56,7 +57,7 @@ fun ProductItem(
                 .clickable { onClick() }) {
 
                 Column {
-                    TranImage(product = product)
+                    TranImage(product = product, onClick = {preview()})
 
 //                   Spacer(modifier = Modifier.height(Dimens._8dp))
 
@@ -88,18 +89,18 @@ fun ProductItem(
 
 @Composable
 private fun TranImage(
-    product: ProductDomainModel
+    product: ProductDomainModel,
+    onClick: () -> Unit
 ) {
 
     SubcomposeAsyncImage(
-        model = product.image,
+        model = product.thumbnail,
         contentDescription = "product image",
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .clip(RoundedCornerShape(size = Dimens._8dp))
-//            .clip(CircleShape)
-//            .width(Dimens._32dp)
-            .height(Dimens._200dp),
+            .clickable { onClick() }
+            .height(Dimens._150dp),
     ) {
         val state = painter.state
         if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {

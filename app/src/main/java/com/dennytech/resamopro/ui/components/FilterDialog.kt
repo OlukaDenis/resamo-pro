@@ -60,7 +60,7 @@ fun FilterDialog(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "Select Filters",
+                        text = "Filter Products",
                         modifier = Modifier,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold,
@@ -121,7 +121,7 @@ fun FilterDialog(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
+                    horizontalArrangement = Arrangement.End,
                 ) {
                     TextButton(
                         onClick = { dismissDialog() },

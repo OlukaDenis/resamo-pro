@@ -43,7 +43,7 @@ fun ProductLabel(
             modifier = Modifier
                 .padding(horizontal = Dimens._8dp, vertical = Dimens._4dp),
             text = title,
-            fontSize = Dimens._14sp,
+            fontSize = Dimens._12sp,
             color = DeepSeaBlue,
             textAlign = TextAlign.Center
         )

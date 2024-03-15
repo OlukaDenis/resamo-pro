@@ -1,5 +1,6 @@
 package com.dennytech.resamopro.ui.screen.main.products
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,10 +17,14 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.FilterList
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,26 +32,37 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.models.ProductFilerModel.Companion.isNoEmpty
+import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.ErrorLabel
 import com.dennytech.resamopro.ui.components.FilterDialog
 import com.dennytech.resamopro.ui.components.ProductItem
 import com.dennytech.resamopro.ui.theme.Dimens
+import com.dennytech.resamopro.ui.theme.Grey100
 import com.dennytech.resamopro.ui.theme.TruliBlue
 import com.google.gson.GsonBuilder
 import timber.log.Timber
@@ -55,8 +71,10 @@ import timber.log.Timber
 @Composable
 fun ProductsFragment(
     viewModel: ProductViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel(),
     navController: NavController,
     navigateUp: () -> Unit,
+    navigateToNewProduct: () -> Unit,
 ) {
 
     Scaffold(
@@ -82,6 +100,19 @@ fun ProductsFragment(
                     }
                 },
                 actions = {
+
+                    mainViewModel.state.user?.let {
+                        if(it.role == 1) {
+                            IconButton(onClick = { navigateToNewProduct() }) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Add,
+                                    contentDescription = stringResource(id = R.string.filter),
+                                    tint = if(viewModel.state.filters.isNoEmpty()) TruliBlue else Color.Black
+                                )
+                            }
+                        }
+                    }
+
                     IconButton(onClick = { viewModel.onEvent(ProductEvent.ToggleFilterDialog)}) {
                         Icon(
                             imageVector = Icons.Rounded.FilterList,
@@ -89,6 +120,8 @@ fun ProductsFragment(
                             tint = if(viewModel.state.filters.isNoEmpty()) TruliBlue else Color.Black
                         )
                     }
+
+
                 }
             )
         }
@@ -104,6 +137,10 @@ fun ProductsFragment(
                     }
 
                 )
+            }
+
+            viewModel.state.showPreviewDialog -> {
+                PreviewImage()
             }
         }
 
@@ -128,7 +165,12 @@ fun ProductsFragment(
                     val item = products[index]!!
                     ProductItem(
                         product = item,
+                        preview = {
+                            viewModel.onEvent(ProductEvent.SelectImage(image = item.image))
+                            viewModel.onEvent(ProductEvent.TogglePreviewDialog)
+                        },
                         onClick = {
+
 //                            val gson = GsonBuilder().create()
 //                            val userJson = gson.toJson(item)
 //
@@ -154,18 +196,13 @@ fun ProductsFragment(
                                     modifier = Modifier.fillMaxSize()
                                 ) {
 
-                                    Column(
-                                        verticalArrangement = Arrangement.Center,
-                                        modifier = Modifier.padding(top = Dimens._16dp)
-                                    ) {
-                                        CircularProgressIndicator(
-                                            color = MaterialTheme.colorScheme.primary,
-                                            strokeWidth = Dimens._2dp,
-                                            modifier = Modifier
-                                                .height(Dimens._24dp)
-                                                .width(Dimens._24dp)
-                                        )
-                                    }
+                                    CircularProgressIndicator(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        strokeWidth = Dimens._2dp,
+                                        modifier = Modifier
+                                            .height(Dimens._24dp)
+                                            .width(Dimens._24dp)
+                                    )
                                 }
                             }
                         }
@@ -200,6 +237,65 @@ fun ProductsFragment(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun PreviewImage(viewModel: ProductViewModel = hiltViewModel()) {
+
+    Dialog(
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        onDismissRequest = { viewModel.onEvent(ProductEvent.TogglePreviewDialog) }
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimens._14dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Grey100,
+            ),
+            shape = RoundedCornerShape(Dimens._8dp),
+        ) {
+
+           Column {
+
+               SubcomposeAsyncImage(
+                   model = viewModel.state.selectedImage,
+                   contentDescription = "product image",
+                   contentScale = ContentScale.Crop,
+                   modifier = Modifier
+                       .clip(RoundedCornerShape(size = Dimens._8dp))
+                       .height(Dimens._400dp),
+               ) {
+                   val state = painter.state
+                   if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
+                       Image(
+                           modifier = Modifier
+                               .fillMaxWidth()
+                               .height(Dimens._200dp),
+                           contentScale = ContentScale.Crop,
+                           painter = painterResource(id = R.drawable.ic_gray_bg),
+                           contentDescription = "avatar"
+                       )
+                   } else {
+                       SubcomposeAsyncImageContent()
+                   }
+               }
+
+               Row(
+                   modifier = Modifier
+                       .fillMaxWidth(),
+                   horizontalArrangement = Arrangement.End,
+               ) {
+                   TextButton(
+                       onClick = {  viewModel.onEvent(ProductEvent.TogglePreviewDialog) },
+                       modifier = Modifier.padding(Dimens._12dp),
+                   ) {
+                       Text("Dismiss")
+                   }
+               }
+           }
         }
     }
 }
