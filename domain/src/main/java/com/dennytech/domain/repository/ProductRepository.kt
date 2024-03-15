@@ -13,4 +13,6 @@ interface ProductRepository {
         fileUri: Uri,
         fields: HashMap<String, String>
     ): ProductDomainModel
+
+    suspend fun createProductSale(request: HashMap<String, Any>): Int
 }

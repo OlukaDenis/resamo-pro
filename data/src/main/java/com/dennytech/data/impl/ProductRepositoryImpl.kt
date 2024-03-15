@@ -81,4 +81,14 @@ class ProductRepositoryImpl @Inject constructor(
             throw throwable
         }
     }
+
+    override suspend fun createProductSale(request: HashMap<String, Any>): Int {
+        return try {
+
+            val response = apiService.createSale(request)
+            response.statusCode
+        } catch (throwable: Throwable) {
+            throw throwable
+        }
+    }
 }

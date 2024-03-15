@@ -26,6 +26,11 @@ class CreateProductViewModel @Inject constructor(
                 state = state.copy(imageUri  = event.file, error = "", imageError = "")
             }
 
+            is CreateProductEvent.ToggleSuccessDialog -> {
+//                state = state.copy(showSuccessDialog = !state.showSuccessDialog)
+                state = CreateProductState()
+            }
+
             is CreateProductEvent.NameChanged -> {
                 state = state.copy(name = event.value, nameError = "", dirty = false)
             }
@@ -88,7 +93,8 @@ class CreateProductViewModel @Inject constructor(
                     is Resource.Success -> {
                         state = state.copy(
                             loading = false,
-                            error = ""
+                            error = "",
+                            showSuccessDialog = true
                         )
                         uploadComplete = true
                     }
@@ -150,11 +156,13 @@ data class CreateProductState(
     val priceError: String = "",
     val dirty: Boolean = false,
     val error: String = "",
-    val loading: Boolean = false
+    val loading: Boolean = false,
+    val showSuccessDialog: Boolean = false
 )
 
 sealed class CreateProductEvent {
     data class SetImageFile(val file: Uri?): CreateProductEvent()
+    data object ToggleSuccessDialog: CreateProductEvent()
     data class NameChanged(val value: String): CreateProductEvent()
     data class SizeChanged(val value: String): CreateProductEvent()
     data class ColorChanged(val value: String): CreateProductEvent()

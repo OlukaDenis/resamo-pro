@@ -4,6 +4,8 @@ import android.app.Activity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Store
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -28,6 +30,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.navigation.MainNavGraph
@@ -39,10 +42,11 @@ import com.dennytech.resamopro.ui.theme.TruliBlueLight900
 
 @Composable
 fun MainFragment(
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: MainViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
-    val navController = rememberNavController()
-    val currentSelectedScreen by navController.currentScreenAsState()
+    val bottomNavController = rememberNavController()
+    val currentSelectedScreen by bottomNavController.currentScreenAsState()
 
     val view = LocalView.current
 
@@ -55,7 +59,7 @@ fun MainFragment(
     Scaffold(
         bottomBar = {
             BottomNavBar(
-                navController = navController,
+                navController = bottomNavController,
                 currentSelectedScreen = currentSelectedScreen
             )
         },
@@ -67,7 +71,10 @@ fun MainFragment(
                 .fillMaxSize()
                 .padding(it)
         ) {
-            MainNavGraph(navController = navController)
+            MainNavGraph(
+                mainNavController = navController,
+                bottomNavController = bottomNavController
+            )
         }
     }
 }
@@ -75,7 +82,6 @@ fun MainFragment(
 
 @Composable
 private fun BottomNavBar(
-    viewModel: MainViewModel = hiltViewModel(),
     navController: NavController,
     currentSelectedScreen: MainScreen,
 ) {
@@ -111,10 +117,15 @@ private fun BottomNavBar(
             alwaysShowLabel = false,
             colors = colors,
             icon = {
+//                Icon(
+//                    painter = painterResource(id = R.drawable.ic_transfer),
+//                    contentDescription = stringResource(id = R.string.transfer),
+//                    tint = if (currentSelectedScreen == MainScreen.Products) TruliBlue else Color.Gray,
+//                )
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_transfer),
-                    contentDescription = stringResource(id = R.string.transfer),
-                    tint = if (currentSelectedScreen == MainScreen.Products) TruliBlue else Color.Gray,
+                    imageVector = Icons.Rounded.Store,
+                    contentDescription = stringResource(id = R.string.products),
+                    tint  = if (currentSelectedScreen == MainScreen.Products) TruliBlue else Color.Gray,
                 )
             }
         )
@@ -158,9 +169,6 @@ private fun NavController.currentScreenAsState(): State<MainScreen> {
             when {
                 destination.hierarchy.any { it.route == MainScreen.Products.route } -> {
                     selectedItem.value = MainScreen.Products
-                }
-                destination.hierarchy.any { it.route == MainScreen.NewProduct.route } -> {
-                    selectedItem.value = MainScreen.NewProduct
                 }
                 destination.hierarchy.any { it.route == MainScreen.Home.route } -> {
                     selectedItem.value = MainScreen.Home

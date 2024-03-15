@@ -1,6 +1,7 @@
 package com.dennytech.data.remote.services
 
 import com.dennytech.data.remote.models.CountryResponseModel
+import com.dennytech.data.remote.models.CreateSaleResponseModel
 import com.dennytech.data.remote.models.ProductListResponseModel
 import com.dennytech.data.remote.models.ProductResponseModel
 import com.dennytech.data.remote.models.ProvinceResponseModel
@@ -43,6 +44,10 @@ interface ApiService {
         @Part filePart: MultipartBody.Part,
         @PartMap fields: Map<String, @JvmSuppressWildcards RequestBody?>
     ): ProductResponseModel
+
+
+    @POST("sale")
+    suspend fun createSale( @Body body: HashMap<String, Any>): CreateSaleResponseModel
 
     @GET("user")
     suspend fun getCurrentUser(): UserResponseModel

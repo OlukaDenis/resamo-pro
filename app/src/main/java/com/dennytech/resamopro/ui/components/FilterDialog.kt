@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.resamopro.ui.screen.main.products.ProductEvent
 import com.dennytech.resamopro.ui.screen.main.products.ProductViewModel
@@ -38,7 +39,10 @@ fun FilterDialog(
     confirm: () -> Unit,
 ) {
 
-    Dialog(onDismissRequest = { dismissDialog() }) {
+    Dialog(
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        onDismissRequest = { dismissDialog() }
+    ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()

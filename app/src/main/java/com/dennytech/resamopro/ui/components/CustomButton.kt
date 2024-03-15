@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +23,7 @@ fun CustomButton(
     title: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
     loading: Boolean = false,
 ) {
 
@@ -32,7 +35,8 @@ fun CustomButton(
                 if (!loading) onClick()
             },
             shape = RoundedCornerShape(Dimens._12dp),
-            modifier = modifier.height(Dimens._56dp)
+            modifier = modifier.height(Dimens._56dp),
+            colors = colors,
         ) {
             if (loading) {
                 Column(
@@ -42,7 +46,9 @@ fun CustomButton(
                     CircularProgressIndicator(
                         color = Color.White,
                         strokeWidth = Dimens._2dp,
-                        modifier = Modifier.height(Dimens._24dp).width(Dimens._24dp)
+                        modifier = Modifier
+                            .height(Dimens._24dp)
+                            .width(Dimens._24dp)
                     )
                 }
             } else {

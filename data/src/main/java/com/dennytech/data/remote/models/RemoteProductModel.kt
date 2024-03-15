@@ -11,6 +11,10 @@ data class ProductResponseModel(
     val data: RemoteProductModel
 )
 
+data class CreateSaleResponseModel(
+    val statusCode: Int
+)
+
 
 data class RemoteProductModel(
     val brand: String?,

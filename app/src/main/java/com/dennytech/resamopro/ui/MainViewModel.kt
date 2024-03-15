@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dennytech.domain.models.UserDomainModel
+import com.dennytech.domain.usecases.LogoutUseCase
 import com.dennytech.domain.usecases.account.GetCurrentUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getCurrentUserUseCase: GetCurrentUserUseCase
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val logoutUseCase: LogoutUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(MainState())
@@ -33,6 +35,12 @@ class MainViewModel @Inject constructor(
             if (userResult.isSuccess) {
                 state = state.copy(user = userResult.getOrNull())
             }
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            logoutUseCase()
         }
     }
 }

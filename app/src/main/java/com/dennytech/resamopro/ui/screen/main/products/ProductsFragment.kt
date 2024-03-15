@@ -61,11 +61,15 @@ import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.ErrorLabel
 import com.dennytech.resamopro.ui.components.FilterDialog
 import com.dennytech.resamopro.ui.components.ProductItem
+import com.dennytech.resamopro.ui.components.SuccessDialog
+import com.dennytech.resamopro.ui.navigation.MainScreen
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.Grey100
 import com.dennytech.resamopro.ui.theme.TruliBlue
 import com.google.gson.GsonBuilder
 import timber.log.Timber
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,15 +93,6 @@ fun ProductsFragment(
                         text = stringResource(R.string.products),
                         textAlign = TextAlign.Center
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Rounded.ArrowBack,
-                            contentDescription = stringResource(id = R.string.back),
-                            tint = Color.Black
-                        )
-                    }
                 },
                 actions = {
 
@@ -170,17 +165,16 @@ fun ProductsFragment(
                             viewModel.onEvent(ProductEvent.TogglePreviewDialog)
                         },
                         onClick = {
+                            val gson = GsonBuilder().create()
+                            val objectJson = gson.toJson(item)
+                            val encode = URLEncoder.encode(objectJson, StandardCharsets.UTF_8.toString())
 
-//                            val gson = GsonBuilder().create()
-//                            val userJson = gson.toJson(item)
-//
-//                            navController.navigate(
-//                                "detail/{transaction}"
-//                                    .replace(
-//                                        oldValue = "{transaction}",
-//                                        newValue = userJson
-//                                    )
-//                            )
+                            navController.navigate(
+                                "detail/{product}".replace(
+                                        oldValue = "{product}",
+                                        newValue = encode
+                                    )
+                            )
                         }
                     )
                 }

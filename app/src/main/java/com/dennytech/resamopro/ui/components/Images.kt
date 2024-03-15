@@ -7,6 +7,7 @@ import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Store
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -183,4 +184,18 @@ fun AddCircleIcon(
         modifier = modifier
     )
 }
+
+@Composable
+fun StoreFrontIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = defaultIconTint()
+) {
+    Icon(
+        imageVector = Icons.Rounded.Store,
+        contentDescription = stringResource(id = R.string.account),
+        tint = tint,
+        modifier = modifier
+    )
+}
+
 

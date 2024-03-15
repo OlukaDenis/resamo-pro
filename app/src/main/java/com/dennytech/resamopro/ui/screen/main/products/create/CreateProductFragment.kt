@@ -49,7 +49,9 @@ import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.CustomExposedDropdown
 import com.dennytech.resamopro.ui.components.CustomTextField
 import com.dennytech.resamopro.ui.components.ErrorLabel
+import com.dennytech.resamopro.ui.components.SuccessDialog
 import com.dennytech.resamopro.ui.screen.auth.login.LoginEvent
+import com.dennytech.resamopro.ui.screen.main.products.ProductEvent
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.utils.Helpers
 import com.dennytech.resamopro.utils.Helpers.toMegaBytes
@@ -89,8 +91,13 @@ fun CreateProductFragment(
         }
     ) { padding ->
 
-        if (viewModel.uploadComplete) {
-            viewModel.onEvent(CreateProductEvent.Reset)
+        if (viewModel.state.showSuccessDialog) {
+            SuccessDialog(
+                dismissDialog = {
+                    viewModel.onEvent(CreateProductEvent.ToggleSuccessDialog)
+                },
+                message = "Successfully created product"
+            )
         }
 
         Column(
@@ -269,6 +276,7 @@ private fun ImagePicker(viewModel: CreateProductViewModel = hiltViewModel()) {
                         Text(text = "Add Image")
                     }
                 }
+
                 else -> {
                     val painter = rememberAsyncImagePainter(
                         ImageRequest
