@@ -13,6 +13,7 @@ data class UserEntity(
     val lastName: String,
     val email: String,
     val phone: String,
+    val status: Int,
     val fullName: String,
     val role: Int,
 )

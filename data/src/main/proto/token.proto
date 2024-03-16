@@ -10,4 +10,5 @@ message UserPreferences {
     string firstName = 4;
     string lastName = 5;
     string phone = 6;
+    uint32 status = 7;
 }

@@ -1,8 +1,5 @@
 package com.dennytech.data.remote.models
 
-import com.dennytech.data.remote.models.RemoteAddressModel.Companion.toDomain
-import com.dennytech.data.remote.models.RemotePaymentMethodModel.Companion.toDomain
-import com.dennytech.data.remote.models.RemoteProfileModel.Companion.toDomain
 import com.dennytech.domain.models.UserDomainModel
 
 data class CheckUsernameResponse(
@@ -13,11 +10,11 @@ data class SignupResponseModel(
     val data: Any?
 )
 
-data class RemoteKycModel(
-    val status: String?
+data class UserListResponse(
+    val data: List<UserRemoteModel>
 )
 
-data class UserResponseModel(
+data class UserResponse(
     val data: UserRemoteModel
 )
 
@@ -28,6 +25,7 @@ data class UserRemoteModel(
     val email: String?,
     val token: String?,
     val expiresIn: Long?,
+    val status: Int?,
     val phone: String?,
     val role: Int?,
 ) {
@@ -41,6 +39,7 @@ data class UserRemoteModel(
                 phone = this.phone.orEmpty(),
                 email = this.email.orEmpty(),
                 role = this.role ?: 0,
+                status = this.status ?: 0,
                 fullName = "$firstName $lastName"
             )
         }

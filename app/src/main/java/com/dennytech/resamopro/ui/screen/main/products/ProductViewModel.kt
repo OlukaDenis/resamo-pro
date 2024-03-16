@@ -27,9 +27,9 @@ class ProductViewModel @Inject constructor(
     var state by mutableStateOf(ProductState())
 
 
-    init {
-        onEvent(ProductEvent.GetProducts)
-    }
+//    init {
+//        onEvent(ProductEvent.GetProducts)
+//    }
 
 
     fun onEvent(event: ProductEvent) {

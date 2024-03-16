@@ -11,6 +11,7 @@ import com.dennytech.resamopro.ui.screen.main.products.ProductsFragment
 import com.dennytech.resamopro.ui.screen.main.products.create.CreateProductFragment
 import com.dennytech.resamopro.ui.screen.main.products.sale.RecordSaleFragment
 import com.dennytech.resamopro.ui.screen.main.profile.ProfileFragment
+import com.dennytech.resamopro.ui.screen.main.users.UsersFragment
 import com.google.gson.GsonBuilder
 
 @Composable
@@ -36,8 +37,19 @@ fun MainNavGraph(
                             inclusive = true
                         }
                     }
+                },
+                navigateToUsers = {
+                    bottomNavController.navigate(MainScreen.Users.route)
                 }
             )
+        }
+
+        composable(route = MainScreen.Users.route) {
+            UsersFragment(
+                navController = bottomNavController,
+                navigateUp = { mainNavController.navigateUp() }
+            )
+
         }
 
         composable(route = MainScreen.NewProduct.route) {

@@ -30,9 +30,9 @@ fun HomeCardItem(
 ) {
     Card(
         elevation = CardDefaults.cardElevation(
-            defaultElevation = Dimens._1dp
+            defaultElevation = Dimens._0dp
         ),
-        shape = RoundedCornerShape(Dimens._20dp),
+        shape = RoundedCornerShape(Dimens._8dp),
         colors = CardDefaults.cardColors(
             containerColor = containerColor,
         ),
@@ -44,23 +44,26 @@ fun HomeCardItem(
            modifier = Modifier
                .fillMaxWidth()
                .clickable { onClick() },
-           horizontalArrangement = Arrangement.Center
        ) {
-           Column(
-               modifier = Modifier.padding(Dimens._14dp),
-               verticalArrangement = Arrangement.Center,
-               horizontalAlignment = Alignment.CenterHorizontally
+           Row(
+               modifier = Modifier.padding(Dimens._16dp),
+               horizontalArrangement = Arrangement.Start,
+               verticalAlignment = Alignment.CenterVertically
            ) {
-               HomeCircleIcon(icon = icon)
-               Spacer(modifier = Modifier.height(Dimens._8dp))
-               Text(text = title, textAlign = TextAlign.Center, fontSize = Dimens._14sp)
+              icon()
+               HorizontalSpacer(Dimens._8dp)
+               Text(
+                   text = title,
+                   textAlign = TextAlign.Center,
+                   fontSize = Dimens._14sp
+               )
            }
        }
     }
 }
 
 @Composable
-private fun HomeCircleIcon(
+fun HomeCircleIcon(
     modifier: Modifier = Modifier,
     icon: @Composable (() -> Unit)
 ) {

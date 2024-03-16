@@ -24,6 +24,7 @@ class AuthRepositoryImpl @Inject constructor(
             prefs.toBuilder()
                 .setEmail(entity.email)
                 .setId(entity.id)
+                .setStatus(entity.status)
                 .setPhone(entity.phone)
                 .setFirstName(entity.firstName)
                 .setLastName(entity.lastName)
@@ -52,7 +53,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun signup(request: HashMap<String, Any>): String {
         return try {
 
-            val response = authService.signup(request)
+            val response = runBlocking {  authService.signup(request) }
 
 //            runBlocking { saveToken(remoteTokenMapper.toDomain(response.data)) }
             "Success"

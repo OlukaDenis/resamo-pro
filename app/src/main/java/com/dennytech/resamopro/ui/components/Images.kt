@@ -7,6 +7,7 @@ import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Store
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -192,6 +193,19 @@ fun StoreFrontIcon(
 ) {
     Icon(
         imageVector = Icons.Rounded.Store,
+        contentDescription = stringResource(id = R.string.account),
+        tint = tint,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun MoreVertIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = defaultIconTint()
+) {
+    Icon(
+        imageVector = Icons.Rounded.MoreVert,
         contentDescription = stringResource(id = R.string.account),
         tint = tint,
         modifier = modifier

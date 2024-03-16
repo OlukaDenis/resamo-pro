@@ -14,6 +14,7 @@ class UserEntityMapper @Inject constructor() : BaseLocalMapper<UserEntity, UserD
             phone = entity.phone,
             email = entity.email,
             role = entity.role,
+            status = entity.status,
             fullName = "${entity.firstName} ${entity.lastName}"
         )
     }
@@ -26,6 +27,7 @@ class UserEntityMapper @Inject constructor() : BaseLocalMapper<UserEntity, UserD
             phone = entity.phone,
             email = entity.email,
             role = entity.role,
+            status = entity.status,
             fullName = "${entity.firstName} ${entity.lastName}"
         )
     }
