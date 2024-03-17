@@ -26,6 +26,7 @@ data class UserRemoteModel(
     val token: String?,
     val expiresIn: Long?,
     val status: Int?,
+    val lastLogin: String?,
     val phone: String?,
     val role: Int?,
 ) {
@@ -40,7 +41,8 @@ data class UserRemoteModel(
                 email = this.email.orEmpty(),
                 role = this.role ?: 0,
                 status = this.status ?: 0,
-                fullName = "$firstName $lastName"
+                fullName = "$firstName $lastName",
+                lastLogin = this.lastLogin.orEmpty()
             )
         }
     }

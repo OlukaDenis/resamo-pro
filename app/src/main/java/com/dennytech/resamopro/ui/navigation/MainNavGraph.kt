@@ -10,6 +10,7 @@ import com.dennytech.resamopro.ui.screen.main.products.ProductsFragment
 import com.dennytech.resamopro.ui.screen.main.products.create.CreateProductFragment
 import com.dennytech.resamopro.ui.screen.main.products.sale.RecordSaleFragment
 import com.dennytech.resamopro.ui.screen.main.profile.ProfileFragment
+import com.dennytech.resamopro.ui.screen.main.sales.SalesFragment
 import com.dennytech.resamopro.ui.screen.main.users.create.CreateUserFragment
 import com.dennytech.resamopro.ui.screen.main.users.UsersFragment
 import com.google.gson.GsonBuilder
@@ -23,11 +24,15 @@ fun MainNavGraph(
     NavHost(
         navController = bottomNavController,
         route = Graph.MAIN,
-        startDestination = MainScreen.Products.route,
+        startDestination = MainScreen.Home.route,
     ) {
 
         composable(route = MainScreen.Home.route) {
-            HomeFragment()
+            HomeFragment(
+                navigateToSales = {
+                    bottomNavController.navigate(MainScreen.Sales.route)
+                }
+            )
         }
 
         composable(route = MainScreen.Account.route) {
@@ -42,6 +47,12 @@ fun MainNavGraph(
                 navigateToUsers = {
                     bottomNavController.navigate(MainScreen.Users.route)
                 }
+            )
+        }
+
+        composable(route = MainScreen.Sales.route) {
+            SalesFragment(
+                navigateUp = { bottomNavController.navigateUp() },
             )
         }
 

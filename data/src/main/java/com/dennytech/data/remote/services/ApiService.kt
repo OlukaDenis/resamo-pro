@@ -4,6 +4,8 @@ import com.dennytech.data.remote.models.CreateSaleResponseModel
 import com.dennytech.data.remote.models.ProductListResponseModel
 import com.dennytech.data.remote.models.ProductResponseModel
 import com.dennytech.data.remote.models.RefreshTokenResponseModel
+import com.dennytech.data.remote.models.RemoteSaleCountsResponse
+import com.dennytech.data.remote.models.RemoteSaleListResponse
 import com.dennytech.data.remote.models.UserListResponse
 import com.dennytech.data.remote.models.UserResponse
 import okhttp3.MultipartBody
@@ -68,6 +70,12 @@ interface ApiService {
 
     @POST("user")
     suspend fun createUser(@Body body: HashMap<String, Any>): UserResponse
+
+    @GET("sale/list")
+    suspend fun fetchSales(@QueryMap request: HashMap<String, Any>): RemoteSaleListResponse
+
+    @GET("sale/counts")
+    suspend fun fetchSaleCounts(@QueryMap request: HashMap<String, Any>): RemoteSaleCountsResponse
 
     @GET("user")
     suspend fun getCurrentUser(): UserResponse

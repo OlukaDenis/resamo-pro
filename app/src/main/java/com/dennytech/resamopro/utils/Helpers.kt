@@ -1,7 +1,6 @@
 package com.dennytech.resamopro.utils
 
 import com.dennytech.resamopro.models.KeyValueModel
-import timber.log.Timber
 import java.text.NumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -39,18 +38,31 @@ object Helpers {
         return formatter.format(calendar.time)
     }
 
-    fun Double.formatCurrency(symbol: String? = "USD"): String{
+    fun Double.formatCurrency(symbol: String? = "UGX"): String{
         val format: NumberFormat = NumberFormat.getCurrencyInstance()
-        format.maximumFractionDigits = 2
+        format.maximumFractionDigits = 0
         format.currency = Currency.getInstance(symbol)
 
         return format.format(this)
     }
 
+    fun String.formatDateTime(): String {
+        return try {
+            val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS", Locale.getDefault())
+            val output = SimpleDateFormat("MMM dd, yyyy HH:mm a", Locale.getDefault())
+            val date = input.parse(this) ?: throw Exception("wrong date")
+
+            return output.format(date)    // format output
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            ""
+        }
+    }
+
     fun String.formatDate(): String {
         return try {
             val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS", Locale.getDefault())
-            val output = SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault())
+            val output = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
             val date = input.parse(this) ?: throw Exception("wrong date")
 
             return output.format(date)    // format output

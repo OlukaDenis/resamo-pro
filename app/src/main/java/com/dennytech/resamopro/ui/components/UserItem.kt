@@ -7,14 +7,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -25,13 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import com.dennytech.domain.models.UserDomainModel
-import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.TruliGreen
+import com.dennytech.resamopro.utils.Helpers.formatDateTime
 
 
 @Composable
@@ -106,16 +102,34 @@ fun UserItem(
                             )
                             HorizontalSpacer(Dimens._4dp)
                             ProductLabel(
-                                modifier = Modifier.padding(horizontal = Dimens._4dp, vertical = Dimens._2dp),
-                                title = if(user.role == 1) "Admin" else "Employee",
+                                modifier = Modifier.padding(
+                                    horizontal = Dimens._4dp,
+                                    vertical = Dimens._2dp
+                                ),
+                                title = if (user.role == 1) "Admin" else "Employee",
                                 fontSize = Dimens._9sp
                             )
                         }
                         Text(
                             text = user.email,
                             fontSize = Dimens._14sp,
-                            color = Color.DarkGray
+                            color = Color.Gray
                         )
+                        VerticalSpacer(Dimens._4dp)
+                        Row {
+
+                            Text(
+                                text = "Last login:",
+                                fontSize = Dimens._10sp,
+                                color = Color.Gray
+                            )
+                            HorizontalSpacer(Dimens._4dp)
+                            Text(
+                                text = user.lastLogin.formatDateTime(),
+                                fontSize = Dimens._10sp,
+                                color = Color.Gray
+                            )
+                        }
                     }
                 }
                 Column {

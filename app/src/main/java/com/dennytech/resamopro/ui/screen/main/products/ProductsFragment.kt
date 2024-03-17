@@ -156,7 +156,7 @@ fun ProductsFragment(
                     ProductItem(
                         product = item,
                         preview = {
-                            viewModel.onEvent(ProductEvent.SelectImage(image = item.image))
+                            viewModel.onEvent(ProductEvent.SelectImage(image = item.thumbnail))
                             viewModel.onEvent(ProductEvent.TogglePreviewDialog)
                         },
                         onClick = {
