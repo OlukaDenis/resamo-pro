@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -53,6 +55,7 @@ import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.ErrorLabel
 import com.dennytech.resamopro.ui.components.FilterDialog
 import com.dennytech.resamopro.ui.components.ProductItem
+import com.dennytech.resamopro.ui.navigation.MainScreen
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.Grey100
 import com.dennytech.resamopro.ui.theme.TruliBlue
@@ -92,7 +95,7 @@ fun ProductsFragment(
                                 Icon(
                                     imageVector = Icons.Rounded.Add,
                                     contentDescription = stringResource(id = R.string.filter),
-                                    tint = if(viewModel.state.filters.isNoEmpty()) TruliBlue else Color.Black
+                                    tint = Color.Black
                                 )
                             }
                         }
@@ -137,12 +140,13 @@ fun ProductsFragment(
 
             val products: LazyPagingItems<ProductDomainModel> =
                 viewModel.productsState.collectAsLazyPagingItems()
-            LazyVerticalGrid(
+            LazyVerticalStaggeredGrid(
                 modifier = Modifier
                     .padding(horizontal = Dimens._16dp, vertical = Dimens._14dp),
-                columns = GridCells.Fixed(cellCount),
+                columns = StaggeredGridCells.Fixed(cellCount),
                 horizontalArrangement = Arrangement.spacedBy(Dimens._16dp),
-                verticalArrangement = Arrangement.spacedBy(Dimens._12dp),
+                verticalItemSpacing = Dimens._14dp
+//                verticalArrangement = Arrangement.spacedBy(Dimens._12dp),
 //                contentPadding = PaddingValues(bottom = Dimens._30dp),
             ) {
                 items(
@@ -160,12 +164,27 @@ fun ProductsFragment(
                             val objectJson = gson.toJson(item)
                             val encode = URLEncoder.encode(objectJson, StandardCharsets.UTF_8.toString())
 
-                            navController.navigate(
-                                "detail/{product}".replace(
-                                        oldValue = "{product}",
-                                        newValue = encode
+                            mainViewModel.state.user?.let {
+                                if (it.role == 1) {
+                                    navController.navigate(
+                                        MainScreen.UpdateProduct.route
+                                            .replace(
+                                                oldValue = "{product}",
+                                                newValue = encode
+                                            )
                                     )
-                            )
+//                                    Timber.d("Product on click: %s", objectJson)
+                                } else {
+                                    navController.navigate(
+                                        MainScreen.ProductDetail.route
+                                            .replace(
+                                                oldValue = "{product}",
+                                                newValue = encode
+                                            )
+                                    )
+                                }
+                            }
+
                         }
                     )
                 }
@@ -227,8 +246,9 @@ fun ProductsFragment(
 }
 
 @Composable
-fun PreviewImage(viewModel: ProductViewModel = hiltViewModel()) {
-
+fun PreviewImage(
+    viewModel: ProductViewModel = hiltViewModel(),
+) {
     Dialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
         onDismissRequest = { viewModel.onEvent(ProductEvent.TogglePreviewDialog) }

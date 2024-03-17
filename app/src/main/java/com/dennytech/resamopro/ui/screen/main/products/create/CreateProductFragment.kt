@@ -31,18 +31,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.components.AddCircleIcon
 import com.dennytech.resamopro.ui.components.CustomButton
@@ -54,6 +61,7 @@ import com.dennytech.resamopro.ui.screen.auth.login.LoginEvent
 import com.dennytech.resamopro.ui.screen.main.products.ProductEvent
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.utils.Helpers
+import com.dennytech.resamopro.utils.Helpers.productTypeValue
 import com.dennytech.resamopro.utils.Helpers.toMegaBytes
 import timber.log.Timber
 import java.io.File
@@ -62,6 +70,8 @@ import java.io.File
 @Composable
 fun CreateProductFragment(
     viewModel: CreateProductViewModel = hiltViewModel(),
+    isUpdate: Boolean = false,
+    product: ProductDomainModel? = null,
     navigateUp: () -> Unit
 ) {
 
@@ -74,7 +84,9 @@ fun CreateProductFragment(
                 title = {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.new_product),
+                        text = if (isUpdate) stringResource(R.string.update_product) else stringResource(
+                            R.string.new_product
+                        ),
                         textAlign = TextAlign.Center
                     )
                 },
@@ -91,13 +103,39 @@ fun CreateProductFragment(
         }
     ) { padding ->
 
+        viewModel.isUpdate = isUpdate
+
+        product?.let {
+            viewModel.selectedProductType = it.type
+        }
+
         if (viewModel.state.showSuccessDialog) {
             SuccessDialog(
                 dismissDialog = {
-                    viewModel.onEvent(CreateProductEvent.ToggleSuccessDialog)
+                    if (isUpdate)
+                        viewModel.state = viewModel.state.copy(showSuccessDialog = false)
+                       else viewModel.onEvent(CreateProductEvent.ToggleSuccessDialog)
                 },
-                message = "Successfully created product"
+                message = if (isUpdate) "Successfully updated product" else "Successfully created product"
             )
+        }
+
+        LaunchedEffect(Unit) {
+            if (isUpdate) {
+                viewModel.onEvent(
+                    CreateProductEvent.SetProductState(
+                        CreateProductState(
+                            productId = product?.id.orEmpty(),
+                            name = product?.name?.replace("+", " ").orEmpty(),
+                            brand = product?.brand.orEmpty(),
+                            size = product?.size.toString(),
+                            color = product?.color.orEmpty(),
+                            price = product?.price.toString(),
+                            type = product?.type.orEmpty(),
+                        )
+                    )
+                )
+            }
         }
 
         Column(
@@ -106,7 +144,7 @@ fun CreateProductFragment(
                 .verticalScroll(rememberScrollState())
         ) {
 
-            ImagePicker()
+            ImagePicker(product = product)
 
             if (viewModel.state.imageError.isNotEmpty()) {
                 Column(
@@ -188,6 +226,7 @@ fun CreateProductFragment(
 
                 CustomExposedDropdown(
                     placeholder = stringResource(R.string.product_type),
+                    selectedValue = viewModel.selectedProductType.productTypeValue(),
                     onValueChange = { viewModel.onEvent(CreateProductEvent.TypeChanged(it)) },
                     items = Helpers.shoeTypes(),
                     modifier = Modifier.fillMaxWidth(),
@@ -206,7 +245,9 @@ fun CreateProductFragment(
 
                 Spacer(modifier = Modifier.height(Dimens._30dp))
 
-                CustomButton(title = stringResource(R.string.save),
+                CustomButton(title = if (isUpdate) stringResource(R.string.update) else stringResource(
+                    R.string.save
+                ),
                     modifier = Modifier.weight(1f),
                     loading = viewModel.state.loading,
                     onClick = { viewModel.onEvent(CreateProductEvent.Submit) })
@@ -219,7 +260,10 @@ fun CreateProductFragment(
 }
 
 @Composable
-private fun ImagePicker(viewModel: CreateProductViewModel = hiltViewModel()) {
+private fun ImagePicker(
+    viewModel: CreateProductViewModel = hiltViewModel(),
+    product: ProductDomainModel? = null
+) {
     val context = LocalContext.current
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -264,20 +308,46 @@ private fun ImagePicker(viewModel: CreateProductViewModel = hiltViewModel()) {
             verticalArrangement = Arrangement.Center
         ) {
 
-            when (viewModel.state.imageUri) {
-                null -> {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+            when {
+                viewModel.state.imageUri == null -> {
+                    if (product == null) {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-                        AddCircleIcon()
-                        Spacer(modifier = Modifier.width(Dimens._8dp))
-                        Text(text = "Add Image")
+                            AddCircleIcon()
+                            Spacer(modifier = Modifier.width(Dimens._8dp))
+                            Text(text = "Add Image")
+                        }
+                    } else {
+                        SubcomposeAsyncImage(
+                            model = product.thumbnail,
+                            contentDescription = "product image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(size = Dimens._8dp))
+                                .height(Dimens._200dp),
+                        ) {
+                            val state = painter.state
+                            if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
+                                Image(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(Dimens._50dp),
+                                    contentScale = ContentScale.Crop,
+                                    painter = painterResource(id = R.drawable.ic_gray_bg),
+                                    contentDescription = "avatar"
+                                )
+                            } else {
+                                SubcomposeAsyncImageContent()
+                            }
+                        }
                     }
+
                 }
 
-                else -> {
+                viewModel.state.imageUri != null -> {
                     val painter = rememberAsyncImagePainter(
                         ImageRequest
                             .Builder(LocalContext.current)

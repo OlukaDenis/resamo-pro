@@ -60,6 +60,7 @@ fun UsersFragment(
     viewModel: UserViewModel = hiltViewModel(),
     mainViewModel: MainViewModel = hiltViewModel(),
     navController: NavController,
+    navigateToNewUser: () -> Unit,
     navigateUp: () -> Unit,
 ) {
 
@@ -90,7 +91,7 @@ fun UsersFragment(
                 actions = {
                     mainViewModel.state.user?.let {
                         if(it.role == 1) {
-                            IconButton(onClick = { navigateUp() }) {
+                            IconButton(onClick = { navigateToNewUser() }) {
                                 Icon(
                                     imageVector = Icons.Rounded.Add,
                                     contentDescription = stringResource(id = R.string.add),

@@ -19,7 +19,8 @@ fun ProductLabel(
     modifier: Modifier = Modifier
         .padding(horizontal = Dimens._8dp, vertical = Dimens._4dp),
     title: String,
-    color: Color = Grey200,
+    containerColor: Color = Grey200,
+    contentColor: Color = DeepSeaBlue,
     fontSize: TextUnit = Dimens._12sp,
 ) {
 
@@ -29,7 +30,7 @@ fun ProductLabel(
         ),
         shape = RoundedCornerShape(Dimens._8dp),
         colors = CardDefaults.cardColors(
-            containerColor = color,
+            containerColor = containerColor,
         ),
 //            .border(
 //                0.5.dp, RedLight400, RoundedCornerShape(Dimens._16dp)
@@ -39,7 +40,7 @@ fun ProductLabel(
             modifier = modifier,
             text = title,
             fontSize = fontSize,
-            color = DeepSeaBlue,
+            color = contentColor,
             textAlign = TextAlign.Center
         )
     }

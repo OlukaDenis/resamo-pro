@@ -11,7 +11,7 @@ data class ProductFilerModel(
 
     companion object {
         fun ProductFilerModel.isNoEmpty(): Boolean {
-            return this.color.isNotEmpty() || this.type.isNotEmpty() || this.type.isNotEmpty() || this.brand.isNotEmpty()
+            return this.color.isNotEmpty() || this.size.isNotEmpty() || this.type.isNotEmpty() || this.brand.isNotEmpty()
         }
     }
 }

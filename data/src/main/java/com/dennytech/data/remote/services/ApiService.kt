@@ -11,6 +11,7 @@ import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.PartMap
@@ -32,6 +33,21 @@ interface ApiService {
     @POST("product")
     suspend fun createProduct(
         @Part filePart: MultipartBody.Part,
+        @PartMap fields: Map<String, @JvmSuppressWildcards RequestBody?>
+    ): ProductResponseModel
+
+    @Multipart
+    @PATCH("product/{id}")
+    suspend fun updateProductWithFile(
+        @Path("id") id: String,
+        @Part filePart: MultipartBody.Part,
+        @PartMap fields: Map<String, @JvmSuppressWildcards RequestBody?>
+    ): ProductResponseModel
+
+    @Multipart
+    @PATCH("product/{id}")
+    suspend fun updateProduct(
+        @Path("id") id: String,
         @PartMap fields: Map<String, @JvmSuppressWildcards RequestBody?>
     ): ProductResponseModel
 

@@ -5,14 +5,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dennytech.domain.models.ProductDomainModel
-import com.dennytech.resamopro.ui.screen.auth.onboarding.OnBoardingRootFragment
 import com.dennytech.resamopro.ui.screen.main.home.HomeFragment
 import com.dennytech.resamopro.ui.screen.main.products.ProductsFragment
 import com.dennytech.resamopro.ui.screen.main.products.create.CreateProductFragment
 import com.dennytech.resamopro.ui.screen.main.products.sale.RecordSaleFragment
 import com.dennytech.resamopro.ui.screen.main.profile.ProfileFragment
+import com.dennytech.resamopro.ui.screen.main.users.create.CreateUserFragment
 import com.dennytech.resamopro.ui.screen.main.users.UsersFragment
 import com.google.gson.GsonBuilder
+import timber.log.Timber
 
 @Composable
 fun MainNavGraph(
@@ -47,9 +48,30 @@ fun MainNavGraph(
         composable(route = MainScreen.Users.route) {
             UsersFragment(
                 navController = bottomNavController,
-                navigateUp = { mainNavController.navigateUp() }
+                navigateUp = { bottomNavController.navigateUp() },
+                navigateToNewUser = { bottomNavController.navigate(MainScreen.NewUser.route)}
             )
+        }
 
+        composable(route = MainScreen.NewUser.route) {
+            CreateUserFragment(
+                navigateUp = { bottomNavController.navigateUp() }
+            )
+        }
+
+        composable(route = MainScreen.UpdateProduct.route) {navBackStackEntry->
+            // Creating gson object
+            val gson = GsonBuilder().create()
+            /* Extracting the transaction object json from the route */
+            val userJson = navBackStackEntry.arguments?.getString("product")
+            // Convert json string to the Transaction data class object
+            val transactionObj = gson.fromJson(userJson, ProductDomainModel::class.java)
+
+            CreateProductFragment(
+                navigateUp = { bottomNavController.navigateUp() },
+                product = transactionObj,
+                isUpdate = true
+            )
         }
 
         composable(route = MainScreen.NewProduct.route) {
@@ -68,13 +90,14 @@ fun MainNavGraph(
             )
         }
 
-        composable("detail/{product}") { navBackStackEntry ->
+        composable(route = MainScreen.ProductDetail.route) { navBackStackEntry ->
             // Creating gson object
             val gson = GsonBuilder().create()
             /* Extracting the transaction object json from the route */
             val userJson = navBackStackEntry.arguments?.getString("product")
             // Convert json string to the Transaction data class object
             val transactionObj = gson.fromJson(userJson, ProductDomainModel::class.java)
+
             RecordSaleFragment(
                 product = transactionObj,
                 navigateUp = { bottomNavController.navigateUp() },

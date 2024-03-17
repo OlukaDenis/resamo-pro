@@ -107,7 +107,7 @@ fun UserItem(
                             HorizontalSpacer(Dimens._4dp)
                             ProductLabel(
                                 modifier = Modifier.padding(horizontal = Dimens._4dp, vertical = Dimens._2dp),
-                                title = if(user.status == 1) "Admin" else "Employee",
+                                title = if(user.role == 1) "Admin" else "Employee",
                                 fontSize = Dimens._9sp
                             )
                         }

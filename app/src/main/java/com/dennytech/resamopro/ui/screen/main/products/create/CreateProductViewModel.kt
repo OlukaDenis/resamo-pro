@@ -6,19 +6,25 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.domain.models.Resource
 import com.dennytech.domain.usecases.products.CreateProductUseCase
+import com.dennytech.domain.usecases.products.UpdateProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateProductViewModel @Inject constructor(
-    private val createProductUseCase: CreateProductUseCase
+    private val createProductUseCase: CreateProductUseCase,
+    private val updateProductUseCase: UpdateProductUseCase
 ): ViewModel() {
     var state by mutableStateOf(CreateProductState())
     var uploadComplete by mutableStateOf(false)
+    var isUpdate by mutableStateOf(false)
+    var selectedProductType by mutableStateOf("")
     
     fun onEvent(event: CreateProductEvent) {
         when(event) {
@@ -48,7 +54,7 @@ class CreateProductViewModel @Inject constructor(
             }
 
             is CreateProductEvent.BrandChanged -> {
-                state = state.copy(brand = event.value.trim(), brandError = "", dirty = false)
+                state = state.copy(brand = event.value, brandError = "", dirty = false)
             }
 
             is CreateProductEvent.TypeChanged -> {
@@ -59,14 +65,18 @@ class CreateProductViewModel @Inject constructor(
                 state = CreateProductState()
             }
 
+            is CreateProductEvent.SetProductState -> {
+                state = event.value
+            }
+
             is CreateProductEvent.Submit -> {
                 validate()
 
                 if (!state.dirty) {
-                    if (state.imageUri == null) {
+                    if (!isUpdate && state.imageUri == null) {
                         state = state.copy(error = "Select product image")
                     } else {
-                        saveProduct()
+                        if (isUpdate) updateProduct() else saveProduct()
                     }
                 }
             }
@@ -74,7 +84,6 @@ class CreateProductViewModel @Inject constructor(
     }
 
     private fun saveProduct() {
-
         viewModelScope.launch {
             
             val param = CreateProductUseCase.Param(
@@ -88,6 +97,44 @@ class CreateProductViewModel @Inject constructor(
             )
             
             createProductUseCase(param).collect {
+                when(it) {
+                    is Resource.Loading -> state = state.copy(loading = true)
+                    is Resource.Success -> {
+                        state = state.copy(
+                            loading = false,
+                            error = "",
+                            showSuccessDialog = true
+                        )
+                        uploadComplete = true
+                    }
+
+                    is Resource.Error -> {
+                        state = state.copy(
+                            loading = false,
+                            error = it.exception
+                        )
+                        uploadComplete = false
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateProduct() {
+        viewModelScope.launch {
+
+            val param = UpdateProductUseCase.Param(
+                brand = state.brand.ifEmpty { null },
+                size = state.size.ifEmpty { null },
+                fileUri = state.imageUri,
+                color = state.color.ifEmpty { null },
+                type = state.type.ifEmpty { null },
+                name = state.name.ifEmpty { null },
+                price = state.price.ifEmpty { null },
+                productId = state.productId
+            )
+
+            updateProductUseCase(param).collect {
                 when(it) {
                     is Resource.Loading -> state = state.copy(loading = true)
                     is Resource.Success -> {
@@ -140,6 +187,7 @@ class CreateProductViewModel @Inject constructor(
 }
 
 data class CreateProductState(
+    val productId: String = "",
     val imageUri: Uri? = null,
     val imageError: String = "",
     val name: String = "",
@@ -162,6 +210,7 @@ data class CreateProductState(
 
 sealed class CreateProductEvent {
     data class SetImageFile(val file: Uri?): CreateProductEvent()
+    data class SetProductState(val value: CreateProductState): CreateProductEvent()
     data object ToggleSuccessDialog: CreateProductEvent()
     data class NameChanged(val value: String): CreateProductEvent()
     data class SizeChanged(val value: String): CreateProductEvent()

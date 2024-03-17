@@ -41,7 +41,7 @@ fun FilterDialog(
 
     Dialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
-        onDismissRequest = { dismissDialog() }
+        onDismissRequest = {  }
     ) {
         Card(
             modifier = Modifier
@@ -85,6 +85,7 @@ fun FilterDialog(
                 CustomTextField(
                     value = viewModel.state.filters.size,
                     modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
                     onValueChange = { viewModel.onEvent(ProductEvent.SetSizeFilter(it)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
@@ -96,6 +97,7 @@ fun FilterDialog(
                 CustomTextField(
                     value = viewModel.state.filters.brand,
                     modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
                     onValueChange = { viewModel.onEvent(ProductEvent.SetBrandFilter(it)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text
@@ -107,6 +109,7 @@ fun FilterDialog(
                 CustomTextField(
                     value = viewModel.state.filters.color,
                     modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
                     onValueChange = { viewModel.onEvent(ProductEvent.SetColorFilter(it)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text

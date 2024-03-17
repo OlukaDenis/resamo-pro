@@ -22,6 +22,7 @@ import com.dennytech.resamopro.models.KeyValueModel
 fun CustomExposedDropdown(
     modifier: Modifier = Modifier,
     placeholder: String,
+    selectedValue: String? = null,
     items: List<KeyValueModel>,
     onValueChange: (String) -> Unit,
     errorMessage: String = "",
@@ -33,7 +34,7 @@ fun CustomExposedDropdown(
     }
 
     LaunchedEffect(Unit) {
-        onValueChange(first)
+        onValueChange(selectedValue ?: first)
     }
 
     var isExpanded by remember {
@@ -41,7 +42,7 @@ fun CustomExposedDropdown(
     }
 
     var value by remember {
-        mutableStateOf(first)
+        mutableStateOf(selectedValue ?: first)
     }
 
     Column {

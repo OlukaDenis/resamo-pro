@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
-   @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context
 ) : ProductRepository {
     override suspend fun fetchProducts(filters: HashMap<String, Any>): Flow<PagingData<ProductDomainModel>> {
         return Pager(
@@ -77,9 +77,43 @@ class ProductRepositoryImpl @Inject constructor(
             } ?: throw Exception("Error occured")
 
 
-        }catch (throwable: Throwable) {
+        } catch (throwable: Throwable) {
             throw throwable
         }
+    }
+
+    override suspend fun updateProduct(
+        productId: String,
+        fileUri: Uri?,
+        fields: HashMap<String, String?>
+    ): ProductDomainModel {
+
+            return try {
+
+                val fieldsMap = HashMap<String, RequestBody?>().apply {
+                    put("name", fields["name"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    put("price", fields["price"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    put("color", fields["color"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    put("size", fields["size"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    put("type", fields["type"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    put("brand", fields["brand"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                }
+
+
+                if (fileUri != null) {
+                    val file = File(fileUri.path!!)
+                    val requestBody = context.contentResolver.readAsRequestBody(fileUri)
+                    val filePart = MultipartBody.Part.createFormData("file", file.name, requestBody)
+
+                    apiService.updateProductWithFile(productId, filePart, fieldsMap).data.toDomain()
+                } else {
+                    apiService.updateProduct(productId, fieldsMap).data.toDomain()
+                }
+
+            } catch (throwable: Throwable) {
+                throw throwable
+            }
+
     }
 
     override suspend fun createProductSale(request: HashMap<String, Any>): Int {

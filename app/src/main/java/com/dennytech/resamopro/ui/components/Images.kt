@@ -1,5 +1,6 @@
 package com.dennytech.resamopro.ui.components
 
+import android.opengl.Visibility
 import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Store
+import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -206,6 +208,20 @@ fun MoreVertIcon(
 ) {
     Icon(
         imageVector = Icons.Rounded.MoreVert,
+        contentDescription = stringResource(id = R.string.account),
+        tint = tint,
+        modifier = modifier
+    )
+}
+
+
+@Composable
+fun VisibilityIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = defaultIconTint()
+) {
+    Icon(
+        imageVector = Icons.Rounded.Visibility,
         contentDescription = stringResource(id = R.string.account),
         tint = tint,
         modifier = modifier

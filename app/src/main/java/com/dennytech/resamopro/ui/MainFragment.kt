@@ -117,11 +117,6 @@ private fun BottomNavBar(
             alwaysShowLabel = false,
             colors = colors,
             icon = {
-//                Icon(
-//                    painter = painterResource(id = R.drawable.ic_transfer),
-//                    contentDescription = stringResource(id = R.string.transfer),
-//                    tint = if (currentSelectedScreen == MainScreen.Products) TruliBlue else Color.Gray,
-//                )
                 Icon(
                     imageVector = Icons.Rounded.Store,
                     contentDescription = stringResource(id = R.string.products),

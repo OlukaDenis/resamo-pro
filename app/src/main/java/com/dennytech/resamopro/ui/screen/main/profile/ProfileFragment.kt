@@ -111,7 +111,7 @@ fun ProfileFragment(
                         VerticalSpacer(Dimens._4dp)
                         ProductLabel(
                             modifier = Modifier.padding(horizontal = Dimens._8dp, vertical = Dimens._4dp),
-                            title = if(user.status == 1) "Admin" else "Employee",
+                            title = if(user.role == 1) "Admin" else "Employee",
                             fontSize = Dimens._10sp
                         )
                     }
@@ -124,11 +124,15 @@ fun ProfileFragment(
                     .padding(Dimens._16dp),
             ) {
 
-                HomeCardItem(
-                    onClick = { navigateToUsers() },
-                    title = "User Management",
-                    icon = { AccountIcon() }
-                )
+               viewModel.state.user?.let { user ->
+                   if (user.role == 1) {
+                       HomeCardItem(
+                           onClick = { navigateToUsers() },
+                           title = "User Management",
+                           icon = { AccountIcon() }
+                       )
+                   }
+               }
 
                 VerticalSpacer(Dimens._50dp)
 

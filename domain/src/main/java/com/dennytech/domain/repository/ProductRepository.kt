@@ -13,5 +13,11 @@ interface ProductRepository {
         fields: HashMap<String, String>
     ): ProductDomainModel
 
+    suspend fun updateProduct(
+        productId: String,
+        fileUri: Uri?,
+        fields: HashMap<String, String?>
+    ): ProductDomainModel
+
     suspend fun createProductSale(request: HashMap<String, Any>): Int
 }

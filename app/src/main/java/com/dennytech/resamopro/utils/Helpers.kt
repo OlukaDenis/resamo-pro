@@ -26,6 +26,11 @@ object Helpers {
         return list.toList()
     }
 
+    fun String.productTypeValue(): String {
+        val item = shoeTypes().filter { it.key == this }
+        return if (item.isNotEmpty()) item[0].value else ""
+    }
+
     fun millisecondsToDate(millis: Long): String {
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val calendar = Calendar.getInstance()

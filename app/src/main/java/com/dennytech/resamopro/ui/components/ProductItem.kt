@@ -2,6 +2,7 @@ package com.dennytech.resamopro.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,8 +16,11 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,13 +29,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.resamopro.R
+import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.Grey200
+import com.dennytech.resamopro.ui.theme.TruliBlue
+import com.dennytech.resamopro.ui.theme.TruliBlueLight900
+import com.dennytech.resamopro.ui.theme.TruliLightBlue
 import com.dennytech.resamopro.utils.Helpers.capitalize
 
 @Composable
@@ -57,9 +66,28 @@ fun ProductItem(
                 .clickable { onClick() }) {
 
                 Column {
-                    TranImage(product = product, onClick = {preview()})
+                    ConstraintLayout {
+                        val (button, text) = createRefs()
 
-//                   Spacer(modifier = Modifier.height(Dimens._8dp))
+                        TranImage(product = product, onClick = {})
+
+                       Row(
+                           modifier = Modifier
+                               .fillMaxWidth()
+                               .padding(start = Dimens._8dp),
+                           horizontalArrangement = Arrangement.SpaceBetween,
+                           verticalAlignment = Alignment.CenterVertically
+                       ) {
+                           ProductLabel(
+                               title = product.quantity.toString(),
+                               containerColor = TruliBlueLight900,
+                           )
+                           IconButton(onClick = { preview() }) {
+                               VisibilityIcon(tint = DeepSeaBlue)
+                           }
+                       }
+                    }
+
 
                     Column (modifier = Modifier.padding(vertical = Dimens._14dp)){
                         Row(
@@ -67,18 +95,18 @@ fun ProductItem(
                                 .padding(horizontal = Dimens._14dp)
                                 .wrapContentSize(Alignment.Center),
                         ) {
-                            ProductLabel(title = product.size.toString(), color = Grey200)
+                            ProductLabel(title = product.size.toString())
                             Spacer(modifier = Modifier.width(Dimens._6dp))
-                            ProductLabel(title = product.color.capitalize(), color = Grey200)
+                            ProductLabel(title = product.color.capitalize())
                         }
 
                         Spacer(modifier = Modifier.height(Dimens._6dp))
                         Row(
                             modifier = Modifier.padding(horizontal = Dimens._14dp)
                         ) {
-                            ProductLabel(title = product.type.capitalize(), color = Grey200)
+                            ProductLabel(title = product.type.capitalize())
                             Spacer(modifier = Modifier.width(Dimens._6dp))
-                            ProductLabel(title = product.brand.capitalize(), color = Grey200)
+                            ProductLabel(title = product.brand.capitalize())
                         }
                     }
                 }
@@ -99,7 +127,6 @@ private fun TranImage(
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .clip(RoundedCornerShape(size = Dimens._8dp))
-            .clickable { onClick() }
             .height(Dimens._150dp),
     ) {
         val state = painter.state
@@ -133,7 +160,7 @@ fun StaggeredHorizontalList(
 //            ItemRow(rowItems = rowItems, modifier = itemModifier, itemSpacing = itemSpacing)
 //        }
         items(data) {
-            ProductLabel(title = it.capitalize(), color = Grey200)
+            ProductLabel(title = it.capitalize())
         }
     }
 }
