@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,11 +24,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.dennytech.domain.models.SaleDomainModel
 import com.dennytech.resamopro.R
+import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.TruliBlue
@@ -36,7 +39,8 @@ import com.dennytech.resamopro.utils.Helpers.formatDate
 
 @Composable
 fun SaleItem(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.widthIn(min = Dimens._150dp),
+    mainViewModel: MainViewModel = hiltViewModel(),
     sale: SaleDomainModel,
     onClick: () -> Unit,
 ) {
@@ -52,32 +56,12 @@ fun SaleItem(
             ),
         ) {
 
-            Row(modifier = Modifier
+            Row(modifier = modifier
                 .clickable { onClick() }) {
 
-                Column {
-                    ConstraintLayout {
-                        val (button, text) = createRefs()
+                Column(modifier = modifier) {
 
-                        TranImage(sale = sale)
-
-//                        Row(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(start = Dimens._8dp),
-//                            horizontalArrangement = Arrangement.SpaceBetween,
-//                            verticalAlignment = Alignment.CenterVertically
-//                        ) {
-//                            ProductLabel(
-//                                title = product.quantity.toString(),
-//                                containerColor = TruliBlueLight900,
-//                            )
-//                            IconButton(onClick = { preview() }) {
-//                                VisibilityIcon(tint = DeepSeaBlue)
-//                            }
-//                        }
-                    }
-
+                    TranImage(sale = sale)
 
                     Column (modifier = Modifier.padding(Dimens._10dp)){
                         Text(
@@ -87,27 +71,31 @@ fun SaleItem(
                             color = DeepSeaBlue
                         )
 
-                        Column {
-                            VerticalSpacer(Dimens._4dp)
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "Revenue: ",
-                                    textAlign = TextAlign.Center,
-                                    fontSize = Dimens._10sp,
-                                    color = TruliBlue
-                                )
-                                Text(
-                                    text = sale.profit.toDouble().formatCurrency(),
-                                    textAlign = TextAlign.Center,
-                                    fontSize = Dimens._14sp,
-                                    color = TruliBlue,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
+                      mainViewModel.state.user?.let {
+                          if (it.role == 1) {
+                              Column {
+                                  VerticalSpacer(Dimens._4dp)
+                                  Row(
+                                      horizontalArrangement = Arrangement.Center,
+                                      verticalAlignment = Alignment.CenterVertically
+                                  ) {
+                                      Text(
+                                          text = "Revenue: ",
+                                          textAlign = TextAlign.Center,
+                                          fontSize = Dimens._10sp,
+                                          color = TruliBlue
+                                      )
+                                      Text(
+                                          text = sale.profit.toDouble().formatCurrency(),
+                                          textAlign = TextAlign.Center,
+                                          fontSize = Dimens._14sp,
+                                          color = TruliBlue,
+                                          fontWeight = FontWeight.Bold
+                                      )
+                                  }
+                              }
+                          }
+                      }
 
                         Text(
                             text = sale.saleDate.formatDate(),
@@ -130,9 +118,10 @@ private fun TranImage(
     SubcomposeAsyncImage(
         model = sale.product?.thumbnail,
         contentDescription = "product image",
-        contentScale = ContentScale.Crop,
+        contentScale = ContentScale.FillWidth,
         modifier = Modifier
             .clip(RoundedCornerShape(size = Dimens._8dp))
+            .widthIn(min = Dimens._150dp)
             .height(Dimens._100dp),
     ) {
         val state = painter.state

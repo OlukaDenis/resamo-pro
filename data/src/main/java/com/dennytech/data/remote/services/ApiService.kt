@@ -4,6 +4,7 @@ import com.dennytech.data.remote.models.CreateSaleResponseModel
 import com.dennytech.data.remote.models.ProductListResponseModel
 import com.dennytech.data.remote.models.ProductResponseModel
 import com.dennytech.data.remote.models.RefreshTokenResponseModel
+import com.dennytech.data.remote.models.RemoteRevenueResponse
 import com.dennytech.data.remote.models.RemoteSaleCountsResponse
 import com.dennytech.data.remote.models.RemoteSaleListResponse
 import com.dennytech.data.remote.models.UserListResponse
@@ -76,6 +77,9 @@ interface ApiService {
 
     @GET("sale/counts")
     suspend fun fetchSaleCounts(@QueryMap request: HashMap<String, Any>): RemoteSaleCountsResponse
+
+    @GET("sale/revenue")
+    suspend fun fetchRevenue(@QueryMap request: HashMap<String, Any>): RemoteRevenueResponse
 
     @GET("user")
     suspend fun getCurrentUser(): UserResponse

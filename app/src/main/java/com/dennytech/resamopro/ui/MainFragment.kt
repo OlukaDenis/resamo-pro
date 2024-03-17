@@ -99,12 +99,12 @@ private fun BottomNavBar(
     ) {
         NavigationBarItem(
             selected = currentSelectedScreen == MainScreen.Home,
-            onClick = { navController.navigateToMainScreen(MainScreen.Home) },
+            onClick = { navController.navigate(MainScreen.Home.route) },
             alwaysShowLabel = false,
             colors = colors,
             icon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_wallet),
+                    painter = painterResource(id = R.drawable.ic_diamond),
                     contentDescription = stringResource(id = R.string.home),
                     tint = if (currentSelectedScreen == MainScreen.Home) TruliBlue else Color.Gray,
                 )
@@ -113,7 +113,7 @@ private fun BottomNavBar(
 
         NavigationBarItem(
             selected = currentSelectedScreen == MainScreen.Products,
-            onClick = { navController.navigateToMainScreen(MainScreen.Products) },
+            onClick = { navController.navigate(MainScreen.Products.route) },
             alwaysShowLabel = false,
             colors = colors,
             icon = {

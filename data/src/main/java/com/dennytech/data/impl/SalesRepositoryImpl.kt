@@ -44,13 +44,12 @@ class SalesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun fetchRevenue(request: HashMap<String, Any>): Int {
-//        return try {
-//            val response = apiService.createSale(request)
-//            response.statusCode
-//        } catch (throwable: Throwable) {
-//            throw throwable
-//        }
-        return  1000
+        return try {
+            val response = apiService.fetchRevenue(request)
+            response.data.revenue ?: 0
+        } catch (throwable: Throwable) {
+            throw throwable
+        }
     }
 
     override suspend fun fetchCounts(request: HashMap<String, Any>): SaleCountsDomainModel {
