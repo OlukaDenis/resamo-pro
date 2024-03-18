@@ -31,4 +31,5 @@ sealed class MainScreen(val route: String) {
     data object Users : MainScreen("users")
     data object Sales : MainScreen("sales")
     data object NewUser : MainScreen("new_user")
+    data object Counts : MainScreen("counts")
 }

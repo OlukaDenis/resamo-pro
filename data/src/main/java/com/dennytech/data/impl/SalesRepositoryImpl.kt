@@ -60,4 +60,13 @@ class SalesRepositoryImpl @Inject constructor(
             throw throwable
         }
     }
+
+    override suspend fun confirmSale(saleId: String): Int {
+        return try {
+            val response = apiService.confirmSale(saleId)
+            response.statusCode
+        } catch (throwable: Throwable) {
+            throw throwable
+        }
+    }
 }

@@ -173,7 +173,6 @@ fun ProductsFragment(
                                                 newValue = encode
                                             )
                                     )
-//                                    Timber.d("Product on click: %s", objectJson)
                                 } else {
                                     navController.navigate(
                                         MainScreen.ProductDetail.route
@@ -214,7 +213,7 @@ fun ProductsFragment(
                         loadState.refresh is LoadState.Error -> {
                             val error = products.loadState.refresh as LoadState.Error
                             item {
-                                ErrorLabel(message = error.error.localizedMessage!!)
+                                ErrorLabel(message = error.error.localizedMessage ?: "Error occurred")
 //                        ErrorMessage(
 //                            modifier = Modifier.fillParentMaxSize(),
 //                            message = error.error.localizedMessage!!,
@@ -223,19 +222,13 @@ fun ProductsFragment(
                         }
 
                         loadState.append is LoadState.Loading -> {
-//                    item { LoadingNextPageItem(modifier = Modifier) }
                             Timber.d("Next page item...")
                         }
 
                         loadState.append is LoadState.Error -> {
                             val error = products.loadState.append as LoadState.Error
                             item {
-                                ErrorLabel(message = error.error.localizedMessage!!)
-
-//                        ErrorMessage(
-//                            modifier = Modifier,
-//                            message = error.error.localizedMessage!!,
-//                            onClickRetry = { retry() })
+                                ErrorLabel(message = error.error.localizedMessage ?: "Error occurred")
                             }
                         }
                     }

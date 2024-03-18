@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.TruliRed
@@ -75,6 +77,60 @@ fun CustomTextField(
     }
 }
 
+@Composable
+fun CustomDateFilterField(
+    value: String,
+    modifier: Modifier = Modifier,
+    onValueChange: (String) -> Unit,
+    placeholder: String? = null,
+    isError: Boolean = false,
+    readOnly: Boolean = false,
+    errorMessage: String = "",
+    maxLines: Int = 10,
+    textStyle: TextStyle = LocalTextStyle.current,
+    singleLine: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    colors: TextFieldColors = run {
+        val containerColor = Color.White
+        OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = containerColor,
+            unfocusedContainerColor = containerColor,
+            disabledContainerColor = containerColor,
+            errorContainerColor = TruliRed.copy(alpha = 0.1f),
+            focusedBorderColor = Color.Transparent,
+            unfocusedBorderColor = Color.Transparent,
+            errorBorderColor = Color.Transparent,
+            focusedPlaceholderColor = Color.Gray,
+            unfocusedPlaceholderColor = Color.Gray
+        )
+    },
+) {
+
+    val focusManager = LocalFocusManager.current
+
+    TextField(
+        value = value,
+        textStyle = textStyle,
+        onValueChange = onValueChange,
+        readOnly = readOnly,
+        placeholder = { Text(text = placeholder ?: "") },
+        isError = isError,
+        visualTransformation = visualTransformation,
+        errorMessage = errorMessage,
+        keyboardOptions = keyboardOptions,
+        singleLine = singleLine,
+        trailingIcon = trailingIcon,
+        leadingIcon = leadingIcon,
+        maxLines = maxLines,
+        colors = colors,
+        modifier = modifier,
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextField(
@@ -93,11 +149,13 @@ fun TextField(
     keyboardActions: KeyboardActions,
     trailingIcon: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
+    textStyle: TextStyle = LocalTextStyle.current,
     modifier: Modifier
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
+        textStyle = textStyle,
         label = label,
         placeholder = placeholder,
         shape = RoundedCornerShape(Dimens._8dp),

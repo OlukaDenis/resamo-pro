@@ -37,8 +37,13 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.dennytech.domain.models.SaleDomainModel
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.MainViewModel
+import com.dennytech.resamopro.ui.components.DateFilter
 import com.dennytech.resamopro.ui.components.ErrorLabel
+import com.dennytech.resamopro.ui.components.LoadingCircle
 import com.dennytech.resamopro.ui.components.SaleItem
+import com.dennytech.resamopro.ui.components.VerticalSpacer
+import com.dennytech.resamopro.ui.screen.main.home.counts.CountsEvent
+import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
 import timber.log.Timber
 
@@ -74,31 +79,9 @@ fun SalesFragment(
                         )
                     }
                 },
-//                actions = {
-//                    mainViewModel.state.user?.let {
-//                        if(it.role == 1) {
-//                            IconButton(onClick = { navigateToNewUser() }) {
-//                                Icon(
-//                                    imageVector = Icons.Rounded.Add,
-//                                    contentDescription = stringResource(id = R.string.add),
-//                                    tint = Color.Black
-//                                )
-//                            }
-//                        }
-//                    }
-//
-//                }
             )
         }
     ) {values ->
-
-        if (viewModel.state.loading) {
-            Toast.makeText(
-                context,
-                "Please wait...",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
 
         Column(
             modifier = Modifier.padding(values)
@@ -108,9 +91,35 @@ fun SalesFragment(
                 modifier = Modifier.padding(Dimens._0dp)
             ) {
                 val cellCount = 2
-
                 val products: LazyPagingItems<SaleDomainModel> =
                     viewModel.salesState.collectAsLazyPagingItems()
+
+                Column(
+                    modifier = Modifier
+                        .padding(Dimens._16dp),
+                ) {
+
+                    DateFilter(
+                        startDate = viewModel.state.startDate,
+                        endDate = viewModel.state.endDate,
+                        endDateChange = {viewModel.onEvent(SaleEvent.EndDateChanged(it))},
+                        startDateChange = {viewModel.onEvent(SaleEvent.StartDateChanged(it))},
+                        onSubmit = {viewModel.onEvent(SaleEvent.FilterSales)}
+                    )
+                    VerticalSpacer(Dimens._16dp)
+
+                    Text(
+                        text = "Sales",
+                        textAlign = TextAlign.Center,
+                        fontSize = Dimens._16sp,
+                        color = DeepSeaBlue
+                    )
+                }
+
+                if (viewModel.state.loading) {
+                    LoadingCircle()
+                }
+
                 LazyVerticalStaggeredGrid(
                     modifier = Modifier
                         .padding(horizontal = Dimens._16dp, vertical = Dimens._14dp),
@@ -124,57 +133,42 @@ fun SalesFragment(
                         val item = products[index]!!
                         SaleItem(
                             sale = item,
-                            onClick = {}
+                            onClick = {
+//                                viewModel.onEvent(SaleEvent.ConfirmSale(item.id))
+                            },
+                            onItemSelected = {
+                                Timber.d("Item: %s", it)
+                                viewModel.onEvent(SaleEvent.ConfirmSale(it))
+                            }
                         )
                     }
 
                     products.apply {
                         when {
+
                             loadState.refresh is LoadState.Loading -> {
-                                item {
+                                viewModel.state = viewModel.state.copy(loading = true)
+                            }
 
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.Center,
-                                        modifier = Modifier.fillMaxSize()
-                                    ) {
-
-                                        CircularProgressIndicator(
-                                            color = MaterialTheme.colorScheme.primary,
-                                            strokeWidth = Dimens._2dp,
-                                            modifier = Modifier
-                                                .height(Dimens._24dp)
-                                                .width(Dimens._24dp)
-                                        )
-                                    }
-                                }
+                            loadState.source.refresh is LoadState.NotLoading -> {
+                                viewModel.state = viewModel.state.copy(loading = false)
                             }
 
                             loadState.refresh is LoadState.Error -> {
                                 val error = products.loadState.refresh as LoadState.Error
                                 item {
-                                    ErrorLabel(message = error.error.localizedMessage!!)
-//                        ErrorMessage(
-//                            modifier = Modifier.fillParentMaxSize(),
-//                            message = error.error.localizedMessage!!,
-//                            onClickRetry = { retry() })
+                                    ErrorLabel(message = error.error.localizedMessage ?: "Error")
                                 }
                             }
 
                             loadState.append is LoadState.Loading -> {
-//                    item { LoadingNextPageItem(modifier = Modifier) }
                                 Timber.d("Next page item...")
                             }
 
                             loadState.append is LoadState.Error -> {
                                 val error = products.loadState.append as LoadState.Error
                                 item {
-                                    ErrorLabel(message = error.error.localizedMessage!!)
-
-//                        ErrorMessage(
-//                            modifier = Modifier,
-//                            message = error.error.localizedMessage!!,
-//                            onClickRetry = { retry() })
+                                    ErrorLabel(message = error.error.localizedMessage ?: "Error")
                                 }
                             }
                         }

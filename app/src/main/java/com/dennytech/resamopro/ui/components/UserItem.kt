@@ -47,9 +47,9 @@ fun UserItem(
     var isContextMenuVisible by rememberSaveable {
         mutableStateOf(false)
     }
-    var pressOffset by remember {
-        mutableStateOf(DpOffset.Zero)
-    }
+//    var pressOffset by remember {
+//        mutableStateOf(DpOffset.Zero)
+//    }
 
     var itemHeight by remember {
         mutableStateOf(Dimens._0dp)

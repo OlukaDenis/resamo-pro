@@ -1,24 +1,23 @@
-package com.dennytech.domain.usecases.products
+package com.dennytech.domain.usecases.sales
 
 import com.dennytech.domain.base.BaseFlowUseCase
 import com.dennytech.domain.dispacher.AppDispatcher
 import com.dennytech.domain.models.Resource
-import com.dennytech.domain.repository.ProductRepository
+import com.dennytech.domain.repository.SalesRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-class CreateSaleUseCase @Inject constructor(
+class ConfirmSaleUseCase @Inject constructor(
     private val dispatcher: AppDispatcher,
     private val utilRepository: UtilRepository,
-    private val productRepository: ProductRepository,
-) : BaseFlowUseCase<CreateSaleUseCase.Param, Resource<Int>>(dispatcher) {
+    private val salesRepository: SalesRepository,
+) : BaseFlowUseCase<ConfirmSaleUseCase.Param, Resource<Int>>(dispatcher) {
 
     data class Param(
-        val productId: String,
-        val sellingPrice: Int,
+        val saleId: String,
     )
 
     override fun run(param: Param?): Flow<Resource<Int>> = flow {
@@ -27,14 +26,8 @@ class CreateSaleUseCase @Inject constructor(
         try {
             if (param == null) throw Exception("Invalid params")
 
-            val request = HashMap<String, Any>().apply {
-                this["productId"] = param.productId
-                this["sellingPrice"] = param.sellingPrice
-                this["negotiated"] = true
-            }
-
             val response =
-                runBlocking { productRepository.createProductSale(request) }
+                runBlocking { salesRepository.confirmSale(param.saleId) }
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {

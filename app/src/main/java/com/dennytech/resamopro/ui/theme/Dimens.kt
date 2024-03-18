@@ -25,10 +25,13 @@ object Dimens {
     val _50dp = 50.dp
     val _56dp = 56.dp
     val _64dp = 64.dp
+    val _60dp = 60.dp
+    val _70dp = 70.dp
     val _80dp = 80.dp
     val _100dp = 100.dp
     val _120dp = 120.dp
     val _130dp = 130.dp
+    val _140dp = 140.dp
     val _150dp = 150.dp
 
     val _200dp = 200.dp

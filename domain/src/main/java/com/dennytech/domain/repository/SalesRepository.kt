@@ -10,4 +10,5 @@ interface SalesRepository {
     suspend fun fetchRecentSales(): List<SaleDomainModel>
     suspend fun fetchRevenue(request: HashMap<String, Any>): Int
     suspend fun fetchCounts(request: HashMap<String, Any>): SaleCountsDomainModel
+    suspend fun confirmSale(saleId: String): Int
 }

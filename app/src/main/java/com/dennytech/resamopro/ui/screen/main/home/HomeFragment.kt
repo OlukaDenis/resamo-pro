@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.CustomButton
+import com.dennytech.resamopro.ui.components.DateFilter
+import com.dennytech.resamopro.ui.components.InsightCard
+import com.dennytech.resamopro.ui.components.LoadingCircle
 import com.dennytech.resamopro.ui.components.SaleItem
 import com.dennytech.resamopro.ui.components.VerticalSpacer
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
@@ -42,7 +45,8 @@ import com.dennytech.resamopro.utils.Helpers.formatCurrency
 fun HomeFragment(
     mainViewModel: MainViewModel = hiltViewModel(),
     viewModel: HomeViewModel = hiltViewModel(),
-    navigateToSales: () -> Unit
+    navigateToSales: () -> Unit,
+    navigateToCounts: () -> Unit
 ) {
 
     Scaffold { padding ->
@@ -57,6 +61,8 @@ fun HomeFragment(
             LaunchedEffect(Unit) {
                 viewModel.initialize()
             }
+
+            val counts = viewModel.state.counts
 
             Column(
                 modifier = Modifier
@@ -76,12 +82,41 @@ fun HomeFragment(
 
                 mainViewModel.state.user?.let {
                     if (it.role == 1) {
-                        RevenueCard(mainViewModel = mainViewModel, viewModel = viewModel)
+
+                        InsightCard(
+                            title = "Total Revenue",
+                            value = viewModel.state.revenue.toDouble().formatCurrency(),
+                            valueTextSize = Dimens._28sp
+                        )
                         VerticalSpacer(Dimens._16dp)
                     }
                 }
 
-                CountsCards(mainViewModel = mainViewModel, viewModel = viewModel)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Monthly Report",
+                        textAlign = TextAlign.Center,
+                        fontSize = Dimens._16sp,
+                        color = DeepSeaBlue
+                    )
+
+                    TextButton(
+                        onClick = { navigateToCounts() },
+                    ) {
+                        Text("More...")
+                    }
+                }
+
+                if (viewModel.state.loadingCounts) {
+                    LoadingCircle()
+                }
+
+                CountsCards(counts = counts)
 
                 Row(
                     modifier = Modifier
@@ -105,63 +140,22 @@ fun HomeFragment(
                 }
 
                 VerticalSpacer(Dimens._10dp)
+
+                if (viewModel.state.loadingSales) {
+                    LoadingCircle()
+                }
+
                 RecentSales(mainViewModel = mainViewModel, viewModel = viewModel)
             }
         }
     }
 }
 
-@Composable
-private fun RevenueCard(
-    mainViewModel: MainViewModel,
-    viewModel: HomeViewModel,
-) {
-    Card(
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = Dimens._0dp
-        ),
-        shape = RoundedCornerShape(Dimens._8dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White,
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(Dimens._18dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-
-
-            Column {
-                Text(
-                    text = "Total Revenue",
-                    textAlign = TextAlign.Center,
-                    fontSize = Dimens._10sp,
-                )
-                VerticalSpacer(Dimens._4dp)
-
-                Text(
-                    text = viewModel.state.revenue.toDouble().formatCurrency(),
-                    textAlign = TextAlign.Center,
-                    fontSize = Dimens._28sp,
-                    color = DeepSeaBlue,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-        }
-    }
-}
 
 @Composable
-private fun CountsCards(
-    mainViewModel: MainViewModel,
-    viewModel: HomeViewModel,
+fun CountsCards(
+    counts: List<CountCardModel>,
 ) {
-    val counts =  viewModel.state.counts
 
     if (counts.isNotEmpty()) {
         LazyVerticalGrid(
@@ -170,44 +164,7 @@ private fun CountsCards(
             horizontalArrangement = Arrangement.spacedBy(Dimens._16dp),
         ) {
             items(counts) { item ->
-                Card(
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = Dimens._0dp
-                    ),
-                    shape = RoundedCornerShape(Dimens._8dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White,
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(Dimens._18dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-
-                        Column {
-                            Text(
-                                text = item.title,
-                                textAlign = TextAlign.Center,
-                                fontSize = Dimens._10sp,
-                            )
-                            VerticalSpacer(Dimens._4dp)
-
-                            Text(
-                                text = item.content,
-                                textAlign = TextAlign.Center,
-                                fontSize = Dimens._16sp,
-                                color = DeepSeaBlue,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-
-                    }
-                }
+                InsightCard(title = item.title, value = item.content)
             }
         }
     }
@@ -229,7 +186,8 @@ private fun RecentSales(
             items(list) { item ->
                 SaleItem(
                     sale = item,
-                    onClick = {}
+                    onClick = {},
+                    onItemSelected = {}
                 )
             }
         }

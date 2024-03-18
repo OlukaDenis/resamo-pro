@@ -5,7 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material.icons.rounded.ArrowDownward
+import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.ArrowUpward
+import androidx.compose.material.icons.rounded.CalendarToday
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.MoreVert
@@ -94,6 +96,19 @@ fun UpwardArrowIcon(
     )
 }
 
+@Composable
+fun RightArrowIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = Black800
+) {
+    Icon(
+        imageVector = Icons.Rounded.ArrowForward,
+        contentDescription = stringResource(id = R.string.home),
+        tint = tint,
+        modifier = modifier
+    )
+}
+
 
 @Composable
 fun defaultIconTint() = Color.Gray
@@ -105,6 +120,19 @@ fun HomeIcon(
     Icon(
         painter = painterResource(id = R.drawable.ic_wallet),
         contentDescription = stringResource(id = R.string.home),
+        tint = tint,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun CalendarIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = defaultIconTint()
+) {
+    Icon(
+        imageVector = Icons.Rounded.CalendarToday,
+        contentDescription = stringResource(id = R.string.account),
         tint = tint,
         modifier = modifier
     )

@@ -1,5 +1,6 @@
 package com.dennytech.data.remote.services
 
+import com.dennytech.data.remote.models.ConfirmSaleResponse
 import com.dennytech.data.remote.models.CreateSaleResponseModel
 import com.dennytech.data.remote.models.ProductListResponseModel
 import com.dennytech.data.remote.models.ProductResponseModel
@@ -80,6 +81,9 @@ interface ApiService {
 
     @GET("sale/revenue")
     suspend fun fetchRevenue(@QueryMap request: HashMap<String, Any>): RemoteRevenueResponse
+
+    @GET("sale/confirm/{id}")
+    suspend fun confirmSale(@Path("id") id: String): ConfirmSaleResponse
 
     @GET("user")
     suspend fun getCurrentUser(): UserResponse

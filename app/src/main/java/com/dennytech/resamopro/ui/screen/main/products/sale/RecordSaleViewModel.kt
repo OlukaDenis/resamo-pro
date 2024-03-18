@@ -6,8 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dennytech.domain.models.Resource
-import com.dennytech.domain.usecases.products.CreateSaleUseCase
-import com.dennytech.resamopro.ui.screen.main.products.create.CreateProductEvent
+import com.dennytech.domain.usecases.sales.CreateSaleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

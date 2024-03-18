@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.resamopro.ui.screen.main.home.HomeFragment
+import com.dennytech.resamopro.ui.screen.main.home.counts.CountsFragment
 import com.dennytech.resamopro.ui.screen.main.products.ProductsFragment
 import com.dennytech.resamopro.ui.screen.main.products.create.CreateProductFragment
 import com.dennytech.resamopro.ui.screen.main.products.sale.RecordSaleFragment
@@ -31,7 +32,10 @@ fun MainNavGraph(
             HomeFragment(
                 navigateToSales = {
                     bottomNavController.navigate(MainScreen.Sales.route)
-                }
+                },
+                navigateToCounts = {
+                    bottomNavController.navigate(MainScreen.Counts.route)
+                },
             )
         }
 
@@ -47,6 +51,12 @@ fun MainNavGraph(
                 navigateToUsers = {
                     bottomNavController.navigate(MainScreen.Users.route)
                 }
+            )
+        }
+
+        composable(route = MainScreen.Counts.route) {
+            CountsFragment(
+                navigateUp = { bottomNavController.navigateUp() },
             )
         }
 

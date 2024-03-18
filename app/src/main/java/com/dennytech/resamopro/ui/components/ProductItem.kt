@@ -41,6 +41,7 @@ import com.dennytech.resamopro.ui.theme.Grey200
 import com.dennytech.resamopro.ui.theme.TruliBlue
 import com.dennytech.resamopro.ui.theme.TruliBlueLight900
 import com.dennytech.resamopro.ui.theme.TruliLightBlue
+import com.dennytech.resamopro.ui.theme.White50
 import com.dennytech.resamopro.utils.Helpers.capitalize
 
 @Composable
@@ -83,7 +84,7 @@ fun ProductItem(
                                containerColor = TruliBlueLight900,
                            )
                            IconButton(onClick = { preview() }) {
-                               VisibilityIcon(tint = DeepSeaBlue)
+                               VisibilityIcon(tint = White50)
                            }
                        }
                     }
