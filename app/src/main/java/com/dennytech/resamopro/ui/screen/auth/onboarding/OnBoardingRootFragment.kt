@@ -4,11 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.dennytech.resamopro.utils.Helpers.isAccessTokenExpired
-import timber.log.Timber
+import com.dennytech.data.utils.isAccessTokenExpired
 
 @Composable
 fun OnBoardingRootFragment(

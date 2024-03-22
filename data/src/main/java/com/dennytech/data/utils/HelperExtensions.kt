@@ -126,3 +126,11 @@ fun ContentResolver.readAsRequestBody(uri: Uri): RequestBody =
                 cursor.getLong(sizeColumnIndex)
             } ?: super.contentLength()
     }
+
+fun Long.isAccessTokenExpired(): Boolean {
+    val currentTimeMillis = System.currentTimeMillis()
+    val expiry = this * 1000
+
+    return currentTimeMillis >= expiry
+}
+

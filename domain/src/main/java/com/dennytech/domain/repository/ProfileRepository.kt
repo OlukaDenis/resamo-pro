@@ -11,5 +11,4 @@ interface ProfileRepository {
     suspend fun activate(userId: String): UserDomainModel
     suspend fun deactivate(userId: String): UserDomainModel
     fun getCurrentUser(): Flow<UserDomainModel?>
-    suspend fun refreshToken(): String
 }

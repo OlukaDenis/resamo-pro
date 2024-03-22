@@ -12,11 +12,13 @@ import com.dennytech.data.remote.datasource.ProductPagingSource
 import com.dennytech.data.remote.datasource.UserPagingSource
 import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomain
 import com.dennytech.data.remote.services.ApiService
+import com.dennytech.data.remote.services.AuthService
 import com.dennytech.data.utils.MAX_PAGE_SIZE
 import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.repository.PreferenceRepository
 import com.dennytech.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -83,21 +85,6 @@ class ProfileRepositoryImpl @Inject constructor(
     override fun getCurrentUser(): Flow<UserDomainModel?> {
         return try {
             userPreferences.data.map { userPreferencesMapper.toDomain(it) }
-        } catch (throwable: Throwable) {
-            throw throwable
-        }
-    }
-
-    override suspend fun refreshToken(): String {
-        return try {
-
-            val response = apiService.refreshToken()
-            val data  = response.data;
-
-            runBlocking { preferenceRepository.setAccessToken(data.refreshToken.orEmpty()) }
-            runBlocking { preferenceRepository.setTokenExpiry(data.expiresIn ?: 0L) }
-
-            data.refreshToken.orEmpty()
         } catch (throwable: Throwable) {
             throw throwable
         }

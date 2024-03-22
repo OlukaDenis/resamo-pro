@@ -42,15 +42,15 @@ class CreateProductViewModel @Inject constructor(
             }
 
             is CreateProductEvent.PriceChanged -> {
-                state = state.copy(price = event.value.trim(), priceError = "", dirty = false)
+                state = state.copy(price = event.value, priceError = "", dirty = false)
             }
 
             is CreateProductEvent.ColorChanged -> {
-                state = state.copy(color = event.value.trim(), colorError = "", dirty = false)
+                state = state.copy(color = event.value, colorError = "", dirty = false)
             }
 
             is CreateProductEvent.SizeChanged -> {
-                state = state.copy(size = event.value.trim(), sizeError = "", dirty = false)
+                state = state.copy(size = event.value, sizeError = "", dirty = false)
             }
 
             is CreateProductEvent.BrandChanged -> {
@@ -58,7 +58,7 @@ class CreateProductViewModel @Inject constructor(
             }
 
             is CreateProductEvent.TypeChanged -> {
-                state = state.copy(type = event.value.trim(), typeError = "", dirty = false)
+                state = state.copy(type = event.value, typeError = "", dirty = false)
             }
 
             is CreateProductEvent.Reset -> {
@@ -87,13 +87,13 @@ class CreateProductViewModel @Inject constructor(
         viewModelScope.launch {
             
             val param = CreateProductUseCase.Param(
-                brand = state.brand,
-                size = state.size,
+                brand = state.brand.trim(),
+                size = state.size.trim(),
                 fileUri = state.imageUri!!,
-                color = state.color,
-                type = state.type,
-                name = state.name,
-                price = state.price
+                color = state.color.trim(),
+                type = state.type.trim(),
+                name = state.name.trim(),
+                price = state.price.trim()
             )
             
             createProductUseCase(param).collect {
@@ -124,13 +124,13 @@ class CreateProductViewModel @Inject constructor(
         viewModelScope.launch {
 
             val param = UpdateProductUseCase.Param(
-                brand = state.brand.ifEmpty { null },
-                size = state.size.ifEmpty { null },
+                brand = state.brand.trim().ifEmpty { null },
+                size = state.size.trim().ifEmpty { null },
                 fileUri = state.imageUri,
-                color = state.color.ifEmpty { null },
-                type = state.type.ifEmpty { null },
-                name = state.name.ifEmpty { null },
-                price = state.price.ifEmpty { null },
+                color = state.color.trim().ifEmpty { null },
+                type = state.type.trim().ifEmpty { null },
+                name = state.name.trim().ifEmpty { null },
+                price = state.price.trim().ifEmpty { null },
                 productId = state.productId
             )
 

@@ -82,13 +82,6 @@ object Helpers {
         }
     }
 
-    fun Long.isAccessTokenExpired(): Boolean {
-        val currentTimeMillis = System.currentTimeMillis()
-        val expiry = this * 1000
-
-        return currentTimeMillis >= expiry
-    }
-
     fun String.capitalize(): String {
         return this.replaceFirstChar {
             if (it.isLowerCase()) it.titlecase(

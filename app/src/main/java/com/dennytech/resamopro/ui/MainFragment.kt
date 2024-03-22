@@ -82,6 +82,7 @@ fun MainFragment(
 
 @Composable
 private fun BottomNavBar(
+    mainViewModel: MainViewModel = hiltViewModel(),
     navController: NavController,
     currentSelectedScreen: MainScreen,
 ) {
@@ -93,10 +94,13 @@ private fun BottomNavBar(
         indicatorColor = TruliBlueLight900
     )
 
+    val user = mainViewModel.state.user ?: return
+
     NavigationBar(
         containerColor = Color.White,
         tonalElevation = Dimens._8dp
     ) {
+
         NavigationBarItem(
             selected = currentSelectedScreen == MainScreen.Home,
             onClick = { navController.navigate(MainScreen.Home.route) },
@@ -111,19 +115,20 @@ private fun BottomNavBar(
             }
         )
 
-        NavigationBarItem(
-            selected = currentSelectedScreen == MainScreen.Products,
-            onClick = { navController.navigate(MainScreen.Products.route) },
-            alwaysShowLabel = false,
-            colors = colors,
-            icon = {
-                Icon(
-                    imageVector = Icons.Rounded.Store,
-                    contentDescription = stringResource(id = R.string.products),
-                    tint  = if (currentSelectedScreen == MainScreen.Products) TruliBlue else Color.Gray,
-                )
-            }
-        )
+        if (user.status == 1) {
+            NavigationBarItem(
+                selected = currentSelectedScreen == MainScreen.Products,
+                onClick = { navController.navigate(MainScreen.Products.route) },
+                alwaysShowLabel = false,
+                colors = colors,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Store,
+                        contentDescription = stringResource(id = R.string.products),
+                        tint = if (currentSelectedScreen == MainScreen.Products) TruliBlue else Color.Gray,
+                    )
+                }
+            )
 
 //        NavigationBarItem(
 //            selected = currentSelectedScreen == MainScreen.NewProduct,
@@ -139,19 +144,20 @@ private fun BottomNavBar(
 //            }
 //        )
 
-        NavigationBarItem(
-            selected = currentSelectedScreen == MainScreen.Account,
-            onClick = { navController.navigateToMainScreen(MainScreen.Account) },
-            alwaysShowLabel = false,
-            colors = colors,
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_profile),
-                    contentDescription = stringResource(id = R.string.account),
-                    tint = if (currentSelectedScreen == MainScreen.Account) TruliBlue else Color.Gray,
-                )
-            }
-        )
+            NavigationBarItem(
+                selected = currentSelectedScreen == MainScreen.Account,
+                onClick = { navController.navigateToMainScreen(MainScreen.Account) },
+                alwaysShowLabel = false,
+                colors = colors,
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_profile),
+                        contentDescription = stringResource(id = R.string.account),
+                        tint = if (currentSelectedScreen == MainScreen.Account) TruliBlue else Color.Gray,
+                    )
+                }
+            )
+        }
     }
 }
 

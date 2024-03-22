@@ -4,13 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +15,6 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,7 +25,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -48,18 +42,22 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import com.dennytech.data.utils.resolveError
 import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.models.ProductFilerModel.Companion.isNoEmpty
 import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.ErrorLabel
 import com.dennytech.resamopro.ui.components.FilterDialog
+import com.dennytech.resamopro.ui.components.LoadingCircle
+import com.dennytech.resamopro.ui.components.LoadingMore
 import com.dennytech.resamopro.ui.components.ProductItem
 import com.dennytech.resamopro.ui.navigation.MainScreen
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.Grey100
 import com.dennytech.resamopro.ui.theme.TruliBlue
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.flow.retry
 import timber.log.Timber
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -136,6 +134,11 @@ fun ProductsFragment(
             modifier = Modifier
                 .padding(padding)
         ) {
+
+            if (viewModel.state.loading) {
+                LoadingCircle()
+            }
+
             val cellCount = 2
 
             val products: LazyPagingItems<ProductDomainModel> =
@@ -149,6 +152,7 @@ fun ProductsFragment(
 //                verticalArrangement = Arrangement.spacedBy(Dimens._12dp),
 //                contentPadding = PaddingValues(bottom = Dimens._30dp),
             ) {
+
                 items(
                     products.itemCount,
                 ) { index ->
@@ -191,44 +195,52 @@ fun ProductsFragment(
                 products.apply {
                     when {
                         loadState.refresh is LoadState.Loading -> {
-                            item {
+                            viewModel.state = viewModel.state.copy(loading = true)
+                        }
 
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center,
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-
-                                    CircularProgressIndicator(
-                                        color = MaterialTheme.colorScheme.primary,
-                                        strokeWidth = Dimens._2dp,
-                                        modifier = Modifier
-                                            .height(Dimens._24dp)
-                                            .width(Dimens._24dp)
-                                    )
-                                }
-                            }
+                        loadState.source.refresh is LoadState.NotLoading -> {
+                            viewModel.state = viewModel.state.copy(loading = false)
                         }
 
                         loadState.refresh is LoadState.Error -> {
+                            viewModel.state = viewModel.state.copy(loading = false)
                             val error = products.loadState.refresh as LoadState.Error
                             item {
-                                ErrorLabel(message = error.error.localizedMessage ?: "Error occurred")
-//                        ErrorMessage(
-//                            modifier = Modifier.fillParentMaxSize(),
-//                            message = error.error.localizedMessage!!,
-//                            onClickRetry = { retry() })
+                                ErrorLabel(
+                                    message = error.error.resolveError(),
+                                    retry = true,
+                                    onRetry = {retry()}
+                                )
                             }
                         }
 
                         loadState.append is LoadState.Loading -> {
-                            Timber.d("Next page item...")
+                            item {
+                                LoadingMore()
+                            }
                         }
 
                         loadState.append is LoadState.Error -> {
+                            viewModel.state = viewModel.state.copy(loading = false)
                             val error = products.loadState.append as LoadState.Error
                             item {
-                                ErrorLabel(message = error.error.localizedMessage ?: "Error occurred")
+                                ErrorLabel(
+                                    message = error.error.resolveError(),
+                                    retry = true,
+                                    onRetry = {retry()}
+                                )
+                            }
+                        }
+
+                        loadState.prepend is LoadState.Error -> {
+                            viewModel.state = viewModel.state.copy(loading = false)
+                            val error = products.loadState.prepend as LoadState.Error
+                            item {
+                                ErrorLabel(
+                                    message = error.error.resolveError(),
+                                    retry = true,
+                                    onRetry = {retry()}
+                                )
                             }
                         }
                     }

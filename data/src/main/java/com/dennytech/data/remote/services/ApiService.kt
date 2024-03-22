@@ -24,9 +24,6 @@ import retrofit2.http.QueryMap
 
 interface ApiService {
 
-    @GET("user/refreshToken")
-    suspend fun refreshToken(): RefreshTokenResponseModel
-
     @POST("product/list")
     suspend fun getProducts(
         @QueryMap request: HashMap<String, Any>,

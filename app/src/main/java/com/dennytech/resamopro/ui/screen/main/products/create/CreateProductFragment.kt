@@ -42,7 +42,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
@@ -57,14 +56,10 @@ import com.dennytech.resamopro.ui.components.CustomExposedDropdown
 import com.dennytech.resamopro.ui.components.CustomTextField
 import com.dennytech.resamopro.ui.components.ErrorLabel
 import com.dennytech.resamopro.ui.components.SuccessDialog
-import com.dennytech.resamopro.ui.screen.auth.login.LoginEvent
-import com.dennytech.resamopro.ui.screen.main.products.ProductEvent
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.utils.Helpers
 import com.dennytech.resamopro.utils.Helpers.productTypeValue
 import com.dennytech.resamopro.utils.Helpers.toMegaBytes
-import timber.log.Timber
-import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

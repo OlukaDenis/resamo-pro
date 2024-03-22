@@ -39,6 +39,8 @@ class UserPagingSource(
             return LoadResult.Error(e)
         } catch (e: HttpException) {
             return LoadResult.Error(e)
+        }catch (e: Exception) {
+            return LoadResult.Error(e)
         }
     }
 }

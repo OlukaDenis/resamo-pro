@@ -84,7 +84,7 @@ fun ProductItem(
                                containerColor = TruliBlueLight900,
                            )
                            IconButton(onClick = { preview() }) {
-                               VisibilityIcon(tint = White50)
+                               VisibilityIcon(tint = TruliBlue)
                            }
                        }
                     }

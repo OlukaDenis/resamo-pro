@@ -78,10 +78,10 @@ class ProductViewModel @Inject constructor(
         val filter = state.filters
         val param = GetProductsUseCase.Param(
             inStock = true,
-            brand = filter.brand,
-            color = filter.color,
-            size = filter.size,
-            type = filter.type
+            brand = filter.brand.trim().replace(" ", "-"),
+            color = filter.color.trim(),
+            size = filter.size.trim(),
+            type = filter.type.trim()
         )
 
         viewModelScope.launch {
@@ -99,7 +99,9 @@ data class ProductState(
     val showFilterDialog: Boolean = false,
     val showPreviewDialog: Boolean = false,
     val selectedImage: String = "",
-    val filters: ProductFilerModel = ProductFilerModel()
+    val filters: ProductFilerModel = ProductFilerModel(),
+    val loading: Boolean = false,
+    val error: String = ""
 )
 
 sealed class ProductEvent {
