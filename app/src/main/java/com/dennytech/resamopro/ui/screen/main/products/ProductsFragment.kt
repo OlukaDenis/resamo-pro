@@ -44,6 +44,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.dennytech.data.utils.resolveError
 import com.dennytech.domain.models.ProductDomainModel
+import com.dennytech.domain.models.UserDomainModel.Companion.isAdmin
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.models.ProductFilerModel.Companion.isNoEmpty
 import com.dennytech.resamopro.ui.MainViewModel
@@ -157,6 +158,10 @@ fun ProductsFragment(
                     products.itemCount,
                 ) { index ->
                     val item = products[index]!!
+                    val gson = GsonBuilder().create()
+                    val objectJson = gson.toJson(item)
+                    val encode = URLEncoder.encode(objectJson, StandardCharsets.UTF_8.toString())
+
                     ProductItem(
                         product = item,
                         preview = {
@@ -164,30 +169,21 @@ fun ProductsFragment(
                             viewModel.onEvent(ProductEvent.TogglePreviewDialog)
                         },
                         onClick = {
-                            val gson = GsonBuilder().create()
-                            val objectJson = gson.toJson(item)
-                            val encode = URLEncoder.encode(objectJson, StandardCharsets.UTF_8.toString())
-
                             mainViewModel.state.user?.let {
-                                if (it.role == 1) {
-                                    navController.navigate(
-                                        MainScreen.UpdateProduct.route
-                                            .replace(
-                                                oldValue = "{product}",
-                                                newValue = encode
-                                            )
-                                    )
+                                if (it.isAdmin()) {
+                                   goToCreateProduct(navController, encode)
                                 } else {
-                                    navController.navigate(
-                                        MainScreen.ProductDetail.route
-                                            .replace(
-                                                oldValue = "{product}",
-                                                newValue = encode
-                                            )
-                                    )
+                                   goToCreateSale(navController, encode)
                                 }
                             }
 
+                        },
+                        onLongClick = {
+                            mainViewModel.state.user?.let {
+                                if (it.isAdmin()) {
+                                    goToCreateSale(navController, encode)
+                                }
+                            }
                         }
                     )
                 }
@@ -248,6 +244,26 @@ fun ProductsFragment(
             }
         }
     }
+}
+
+private fun goToCreateProduct(navController: NavController, productJson: String) {
+    navController.navigate(
+        MainScreen.UpdateProduct.route
+            .replace(
+                oldValue = "{product}",
+                newValue = productJson
+            )
+    )
+}
+
+private fun goToCreateSale(navController: NavController, productJson: String) {
+    navController.navigate(
+        MainScreen.ProductDetail.route
+            .replace(
+                oldValue = "{product}",
+                newValue = productJson
+            )
+    )
 }
 
 @Composable

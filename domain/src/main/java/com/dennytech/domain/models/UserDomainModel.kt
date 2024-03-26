@@ -10,4 +10,9 @@ data class UserDomainModel(
     val status: Int,
     val fullName: String,
     val role: Int,
-)
+) {
+
+    companion object {
+        fun  UserDomainModel.isAdmin() = this.role == 1
+    }
+}

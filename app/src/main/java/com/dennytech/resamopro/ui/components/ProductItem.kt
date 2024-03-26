@@ -1,7 +1,10 @@
 package com.dennytech.resamopro.ui.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,11 +47,13 @@ import com.dennytech.resamopro.ui.theme.TruliLightBlue
 import com.dennytech.resamopro.ui.theme.White50
 import com.dennytech.resamopro.utils.Helpers.capitalize
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductItem(
     modifier: Modifier = Modifier,
     product: ProductDomainModel,
     onClick: () -> Unit,
+    onLongClick: () -> Unit,
     preview: () -> Unit
 ) {
 
@@ -64,7 +69,13 @@ fun ProductItem(
         ) {
 
             Row(modifier = Modifier
-                .clickable { onClick() }) {
+                .combinedClickable (
+//                    interactionSource = MutableInteractionSource(),
+                    onClick = onClick,
+                    onLongClick = onLongClick
+                    )
+//                .clickable { onClick() }
+            ) {
 
                 Column {
                     ConstraintLayout {

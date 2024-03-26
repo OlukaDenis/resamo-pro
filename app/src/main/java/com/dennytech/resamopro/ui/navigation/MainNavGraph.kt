@@ -107,7 +107,7 @@ fun MainNavGraph(
                 navigateUp = { bottomNavController.navigateUp() },
                 navigateToNewProduct = {
                     bottomNavController.navigate(MainScreen.NewProduct.route)
-                }
+                },
             )
         }
 

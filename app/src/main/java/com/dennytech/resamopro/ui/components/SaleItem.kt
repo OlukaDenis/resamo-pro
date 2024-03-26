@@ -38,6 +38,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.dennytech.domain.models.SaleDomainModel
+import com.dennytech.domain.models.UserDomainModel.Companion.isAdmin
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
@@ -79,7 +80,11 @@ fun SaleItem(
             Row(modifier = modifier
                 .clickable {
                     onClick()
-                    isContextMenuVisible = true
+                  mainViewModel.state.user?.let {
+                      if (it.isAdmin()) {
+                          isContextMenuVisible = true
+                      }
+                  }
                 }
                 .fillMaxWidth()
             ) {
