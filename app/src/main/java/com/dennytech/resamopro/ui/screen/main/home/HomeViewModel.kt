@@ -8,11 +8,15 @@ import androidx.lifecycle.viewModelScope
 import com.dennytech.domain.models.Resource
 import com.dennytech.domain.models.SaleCountsDomainModel
 import com.dennytech.domain.models.SaleDomainModel
+import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.usecases.sales.GetRecentSalesUseCase
 import com.dennytech.domain.usecases.sales.GetRevenueUseCase
 import com.dennytech.domain.usecases.sales.GetSaleCountsUseCase
+import com.dennytech.domain.usecases.store.GetSelectedStoreUseCase
 import com.dennytech.resamopro.utils.Helpers.formatCurrency
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,36 +24,43 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getSaleCountsUseCase: GetSaleCountsUseCase,
     private val getRevenueUseCase: GetRevenueUseCase,
-    private val getRecentSalesUseCase: GetRecentSalesUseCase
+    private val getRecentSalesUseCase: GetRecentSalesUseCase,
+    private val getSelectedStoreUseCase: GetSelectedStoreUseCase
 ): ViewModel() {
 
     var state by mutableStateOf(HomeState())
 
     init {
-//        onEvent(HomeEvent.GetRevenue)
-//        onEvent(HomeEvent.GetSaleCounts)
-//        onEvent(HomeEvent.GetSales)
-    }
-
-    fun initialize() {
         onEvent(HomeEvent.GetRevenue)
         onEvent(HomeEvent.GetSaleCounts)
         onEvent(HomeEvent.GetSales)
+        onEvent(HomeEvent.GetCurrentStore)
     }
+
+//    fun initialize() {
+//        onEvent(HomeEvent.GetRevenue)
+//        onEvent(HomeEvent.GetSaleCounts)
+//        onEvent(HomeEvent.GetSales)
+    //  onEvent(HomeEvent.GetCurrentStore)
+//    }
 
 
     fun onEvent(event: HomeEvent) {
         when(event) {
-            is HomeEvent.GetSaleCounts -> {
-                getCounts()
-            }
+            is HomeEvent.GetSaleCounts -> getCounts()
 
-            is HomeEvent.GetRevenue -> {
-                getRevenue()
-            }
+            is HomeEvent.GetRevenue -> getRevenue()
 
-            is HomeEvent.GetSales -> {
-                getRecentSales()
+            is HomeEvent.GetSales -> getRecentSales()
+
+            is HomeEvent.GetCurrentStore -> getCurrentStore()
+        }
+    }
+
+    private fun getCurrentStore() {
+        viewModelScope.launch {
+            getSelectedStoreUseCase().collect {
+                state = state.copy(currentStore = it)
             }
         }
     }
@@ -140,6 +151,7 @@ data class HomeState(
     val loadingCounts: Boolean = false,
     val loadingRevenue: Boolean = false,
     val loadingSales: Boolean = false,
+    val currentStore: StoreDomainModel? = null
 )
 
 data class CountCardModel(
@@ -151,4 +163,5 @@ sealed class HomeEvent {
     data object GetSaleCounts: HomeEvent()
     data object GetRevenue: HomeEvent()
     data object GetSales: HomeEvent()
+    data object GetCurrentStore: HomeEvent()
 }

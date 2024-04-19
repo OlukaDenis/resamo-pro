@@ -15,19 +15,12 @@ class AuthenticationInterceptor @Inject constructor(
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-//        val model = runBlocking { preferenceRepository.getAccessToken().first() }
-//        val builder = if (model.isNotEmpty()) {
-//            chain.request().newBuilder()
-//                .addHeader("Authorization", "Bearer $model")
-////                .addHeader("Accept", "application/json")
-//                .addHeader("Accept", "*/*")
-//        } else chain.request().newBuilder()
-//
-//        return chain.proceed(builder.build())
 
         val originalRequest = chain.request()
         val token = runBlocking { preferenceRepository.getAccessToken().first() }
         val expiryTime = runBlocking { preferenceRepository.getTokenExpiry().first() }
+
+        val currentStore = runBlocking { preferenceRepository.getCurrentStore().first() }
 
         if (token.isNotEmpty() && expiryTime.isAccessTokenExpired()) {
             // Make the token refresh request
@@ -37,6 +30,7 @@ class AuthenticationInterceptor @Inject constructor(
                 // Create a new request with the refreshed access token
                 val newRequest = originalRequest.newBuilder()
                     .header("Authorization", "Bearer $refreshedToken")
+                    .header("x-store-id", currentStore)
                     .addHeader("Accept", "*/*")
                     .build()
 
@@ -48,6 +42,7 @@ class AuthenticationInterceptor @Inject constructor(
         // Add the access token to the request header
         val authorizedRequest = originalRequest.newBuilder()
             .header("Authorization", "Bearer $token")
+            .header("x-store-id", currentStore)
             .addHeader("Accept", "*/*")
             .build()
 

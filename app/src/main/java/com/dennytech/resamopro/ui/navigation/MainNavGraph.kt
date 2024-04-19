@@ -12,6 +12,7 @@ import com.dennytech.resamopro.ui.screen.main.products.create.CreateProductFragm
 import com.dennytech.resamopro.ui.screen.main.products.sale.RecordSaleFragment
 import com.dennytech.resamopro.ui.screen.main.profile.ProfileFragment
 import com.dennytech.resamopro.ui.screen.main.sales.SalesFragment
+import com.dennytech.resamopro.ui.screen.main.stores.create.CreateStoreFragment
 import com.dennytech.resamopro.ui.screen.main.users.create.CreateUserFragment
 import com.dennytech.resamopro.ui.screen.main.users.UsersFragment
 import com.google.gson.GsonBuilder
@@ -74,11 +75,18 @@ fun MainNavGraph(
             )
         }
 
+
         composable(route = MainScreen.NewUser.route) {
             CreateUserFragment(
                 navigateUp = { bottomNavController.navigateUp() }
             )
         }
+
+//        composable(route = MainScreen.NewStore.route) {
+//            CreateStoreFragment(
+//                navigateUp = { bottomNavController.navigateUp() }
+//            )
+//        }
 
         composable(route = MainScreen.UpdateProduct.route) {navBackStackEntry->
             // Creating gson object

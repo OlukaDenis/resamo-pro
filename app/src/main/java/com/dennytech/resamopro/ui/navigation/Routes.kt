@@ -18,6 +18,7 @@ sealed class AuthScreen(val route: String) {
     data object Intro : AuthScreen("intro")
     data object Otp : AuthScreen("otp")
     data object Register : AuthScreen("register")
+    data object NewStore : AuthScreen("auth_new_store")
 }
 
 sealed class MainScreen(val route: String) {
@@ -31,5 +32,6 @@ sealed class MainScreen(val route: String) {
     data object Users : MainScreen("users")
     data object Sales : MainScreen("sales")
     data object NewUser : MainScreen("new_user")
+    data object NewStore : MainScreen("new_store")
     data object Counts : MainScreen("counts")
 }

@@ -15,7 +15,9 @@ class UserPreferencesMapper @Inject constructor() {
             role = entity.role,
             status = entity.status,
             fullName = "${entity.firstName} ${entity.lastName}",
-            lastLogin = ""
+            lastLogin = "",
+            stores = emptyList(),
+            defaultStore = ""
         )
     }
 }

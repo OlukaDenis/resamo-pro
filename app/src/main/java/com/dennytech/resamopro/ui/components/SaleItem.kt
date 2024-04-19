@@ -1,5 +1,6 @@
 package com.dennytech.resamopro.ui.components
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +49,7 @@ import com.dennytech.resamopro.ui.theme.TruliBlue
 import com.dennytech.resamopro.ui.theme.TruliGreen
 import com.dennytech.resamopro.utils.Helpers.formatCurrency
 import com.dennytech.resamopro.utils.Helpers.formatDate
+import timber.log.Timber
 
 @Composable
 fun SaleItem(
@@ -57,6 +60,7 @@ fun SaleItem(
     onItemSelected: (String) -> Unit
 ) {
 
+    val context = LocalContext.current
     var isContextMenuVisible by rememberSaveable {
         mutableStateOf(false)
     }
@@ -80,11 +84,11 @@ fun SaleItem(
             Row(modifier = modifier
                 .clickable {
                     onClick()
-                  mainViewModel.state.user?.let {
-                      if (it.isAdmin()) {
-                          isContextMenuVisible = true
-                      }
-                  }
+                    mainViewModel.state.user?.let {
+                        if (it.isAdmin()) {
+                            isContextMenuVisible = true
+                        }
+                    }
                 }
                 .fillMaxWidth()
             ) {
@@ -92,7 +96,9 @@ fun SaleItem(
                 Column() {
 
                     TranImage(sale = sale)
-                    Column (modifier = Modifier.padding(Dimens._10dp).fillMaxWidth()){
+                    Column(modifier = Modifier
+                        .padding(Dimens._10dp)
+                        .fillMaxWidth()) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -108,7 +114,7 @@ fun SaleItem(
 
                             CheckCircleIcon(
                                 modifier = Modifier.size(Dimens._16dp),
-                                tint = if(sale.collected) TruliGreen else Color.Gray
+                                tint = if (sale.collected) TruliGreen else Color.Gray
                             )
                         }
 
@@ -128,31 +134,31 @@ fun SaleItem(
                             }
                         }
 
-                      mainViewModel.state.user?.let {
-                          if (it.role == 1) {
-                              Column {
-                                  VerticalSpacer(Dimens._4dp)
-                                  Row(
-                                      horizontalArrangement = Arrangement.Center,
-                                      verticalAlignment = Alignment.CenterVertically
-                                  ) {
-                                      Text(
-                                          text = "Revenue: ",
-                                          textAlign = TextAlign.Center,
-                                          fontSize = Dimens._10sp,
-                                          color = TruliBlue
-                                      )
-                                      Text(
-                                          text = sale.profit.toDouble().formatCurrency(),
-                                          textAlign = TextAlign.Center,
-                                          fontSize = Dimens._14sp,
-                                          color = TruliBlue,
-                                          fontWeight = FontWeight.Bold
-                                      )
-                                  }
-                              }
-                          }
-                      }
+                        mainViewModel.state.user?.let {
+                            if (it.isAdmin()) {
+                                Column {
+                                    VerticalSpacer(Dimens._4dp)
+                                    Row(
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "Revenue: ",
+                                            textAlign = TextAlign.Center,
+                                            fontSize = Dimens._10sp,
+                                            color = TruliBlue
+                                        )
+                                        Text(
+                                            text = sale.profit.toDouble().formatCurrency(),
+                                            textAlign = TextAlign.Center,
+                                            fontSize = Dimens._14sp,
+                                            color = TruliBlue,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
+                            }
+                        }
 
                         Text(
                             text = sale.saleDate.formatDate(),

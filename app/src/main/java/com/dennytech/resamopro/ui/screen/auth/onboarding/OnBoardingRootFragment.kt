@@ -23,12 +23,12 @@ fun OnBoardingRootFragment(
 
         Box(modifier = Modifier.padding(it)) {
             when {
-                viewModel.expiryTime == 0L -> {
+                viewModel.expiryTime == 0L ||
+                        viewModel.expiryTime.isAccessTokenExpired() ||
+                        viewModel.currentStore.isEmpty() -> {
                     navigateToLogin()
                 }
-                viewModel.expiryTime.isAccessTokenExpired() -> {
-                    navigateToLogin()
-                }
+
                 else -> {
                     navigateToHome()
                 }

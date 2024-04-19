@@ -33,4 +33,8 @@ object DatabaseModule {
     @Provides
     fun provideUserDao(database: AppDatabase) = database.userDao()
 
+    @Singleton
+    @Provides
+    fun provideStoreDao(database: AppDatabase) = database.storeDao()
+
 }

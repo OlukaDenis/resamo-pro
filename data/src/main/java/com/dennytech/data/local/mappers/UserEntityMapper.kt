@@ -16,7 +16,9 @@ class UserEntityMapper @Inject constructor() : BaseLocalMapper<UserEntity, UserD
             role = entity.role,
             lastLogin = entity.lastLogin,
             status = entity.status,
-            fullName = "${entity.firstName} ${entity.lastName}"
+            fullName = "${entity.firstName} ${entity.lastName}",
+            stores = emptyList(),
+            defaultStore = ""
         )
     }
 

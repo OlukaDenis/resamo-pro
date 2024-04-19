@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.dennytech.data.utils.ACCESS_TOKEN_KEY
+import com.dennytech.data.utils.CURRENT_STORE_KEY
 import com.dennytech.data.utils.IS_ONBOARDING_COMPLETE
 import com.dennytech.data.utils.TOKEN_EXPIRY_KEY
 import com.dennytech.domain.repository.PreferenceRepository
@@ -50,6 +51,19 @@ class PreferenceRepositoryImpl @Inject constructor(
         return dataStore.data
             .map { preferences ->
                 preferences[TOKEN_EXPIRY_KEY] ?: 0L
+            }
+    }
+
+    override suspend fun setCurrentStore(value: String) {
+        dataStore.edit { preferences ->
+            preferences[CURRENT_STORE_KEY] = value
+        }
+    }
+
+    override fun getCurrentStore(): Flow<String> {
+        return dataStore.data
+            .map { preferences ->
+                preferences[CURRENT_STORE_KEY]?: ""
             }
     }
 }

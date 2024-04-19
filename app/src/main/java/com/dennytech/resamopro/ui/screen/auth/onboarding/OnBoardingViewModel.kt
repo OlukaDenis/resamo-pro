@@ -13,4 +13,5 @@ class OnBoardingViewModel @Inject constructor(
 ) :ViewModel(){
 
     val expiryTime = runBlocking { preferenceRepository.getTokenExpiry().first() }
+    val currentStore = runBlocking { preferenceRepository.getCurrentStore().first() }
 }

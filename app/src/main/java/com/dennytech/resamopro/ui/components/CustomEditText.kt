@@ -49,7 +49,8 @@ fun CustomTextField(
             unfocusedBorderColor = Color.Transparent,
             errorBorderColor = Color.Transparent,
             focusedPlaceholderColor = Color.Gray,
-            unfocusedPlaceholderColor = Color.Gray
+            unfocusedPlaceholderColor = Color.Gray,
+            unfocusedLabelColor = Color.Gray,
         )
     },
 ) {
@@ -61,7 +62,8 @@ fun CustomTextField(
             value = value,
             onValueChange = onValueChange,
             readOnly = readOnly,
-            placeholder = { Text(text = placeholder ?: "") },
+//            placeholder = { Text(text = placeholder ?: "") },
+            label = { Text(text = placeholder ?: "") },
             isError = isError,
             visualTransformation = visualTransformation,
             errorMessage = errorMessage,

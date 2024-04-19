@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dennytech.domain.models.UserDomainModel.Companion.isAdmin
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.components.AuthTop
 import com.dennytech.resamopro.ui.components.CustomButton
@@ -38,6 +40,7 @@ import com.dennytech.resamopro.ui.theme.Dimens
 fun LoginFragment(
     viewModel: LoginViewModel = hiltViewModel(),
     navigateToHome: () -> Unit,
+    navigateToNewStore: () -> Unit
 ) {
 
     Scaffold { padding ->
@@ -48,9 +51,28 @@ fun LoginFragment(
                 .verticalScroll(rememberScrollState())
         ) {
 
+           LaunchedEffect(Unit) {
+
+           }
+
             if (viewModel.loginComplete) {
-                navigateToHome()
+                viewModel.formState.user?.let {
+                    if (it.isAdmin()) {
+                        if (it.stores.isNotEmpty()) {
+                            navigateToHome()
+                        } else {
+                            navigateToNewStore()
+                        }
+                    } else {
+                        if (it.stores.isNotEmpty()) {
+                            navigateToHome()
+                        } else {
+                            viewModel.formState = viewModel.formState.copy(error = "You're not assigned to a store. Please contact your admin.")
+                        }
+                    }
+                }
             }
+
 
             var passwordVisible by remember { mutableStateOf(false) }
 

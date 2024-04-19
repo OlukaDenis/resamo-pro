@@ -10,6 +10,8 @@ data class UserDomainModel(
     val status: Int,
     val fullName: String,
     val role: Int,
+    val stores: List<StoreDomainModel>,
+    val defaultStore: String
 ) {
 
     companion object {

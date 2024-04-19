@@ -16,7 +16,7 @@ val Grey100 = Color(0xFFF1F5FC)
 val Black800 = Color(0xFF121213)
 
 val TruliGreen = Color(0xFF068405)
-val Sage = Color(0xFFEEF9F3)
+val SageColor = Color(0xFFEEF9F3)
 val Green800 = Color(0xFFEAFFF4)
 val TruliRed = Color(0xFFF12115)
 val RedLight400 = Color(0xFFF79F9A)

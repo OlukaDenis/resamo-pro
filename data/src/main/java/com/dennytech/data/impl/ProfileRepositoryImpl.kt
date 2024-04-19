@@ -5,7 +5,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.dennytech.data.UserPreferences
+import com.dennytech.data.local.dao.StoreDao
 import com.dennytech.data.local.dao.UserDao
+import com.dennytech.data.local.mappers.StoreEntityMapper
 import com.dennytech.data.local.mappers.UserEntityMapper
 import com.dennytech.data.local.mappers.UserPreferencesMapper
 import com.dennytech.data.remote.datasource.ProductPagingSource
@@ -24,22 +26,26 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
-    private val userDao: UserDao,
+    private val storeDao: StoreDao,
     private val preferenceRepository: PreferenceRepository,
-    private val userEntityMapper: UserEntityMapper,
+    private val storeEntityMapper: StoreEntityMapper,
     private val apiService: ApiService,
     private val userPreferences: DataStore<UserPreferences>,
     private val userPreferencesMapper: UserPreferencesMapper
 ) : ProfileRepository {
-    override suspend fun fetchUser(request: HashMap<String, Any>): UserDomainModel {
+    override suspend fun fetchCurrentUser(): UserDomainModel {
         return try {
             val response = runBlocking { apiService.getCurrentUser() }
             val user = response.data.toDomain()
 
-            // Clear users
-            userDao.clear()
+            runBlocking { saveCurrentUser(user) }
 
-            runBlocking { userDao.insert(userEntityMapper.toLocal(user)) }
+            if (user.stores.isNotEmpty()) {
+                storeDao.clear()
+                user.stores.map {
+                    runBlocking { storeDao.insert(storeEntityMapper.toLocal(it)) }
+                }
+            }
 
             user
         } catch (throwable: Throwable) {
@@ -87,6 +93,20 @@ class ProfileRepositoryImpl @Inject constructor(
             userPreferences.data.map { userPreferencesMapper.toDomain(it) }
         } catch (throwable: Throwable) {
             throw throwable
+        }
+    }
+
+    override suspend fun saveCurrentUser(entity: UserDomainModel) {
+        userPreferences.updateData { prefs ->
+            prefs.toBuilder()
+                .setEmail(entity.email)
+                .setId(entity.id)
+                .setStatus(entity.status)
+                .setPhone(entity.phone)
+                .setFirstName(entity.firstName)
+                .setLastName(entity.lastName)
+                .setRole(entity.role)
+                .build()
         }
     }
 

@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dennytech.domain.models.Resource
+import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.repository.PreferenceRepository
 import com.dennytech.domain.usecases.auth.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -65,7 +66,8 @@ class LoginViewModel @Inject constructor(
                     is Resource.Success -> {
                         formState = formState.copy(
                             loading = false,
-                            error = ""
+                            error = "",
+                            user = it.data
                         )
                         loginComplete = true
                     }
@@ -97,6 +99,7 @@ data class LoginState(
     val loading: Boolean = false,
     val error: String = "",
     val errorDialog: Boolean = false,
+    val user: UserDomainModel? = null
 )
 
 sealed class LoginEvent {

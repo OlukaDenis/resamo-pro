@@ -1,5 +1,6 @@
 package com.dennytech.data.remote.models
 
+import com.dennytech.data.remote.models.RemoteStoreModel.Companion.toDomain
 import com.dennytech.domain.models.UserDomainModel
 
 data class CheckUsernameResponse(
@@ -29,6 +30,8 @@ data class UserRemoteModel(
     val lastLogin: String?,
     val phone: String?,
     val role: Int?,
+    val stores: List<RemoteStoreModel>?,
+    val defaultStore: String?
 ) {
 
     companion object {
@@ -42,7 +45,9 @@ data class UserRemoteModel(
                 role = this.role ?: 0,
                 status = this.status ?: 0,
                 fullName = "$firstName $lastName",
-                lastLogin = this.lastLogin.orEmpty()
+                lastLogin = this.lastLogin.orEmpty(),
+                stores = stores?.map { it.toDomain(this.id) }.orEmpty(),
+                defaultStore = defaultStore.orEmpty()
             )
         }
     }

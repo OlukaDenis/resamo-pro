@@ -13,6 +13,7 @@ class LogoutUseCase @Inject constructor(
     override suspend fun run(param: Unit?) {
         return runBlocking {
             preferenceRepository.setTokenExpiry(0L)
+            preferenceRepository.setCurrentStore("")
         }
     }
 }

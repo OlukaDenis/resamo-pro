@@ -71,6 +71,21 @@ fun WalletOutlineIcon(
 }
 
 @Composable
+fun ProfileIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = Black800
+) {
+    Image(
+        painter = painterResource(id = R.drawable.ic_profile),
+        contentDescription = null,
+        alignment = Alignment.Center,
+        contentScale = ContentScale.Fit,
+        colorFilter = ColorFilter.tint(color = tint),
+        modifier = modifier
+    )
+}
+
+@Composable
 fun DownwardArrowIcon(
     modifier: Modifier = Modifier,
     tint: Color = Black800

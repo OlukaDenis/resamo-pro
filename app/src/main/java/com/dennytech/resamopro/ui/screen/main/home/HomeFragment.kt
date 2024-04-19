@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dennytech.domain.models.UserDomainModel.Companion.isAdmin
 import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.DateFilter
@@ -38,6 +39,9 @@ import com.dennytech.resamopro.ui.components.InsightCard
 import com.dennytech.resamopro.ui.components.LoadingCircle
 import com.dennytech.resamopro.ui.components.SaleItem
 import com.dennytech.resamopro.ui.components.VerticalSpacer
+import com.dennytech.resamopro.ui.components.home.CurrentStoreInfo
+import com.dennytech.resamopro.ui.components.home.HomeUserInfo
+import com.dennytech.resamopro.ui.components.home.NotActivatedCard
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.RedLight400
@@ -63,7 +67,7 @@ fun HomeFragment(
         ) {
 
             LaunchedEffect(Unit) {
-                viewModel.initialize()
+//                viewModel.initialize()
             }
 
             Column(
@@ -73,12 +77,22 @@ fun HomeFragment(
 
                 VerticalSpacer(Dimens._16dp)
 
-                Text(
-                    text = "Hello, ${mainViewModel.state.user?.firstName}",
-                    textAlign = TextAlign.Center,
-                    fontSize = Dimens._24sp,
-                    color = DeepSeaBlue
-                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    HomeUserInfo()
+
+                    mainViewModel.state.user?.let {
+                        if (it.isAdmin()) {
+                            CurrentStoreInfo(
+                                onClick = {},
+                                storeName = viewModel.state.currentStore?.name ?: ""
+                            )
+                        }
+                    }
+                }
 
                 VerticalSpacer(Dimens._16dp)
 
@@ -92,39 +106,7 @@ fun HomeFragment(
 
                     if (it.status == 2) {
                         VerticalSpacer(Dimens._16dp)
-                        Card(
-                            elevation = CardDefaults.cardElevation(
-                                defaultElevation = Dimens._0dp
-                            ),
-                            shape = RoundedCornerShape(Dimens._8dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = RedLight800,
-                            ),
-                            modifier = Modifier
-                                .border(
-                                    0.5.dp, RedLight400, RoundedCornerShape(Dimens._16dp)
-                                ),
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(Dimens._16dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                            ) {
-                                Text(
-                                    text = "Info",
-                                    fontSize = Dimens._18sp,
-                                    color = TruliRed,
-                                    textAlign = TextAlign.Center
-                                )
-                                VerticalSpacer(Dimens._16dp)
-                                Text(
-                                    modifier = Modifier,
-                                    text = "Your account is not activated. Please contact your administrator!",
-                                    fontSize = Dimens._14sp,
-                                    color = TruliRed,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        }
+                        NotActivatedCard()
                     }
                 }
 
@@ -150,7 +132,9 @@ fun HomeContent(
                 InsightCard(
                     title = "Total Revenue",
                     value = viewModel.state.revenue.toDouble().formatCurrency(),
-                    valueTextSize = Dimens._28sp
+                    valueTextSize = Dimens._28sp,
+                    backgroundColor = DeepSeaBlue,
+                    foregroundColor = Color.White
                 )
                 VerticalSpacer(Dimens._16dp)
             }

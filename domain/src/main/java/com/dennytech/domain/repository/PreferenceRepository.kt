@@ -10,4 +10,6 @@ interface PreferenceRepository {
     fun getAccessToken(): Flow<String>
     suspend fun setTokenExpiry(value: Long);
     fun getTokenExpiry(): Flow<Long>
+    suspend fun setCurrentStore(value: String);
+    fun getCurrentStore(): Flow<String>
 }

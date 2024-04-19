@@ -23,4 +23,5 @@ val Context.appThemeDatastore by preferencesDataStore(
 val IS_ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
 
 val ACCESS_TOKEN_KEY  = stringPreferencesKey("token")
+val CURRENT_STORE_KEY  = stringPreferencesKey("current_store")
 val TOKEN_EXPIRY_KEY  = longPreferencesKey("expiry")

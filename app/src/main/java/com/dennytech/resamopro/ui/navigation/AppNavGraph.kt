@@ -15,6 +15,7 @@ import com.dennytech.resamopro.ui.screen.main.products.ProductsFragment
 import com.dennytech.resamopro.ui.screen.main.products.create.CreateProductFragment
 import com.dennytech.resamopro.ui.screen.main.products.sale.RecordSaleFragment
 import com.dennytech.resamopro.ui.screen.main.profile.ProfileFragment
+import com.dennytech.resamopro.ui.screen.main.stores.create.CreateStoreFragment
 import com.google.gson.GsonBuilder
 import timber.log.Timber
 
@@ -45,15 +46,29 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         composable(AuthScreen.Login.route) {
             LoginFragment(
                 navigateToHome = {
-//                    navController.popBackStack()
-//                    navController.navigate(Graph.MAIN)
-
                     navController.navigate(Graph.MAIN) {
                         popUpTo(Graph.AUTH) {
                             inclusive = true
                         }
                     }
                 },
+                navigateToNewStore = {
+                    navController.navigate(AuthScreen.NewStore.route)
+                }
+            )
+        }
+
+        composable(route = AuthScreen.NewStore.route) {
+            CreateStoreFragment(
+                navigateUp = { navController.navigateUp() },
+                navigateToHome = {
+                    navController.navigate(Graph.MAIN) {
+                        popUpTo(Graph.AUTH) {
+                            inclusive = true
+                        }
+                    }
+                },
+
             )
         }
     }

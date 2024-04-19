@@ -23,7 +23,9 @@ import com.dennytech.resamopro.ui.theme.Dimens
 fun InsightCard(
     title: String,
     value: String,
-    valueTextSize: TextUnit = Dimens._16sp
+    valueTextSize: TextUnit = Dimens._16sp,
+    backgroundColor: Color = Color.White,
+    foregroundColor: Color? = null
 ) {
 
     Card(
@@ -32,7 +34,7 @@ fun InsightCard(
         ),
         shape = RoundedCornerShape(Dimens._8dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = backgroundColor,
         ),
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -49,6 +51,7 @@ fun InsightCard(
                     text = title,
                     textAlign = TextAlign.Center,
                     fontSize = Dimens._12sp,
+                    color = foregroundColor ?: Color.Black,
                 )
                 VerticalSpacer(Dimens._4dp)
 
@@ -56,7 +59,7 @@ fun InsightCard(
                     text = value,
                     textAlign = TextAlign.Center,
                     fontSize = valueTextSize,
-                    color = DeepSeaBlue,
+                    color = foregroundColor ?: DeepSeaBlue,
                     fontWeight = FontWeight.Bold
                 )
             }
