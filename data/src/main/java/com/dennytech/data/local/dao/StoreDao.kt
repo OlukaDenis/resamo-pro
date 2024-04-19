@@ -16,5 +16,5 @@ interface StoreDao: BaseDao<StoreEntity> {
     suspend fun getById(id: String): List<StoreEntity>
 
     @Query("DELETE FROM store")
-    fun clear()
+    suspend fun clear()
 }

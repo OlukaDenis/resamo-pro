@@ -8,4 +8,5 @@ interface StoreRepository {
     fun getUserStores(): Flow<List<StoreDomainModel>>
     suspend fun getStoreById(storeId: String): List<StoreDomainModel>
     suspend fun saveStore(store: StoreDomainModel)
+    suspend fun saveStores(stores: List<StoreDomainModel>)
 }

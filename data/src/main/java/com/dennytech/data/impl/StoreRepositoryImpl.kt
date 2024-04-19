@@ -7,6 +7,7 @@ import com.dennytech.data.remote.services.ApiService
 import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.repository.StoreRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -29,7 +30,7 @@ class StoreRepositoryImpl @Inject constructor(
     override fun getUserStores(): Flow<List<StoreDomainModel>> = flow {
         storeDao.get().map {list ->
             emit(list.map { storeEntityMapper.toDomain(it) })
-        }
+        }.first()
     }
 
     override suspend fun getStoreById(storeId: String): List<StoreDomainModel> {
@@ -38,6 +39,14 @@ class StoreRepositoryImpl @Inject constructor(
 
     override suspend fun saveStore(store: StoreDomainModel) {
         storeDao.insert(storeEntityMapper.toLocal(store))
+    }
+
+    override suspend fun saveStores(stores: List<StoreDomainModel>) {
+        runBlocking { storeDao.clear() }
+
+        stores.map {
+            saveStore(it)
+        }
     }
 
 }

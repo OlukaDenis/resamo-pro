@@ -42,12 +42,14 @@ import com.dennytech.resamopro.ui.components.VerticalSpacer
 import com.dennytech.resamopro.ui.components.home.CurrentStoreInfo
 import com.dennytech.resamopro.ui.components.home.HomeUserInfo
 import com.dennytech.resamopro.ui.components.home.NotActivatedCard
+import com.dennytech.resamopro.ui.components.home.StoresBottomSheet
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.RedLight400
 import com.dennytech.resamopro.ui.theme.RedLight800
 import com.dennytech.resamopro.ui.theme.TruliRed
 import com.dennytech.resamopro.utils.Helpers.formatCurrency
+import timber.log.Timber
 
 @Composable
 fun HomeFragment(
@@ -67,7 +69,7 @@ fun HomeFragment(
         ) {
 
             LaunchedEffect(Unit) {
-//                viewModel.initialize()
+                viewModel.initialize()
             }
 
             Column(
@@ -87,7 +89,7 @@ fun HomeFragment(
                     mainViewModel.state.user?.let {
                         if (it.isAdmin()) {
                             CurrentStoreInfo(
-                                onClick = {},
+                                onClick = {viewModel.onEvent(HomeEvent.ToggleStoreBottomSheet)},
                                 storeName = viewModel.state.currentStore?.name ?: ""
                             )
                         }
@@ -110,6 +112,11 @@ fun HomeFragment(
                     }
                 }
 
+                if (viewModel.state.showStoreBottomSheet) {
+                    StoresBottomSheet(
+                        onDismiss = {viewModel.onEvent(HomeEvent.ToggleStoreBottomSheet)}
+                    )
+                }
             }
         }
     }

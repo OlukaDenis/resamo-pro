@@ -24,3 +24,5 @@ val RedLight800 = Color(0xFFFFF0EE)
 val Pink = Color(0xFFFFEFEC)
 val TruliOrange = Color(0xFFD58C00)
 val Orange800 = Color(0xFFFFF9ED)
+
+val LightGrey = Color(0xFFEFEFEF)
