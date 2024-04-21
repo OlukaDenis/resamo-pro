@@ -4,8 +4,8 @@ import com.dennytech.data.remote.models.RemoteStoreModel.Companion.toDomain
 import com.dennytech.domain.models.StoreUserDomainModel
 import com.dennytech.domain.models.UserDomainModel
 
-data class CheckUsernameResponse(
-    val data: Boolean?
+data class GenericUserResponse(
+    val data: Any?
 )
 
 data class SignupResponseModel(

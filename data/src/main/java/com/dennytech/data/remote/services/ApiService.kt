@@ -2,6 +2,7 @@ package com.dennytech.data.remote.services
 
 import com.dennytech.data.remote.models.ConfirmSaleResponse
 import com.dennytech.data.remote.models.CreateSaleResponseModel
+import com.dennytech.data.remote.models.GenericUserResponse
 import com.dennytech.data.remote.models.ProductListResponseModel
 import com.dennytech.data.remote.models.ProductResponseModel
 import com.dennytech.data.remote.models.RefreshTokenResponseModel
@@ -70,6 +71,20 @@ interface ApiService {
 
     @GET("user/me")
     suspend fun getCurrentUser(): UserResponse
+
+    @GET("user/me/userList")
+    suspend fun getMyCreatedUsers(): UserResponse
+
+    @GET("user/people/unassigned")
+    suspend fun getUnassignedUsers(
+        @QueryMap request: HashMap<String, Any>
+    ): UserResponse
+
+    @GET("store/assign/{id}")
+    suspend fun assignUserToStore(
+        @Path("id") id: String,
+        @QueryMap request: HashMap<String, Any>
+    ): GenericUserResponse
 
 
     @POST("sale")

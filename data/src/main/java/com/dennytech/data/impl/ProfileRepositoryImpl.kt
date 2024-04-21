@@ -18,20 +18,17 @@ import com.dennytech.domain.models.StoreUserDomainModel
 import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.repository.PreferenceRepository
 import com.dennytech.domain.repository.ProfileRepository
+import com.dennytech.domain.repository.StoreRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
-    private val storeDao: StoreDao,
-    private val storeUserDao: StoreUserDao,
-    private val storeUserEntityMapper: StoreUserEntityMapper,
-    private val preferenceRepository: PreferenceRepository,
-    private val storeEntityMapper: StoreEntityMapper,
     private val apiService: ApiService,
     private val userPreferences: DataStore<UserPreferences>,
     private val userPreferencesMapper: UserPreferencesMapper,
+    private val storeRepository: StoreRepository
 
 ) : ProfileRepository {
     override suspend fun fetchCurrentUser(): UserDomainModel {
@@ -42,10 +39,7 @@ class ProfileRepositoryImpl @Inject constructor(
             runBlocking { saveCurrentUser(user) }
 
             if (user.stores.isNotEmpty()) {
-                storeDao.clear()
-                user.stores.map {
-                    runBlocking { storeDao.insert(storeEntityMapper.toLocal(it)) }
-                }
+                storeRepository.saveStores(user.stores)
             }
 
             user
@@ -109,6 +103,14 @@ class ProfileRepositoryImpl @Inject constructor(
                 .setRole(entity.role)
                 .build()
         }
+    }
+
+    override suspend fun fetchUnassignedUsers(request: HashMap<String, Any>) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun assignUserToStore(storeId: String, request: HashMap<String, Any>) {
+        TODO("Not yet implemented")
     }
 
 }

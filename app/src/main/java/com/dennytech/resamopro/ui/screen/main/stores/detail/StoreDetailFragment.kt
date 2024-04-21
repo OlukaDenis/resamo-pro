@@ -4,9 +4,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +30,7 @@ import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.components.LeftRightLabel
 import com.dennytech.resamopro.ui.components.StoreUserItem
 import com.dennytech.resamopro.ui.theme.Dimens
+import com.dennytech.resamopro.ui.theme.LightGrey
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,6 +82,34 @@ fun StoreDetailFragment(
                     onActionClick = {}
                 )
 
+                val brands = viewModel.state.store?.brands.orEmpty()
+
+                if (brands.isNotEmpty()) {
+                    LazyRow(
+                        modifier = Modifier
+                    ) {
+                        items(brands) {
+                            Card(
+                                elevation = CardDefaults.cardElevation(
+                                    defaultElevation = Dimens._0dp
+                                ),
+                                shape = RoundedCornerShape(Dimens._8dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color.White,
+                                ),
+                                modifier = Modifier
+                                    .padding(Dimens._4dp)
+                                    .fillMaxWidth()
+                            ) {
+                                
+                                Column(modifier = Modifier.padding(Dimens._16dp)) {
+                                    Text(text = it)
+                                }
+                            }
+                        }
+                    }
+                }
+                
                 LeftRightLabel(
                     startText = "Categories",
                     endText = "+ Add category",
