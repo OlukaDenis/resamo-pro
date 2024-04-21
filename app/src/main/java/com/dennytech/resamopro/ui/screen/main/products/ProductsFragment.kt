@@ -89,7 +89,7 @@ fun ProductsFragment(
                 actions = {
 
                     mainViewModel.state.user?.let {
-                        if(it.role == 1) {
+                        if(it.isAdmin()) {
                             IconButton(onClick = { navigateToNewProduct() }) {
                                 Icon(
                                     imageVector = Icons.Rounded.Add,

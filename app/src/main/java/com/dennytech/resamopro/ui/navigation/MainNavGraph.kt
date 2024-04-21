@@ -13,6 +13,8 @@ import com.dennytech.resamopro.ui.screen.main.products.sale.RecordSaleFragment
 import com.dennytech.resamopro.ui.screen.main.profile.ProfileFragment
 import com.dennytech.resamopro.ui.screen.main.sales.SalesFragment
 import com.dennytech.resamopro.ui.screen.main.stores.create.CreateStoreFragment
+import com.dennytech.resamopro.ui.screen.main.stores.detail.StoreDetailFragment
+import com.dennytech.resamopro.ui.screen.main.stores.list.StoreListFragment
 import com.dennytech.resamopro.ui.screen.main.users.create.CreateUserFragment
 import com.dennytech.resamopro.ui.screen.main.users.UsersFragment
 import com.google.gson.GsonBuilder
@@ -51,6 +53,9 @@ fun MainNavGraph(
                 },
                 navigateToUsers = {
                     bottomNavController.navigate(MainScreen.Users.route)
+                },
+                navigateToStores = {
+                    bottomNavController.navigate(MainScreen.Stores.route)
                 }
             )
         }
@@ -72,6 +77,24 @@ fun MainNavGraph(
                 navController = bottomNavController,
                 navigateUp = { bottomNavController.navigateUp() },
                 navigateToNewUser = { bottomNavController.navigate(MainScreen.NewUser.route)}
+            )
+        }
+
+        composable(route = MainScreen.Stores.route) {
+            StoreListFragment(
+                navController = bottomNavController,
+                navigateUp = { bottomNavController.navigateUp() },
+                navigateToNewStore = { },
+            )
+        }
+
+        composable(route = MainScreen.StoreDetail.route) {navBackStackEntry->
+            /* Extracting the transaction object json from the route */
+            val storeId = navBackStackEntry.arguments?.getString("storeId")
+
+            StoreDetailFragment(
+                navigateUp = { bottomNavController.navigateUp() },
+                storeId = storeId.orEmpty()
             )
         }
 

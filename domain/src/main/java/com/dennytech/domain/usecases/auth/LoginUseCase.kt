@@ -12,6 +12,7 @@ import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.StoreRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
@@ -42,9 +43,7 @@ class LoginUseCase @Inject constructor(
             val response = runBlocking { authRepository.login(map) }
 
             if (response.stores.isNotEmpty()) {
-                response.stores.map {
-                    storeRepository.saveStore(it)
-                }
+                storeRepository.saveStores(response.stores)
             }
 
             if (response.isAdmin()) {
@@ -66,6 +65,7 @@ class LoginUseCase @Inject constructor(
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {
+            Timber.e(throwable)
             emit(Resource.Error(utilRepository.getNetworkError(throwable)))
         }
     }

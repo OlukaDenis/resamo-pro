@@ -2,6 +2,8 @@ package com.dennytech.data.local.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.dennytech.data.local.converters.StringListConverter
 
 @Entity("store")
 data class StoreEntity(
@@ -11,5 +13,7 @@ data class StoreEntity(
     val description: String,
     val status: Int,
     val location: String,
-    val userId: String
+    val userId: String,
+    @TypeConverters(StringListConverter::class)
+    val brands: List<String>
 )

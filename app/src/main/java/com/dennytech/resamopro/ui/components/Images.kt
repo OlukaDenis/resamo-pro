@@ -10,8 +10,10 @@ import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.CalendarToday
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Store
+import androidx.compose.material.icons.rounded.Storefront
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -28,7 +30,7 @@ import com.dennytech.resamopro.ui.theme.Black800
 @Composable
 fun QrIcon(
     modifier: Modifier = Modifier,
-    tint: Color = Black800
+    tint: Color = Color.Gray
 ) {
     Image(
         painter = painterResource(id = R.drawable.ic_qr),
@@ -43,7 +45,7 @@ fun QrIcon(
 @Composable
 fun HorizMenuIcon(
     modifier: Modifier = Modifier,
-    tint: Color = Black800
+    tint: Color = Color.Gray
 ) {
     Image(
         painter = painterResource(id = R.drawable.ic_horiz_menu),
@@ -58,7 +60,7 @@ fun HorizMenuIcon(
 @Composable
 fun WalletOutlineIcon(
     modifier: Modifier = Modifier,
-    tint: Color = Black800
+    tint: Color = Color.Gray
 ) {
     Image(
         painter = painterResource(id = R.drawable.ic_wallet_outline),
@@ -73,7 +75,7 @@ fun WalletOutlineIcon(
 @Composable
 fun ProfileIcon(
     modifier: Modifier = Modifier,
-    tint: Color = Black800
+    tint: Color = Color.Gray
 ) {
     Image(
         painter = painterResource(id = R.drawable.ic_profile),
@@ -88,7 +90,7 @@ fun ProfileIcon(
 @Composable
 fun DownwardArrowIcon(
     modifier: Modifier = Modifier,
-    tint: Color = Black800
+    tint: Color = Color.Gray
 ) {
     Icon(
         imageVector = Icons.Rounded.ArrowDownward,
@@ -101,7 +103,7 @@ fun DownwardArrowIcon(
 @Composable
 fun UpwardArrowIcon(
     modifier: Modifier = Modifier,
-    tint: Color = Black800
+    tint: Color = Color.Gray
 ) {
     Icon(
         imageVector = Icons.Rounded.ArrowUpward,
@@ -114,10 +116,24 @@ fun UpwardArrowIcon(
 @Composable
 fun RightArrowIcon(
     modifier: Modifier = Modifier,
-    tint: Color = Black800
+    tint: Color = Color.Gray
 ) {
     Icon(
         imageVector = Icons.Rounded.ArrowForward,
+        contentDescription = stringResource(id = R.string.home),
+        tint = tint,
+        modifier = modifier
+    )
+}
+
+
+@Composable
+fun RightKeyboardArrowIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = Color.Gray
+) {
+    Icon(
+        imageVector = Icons.Rounded.KeyboardArrowRight,
         contentDescription = stringResource(id = R.string.home),
         tint = tint,
         modifier = modifier
@@ -147,19 +163,6 @@ fun CalendarIcon(
 ) {
     Icon(
         imageVector = Icons.Rounded.CalendarToday,
-        contentDescription = stringResource(id = R.string.account),
-        tint = tint,
-        modifier = modifier
-    )
-}
-
-@Composable
-fun AccountIcon(
-    modifier: Modifier = Modifier,
-    tint: Color = defaultIconTint()
-) {
-    Icon(
-        painter = painterResource(id = R.drawable.ic_profile),
         contentDescription = stringResource(id = R.string.account),
         tint = tint,
         modifier = modifier
@@ -237,7 +240,7 @@ fun StoreFrontIcon(
     tint: Color = defaultIconTint()
 ) {
     Icon(
-        imageVector = Icons.Rounded.Store,
+        imageVector = Icons.Rounded.Storefront,
         contentDescription = stringResource(id = R.string.account),
         tint = tint,
         modifier = modifier

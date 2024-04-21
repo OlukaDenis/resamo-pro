@@ -6,37 +6,38 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.dennytech.data.UserPreferences
 import com.dennytech.data.local.dao.StoreDao
-import com.dennytech.data.local.dao.UserDao
+import com.dennytech.data.local.dao.StoreUserDao
 import com.dennytech.data.local.mappers.StoreEntityMapper
-import com.dennytech.data.local.mappers.UserEntityMapper
+import com.dennytech.data.local.mappers.StoreUserEntityMapper
 import com.dennytech.data.local.mappers.UserPreferencesMapper
-import com.dennytech.data.remote.datasource.ProductPagingSource
 import com.dennytech.data.remote.datasource.UserPagingSource
-import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomain
+import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomainUser
 import com.dennytech.data.remote.services.ApiService
-import com.dennytech.data.remote.services.AuthService
 import com.dennytech.data.utils.MAX_PAGE_SIZE
+import com.dennytech.domain.models.StoreUserDomainModel
 import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.repository.PreferenceRepository
 import com.dennytech.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
     private val storeDao: StoreDao,
+    private val storeUserDao: StoreUserDao,
+    private val storeUserEntityMapper: StoreUserEntityMapper,
     private val preferenceRepository: PreferenceRepository,
     private val storeEntityMapper: StoreEntityMapper,
     private val apiService: ApiService,
     private val userPreferences: DataStore<UserPreferences>,
-    private val userPreferencesMapper: UserPreferencesMapper
+    private val userPreferencesMapper: UserPreferencesMapper,
+
 ) : ProfileRepository {
     override suspend fun fetchCurrentUser(): UserDomainModel {
         return try {
             val response = runBlocking { apiService.getCurrentUser() }
-            val user = response.data.toDomain()
+            val user = response.data.toDomainUser()
 
             runBlocking { saveCurrentUser(user) }
 
@@ -66,7 +67,7 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun createUser(request: HashMap<String, Any>): UserDomainModel {
         return try {
-            apiService.createUser(request).data.toDomain()
+            apiService.createUser(request).data.toDomainUser()
         } catch (throwable: Throwable) {
             throw throwable
         }
@@ -74,7 +75,7 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun activate(userId: String): UserDomainModel {
         return try {
-            apiService.activateUser(userId).data.toDomain()
+            apiService.activateUser(userId).data.toDomainUser()
         } catch (throwable: Throwable) {
             throw throwable
         }
@@ -82,7 +83,7 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun deactivate(userId: String): UserDomainModel {
         return try {
-           apiService.deactivateUser(userId).data.toDomain()
+           apiService.deactivateUser(userId).data.toDomainUser()
         } catch (throwable: Throwable) {
             throw throwable
         }

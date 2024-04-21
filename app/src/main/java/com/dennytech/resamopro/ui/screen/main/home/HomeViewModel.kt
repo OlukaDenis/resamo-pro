@@ -80,7 +80,6 @@ class HomeViewModel @Inject constructor(
     private fun getUserStores() {
         viewModelScope.launch {
             getUserStoreListUseCase().collect {
-                Timber.d("List here: %s", it)
                 state = state.copy(userStores = it)
             }
         }

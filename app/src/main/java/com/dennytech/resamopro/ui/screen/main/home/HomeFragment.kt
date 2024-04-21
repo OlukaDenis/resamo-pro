@@ -69,7 +69,7 @@ fun HomeFragment(
         ) {
 
             LaunchedEffect(Unit) {
-                viewModel.initialize()
+//                viewModel.initialize()
             }
 
             Column(
@@ -134,8 +134,7 @@ fun HomeContent(
         val counts = viewModel.state.counts
 
         mainViewModel.state.user?.let {
-            if (it.role == 1) {
-
+            if (it.isAdmin()) {
                 InsightCard(
                     title = "Total Revenue",
                     value = viewModel.state.revenue.toDouble().formatCurrency(),

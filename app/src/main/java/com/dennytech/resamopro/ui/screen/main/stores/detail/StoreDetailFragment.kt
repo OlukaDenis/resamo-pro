@@ -1,0 +1,110 @@
+package com.dennytech.resamopro.ui.screen.main.stores.detail
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.dennytech.resamopro.R
+import com.dennytech.resamopro.ui.components.LeftRightLabel
+import com.dennytech.resamopro.ui.components.StoreUserItem
+import com.dennytech.resamopro.ui.theme.Dimens
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StoreDetailFragment(
+    viewModel: StoreDetailViewModel = hiltViewModel(),
+    navigateUp: () -> Unit,
+    storeId: String
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                title = {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = viewModel.state.store?.name.orEmpty(),
+                        textAlign = TextAlign.Center
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back),
+                            tint = Color.Black
+                        )
+                    }
+                },
+            )
+        }
+    ) { values ->
+
+        LaunchedEffect(true) {
+            viewModel.onEvent(StoreDetailEvent.GetStore(storeId))
+        }
+
+        Column(
+            modifier = Modifier.padding(values)
+        ) {
+
+            Column(
+                modifier = Modifier.padding(Dimens._16dp)
+            ) {
+                LeftRightLabel(
+                    startText = "Brands",
+                    endText = "+ Add brand",
+                    onActionClick = {}
+                )
+
+                LeftRightLabel(
+                    startText = "Categories",
+                    endText = "+ Add category",
+                    onActionClick = {}
+                )
+
+                LeftRightLabel(
+                    startText = "Users",
+                    endText = "+ Assign user",
+                    onActionClick = {}
+                )
+
+                val users = viewModel.state.store?.users.orEmpty()
+
+                if (users.isNotEmpty()) {
+                    LazyColumn(
+                        modifier = Modifier
+                    ) {
+                        items(users) {
+                            StoreUserItem(
+                                user = it,
+                                onMenuClick = {},
+                                onClick = {  }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

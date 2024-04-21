@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dennytech.domain.models.UserDomainModel.Companion.isAdmin
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.DateFilter
@@ -113,7 +114,7 @@ fun CountsFragment(
                 CountsCards(counts = counts)
 
                mainViewModel.state.user?.let {
-                   if(it.role == 1) {
+                   if(it.isAdmin()) {
                        VerticalSpacer(Dimens._16dp)
 
                        InsightCard(

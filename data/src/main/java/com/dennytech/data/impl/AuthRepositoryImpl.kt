@@ -3,8 +3,7 @@ package com.dennytech.data.impl
 import androidx.datastore.core.DataStore
 import com.dennytech.data.UserPreferences
 import com.dennytech.data.remote.mapper.RemoteTokenMapper
-import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomain
-import com.dennytech.data.remote.services.ApiService
+import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomainUser
 import com.dennytech.data.remote.services.AuthService
 import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.repository.AuthRepository
@@ -39,12 +38,12 @@ class AuthRepositoryImpl @Inject constructor(
             val response = authService.login(request)
             val user  = response.data;
 
-            runBlocking { saveUser(user.toDomain()) }
+            runBlocking { saveUser(user.toDomainUser()) }
 
             runBlocking { preferenceRepository.setAccessToken(user.token.orEmpty()) }
             runBlocking { preferenceRepository.setTokenExpiry(user.expiresIn ?: 0L) }
 
-            user.toDomain()
+            user.toDomainUser()
         } catch (throwable: Throwable) {
             throw throwable
         }

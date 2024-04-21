@@ -29,6 +29,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.dennytech.data.utils.resolveError
 import com.dennytech.domain.models.UserDomainModel
+import com.dennytech.domain.models.UserDomainModel.Companion.isAdmin
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.ErrorLabel
@@ -73,7 +74,7 @@ fun UsersFragment(
                 },
                 actions = {
                     mainViewModel.state.user?.let {
-                        if(it.role == 1) {
+                        if(it.isAdmin()) {
                             IconButton(onClick = { navigateToNewUser() }) {
                                 Icon(
                                     imageVector = Icons.Rounded.Add,

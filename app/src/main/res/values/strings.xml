@@ -51,4 +51,5 @@
     <string name="sales_report">Sales Report</string>
     <string name="new_store">New Store</string>
     <string name="create_store">Create Store</string>
+    <string name="stores">Stores</string>
 </resources>

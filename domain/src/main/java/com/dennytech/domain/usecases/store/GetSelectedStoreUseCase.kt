@@ -23,8 +23,7 @@ class GetSelectedStoreUseCase @Inject constructor(
 ): BaseFlowUseCase<Unit, StoreDomainModel>(dispatcher){
     override fun run(param: Unit?): Flow<StoreDomainModel> = flow {
         preferenceRepository.getCurrentStore().map {
-            val stores = storeRepository.getStoreById(it)
-            if (stores.isNotEmpty()) emit(stores[0])
+            emit(storeRepository.getStoreById(it))
         }.first()
     }
 }

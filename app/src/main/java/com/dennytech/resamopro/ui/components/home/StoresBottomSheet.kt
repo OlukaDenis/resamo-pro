@@ -109,7 +109,7 @@ fun StoresBottomSheet(
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Rounded.Storefront,
-                                                contentDescription = "Keyboard down",
+                                                contentDescription = "store",
                                                 tint = DeepSeaBlue,
                                                 modifier = Modifier.size(Dimens._20dp)
                                             )

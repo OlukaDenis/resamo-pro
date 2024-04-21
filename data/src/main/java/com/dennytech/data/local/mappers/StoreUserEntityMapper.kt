@@ -1,12 +1,12 @@
 package com.dennytech.data.local.mappers
 
-import com.dennytech.data.local.models.UserEntity
-import com.dennytech.domain.models.UserDomainModel
+import com.dennytech.data.local.models.StoreUserEntity
+import com.dennytech.domain.models.StoreUserDomainModel
 import javax.inject.Inject
 
-class UserEntityMapper @Inject constructor() : BaseLocalMapper<UserEntity, UserDomainModel> {
-    override fun toDomain(entity: UserEntity): UserDomainModel {
-        return UserDomainModel(
+class StoreUserEntityMapper @Inject constructor() : BaseLocalMapper<StoreUserEntity, StoreUserDomainModel> {
+    override fun toDomain(entity: StoreUserEntity): StoreUserDomainModel {
+        return StoreUserDomainModel(
             id = entity.id,
             firstName = entity.firstName,
             lastName = entity.lastName,
@@ -17,12 +17,13 @@ class UserEntityMapper @Inject constructor() : BaseLocalMapper<UserEntity, UserD
             status = entity.status,
             fullName = "${entity.firstName} ${entity.lastName}",
             stores = emptyList(),
-            defaultStore = ""
+            defaultStore = "",
+            storeId = entity.storeId
         )
     }
 
-    override fun toLocal(entity: UserDomainModel): UserEntity {
-        return UserEntity(
+    override fun toLocal(entity: StoreUserDomainModel): StoreUserEntity {
+        return StoreUserEntity(
             id = entity.id,
             firstName = entity.firstName,
             lastName = entity.lastName,
@@ -31,7 +32,8 @@ class UserEntityMapper @Inject constructor() : BaseLocalMapper<UserEntity, UserD
             role = entity.role,
             lastLogin = entity.lastLogin,
             status = entity.status,
-            fullName = "${entity.firstName} ${entity.lastName}"
+            fullName = "${entity.firstName} ${entity.lastName}",
+            storeId = entity.storeId
         )
     }
 }

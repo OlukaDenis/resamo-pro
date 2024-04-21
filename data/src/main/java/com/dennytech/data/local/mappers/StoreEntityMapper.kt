@@ -13,7 +13,9 @@ class StoreEntityMapper @Inject constructor(): BaseLocalMapper<StoreEntity, Stor
             status = entity.status,
             location = entity.location,
             userId = entity.userId,
-            createdBy = ""
+            createdBy = "",
+            users = emptyList(),
+            brands = entity.brands
         )
     }
 
@@ -25,6 +27,7 @@ class StoreEntityMapper @Inject constructor(): BaseLocalMapper<StoreEntity, Stor
             status = entity.status,
             location = entity.location,
             userId = entity.userId,
+            brands = entity.brands,
         )
     }
 

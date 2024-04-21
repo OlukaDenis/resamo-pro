@@ -14,16 +14,19 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpOffset
+import com.dennytech.domain.models.StoreUserDomainModel
 import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.TruliGreen
@@ -31,25 +34,14 @@ import com.dennytech.resamopro.utils.Helpers.formatDateTime
 
 
 @Composable
-fun UserItem(
+fun StoreUserItem(
     modifier: Modifier = Modifier,
-    user: UserDomainModel,
+    user: StoreUserDomainModel,
     loading: Boolean = false,
     onClick: (() -> Unit),
     onMenuClick: (String) -> Unit,
     containerColor: Color = Color.White,
 ) {
-
-    val dropdownList = mutableListOf<String>().apply {
-        this.add(if (user.status == 1) "Deactivate" else "Activate")
-    }
-
-    var isContextMenuVisible by rememberSaveable {
-        mutableStateOf(false)
-    }
-//    var pressOffset by remember {
-//        mutableStateOf(DpOffset.Zero)
-//    }
 
     var itemHeight by remember {
         mutableStateOf(Dimens._0dp)
@@ -119,21 +111,6 @@ fun UserItem(
                             fontSize = Dimens._14sp,
                             color = Color.Gray
                         )
-                        VerticalSpacer(Dimens._4dp)
-                        Row {
-
-                            Text(
-                                text = "Last login:",
-                                fontSize = Dimens._10sp,
-                                color = Color.Gray
-                            )
-                            HorizontalSpacer(Dimens._4dp)
-                            Text(
-                                text = user.lastLogin.formatDateTime(),
-                                fontSize = Dimens._10sp,
-                                color = Color.Gray
-                            )
-                        }
                     }
                 }
                 Column {
@@ -145,26 +122,6 @@ fun UserItem(
                         else CheckCircleIcon(
                             tint = if (user.status == 1) TruliGreen else defaultIconTint()
                         )
-                        IconButton(onClick = {
-                            isContextMenuVisible = true
-                        }) {
-                            MoreVertIcon()
-                        }
-                        DropdownMenu(
-                            expanded = isContextMenuVisible,
-                            onDismissRequest = { isContextMenuVisible = false }
-                        ) {
-
-                            dropdownList.forEach { item ->
-                                DropdownMenuItem(
-                                    text = { Text(text = item) },
-                                    onClick = {
-                                        onMenuClick(item)
-                                        isContextMenuVisible = false
-                                    }
-                                )
-                            }
-                        }
                     }
                 }
             }

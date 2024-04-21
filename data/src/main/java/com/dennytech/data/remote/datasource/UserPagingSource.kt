@@ -4,11 +4,9 @@ import android.annotation.SuppressLint
 import android.net.http.HttpException
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.dennytech.data.remote.models.RemoteProductModel.Companion.toDomain
-import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomain
+import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomainUser
 import com.dennytech.data.remote.services.ApiService
 import com.dennytech.data.utils.MAX_PAGE_SIZE
-import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.domain.models.UserDomainModel
 import java.io.IOException
 
@@ -28,7 +26,7 @@ class UserPagingSource(
                 this["pageSize"] = MAX_PAGE_SIZE
             }
             val users = apiService.getUsers(request)
-            val list = users.data.map { it.toDomain() }
+            val list = users.data.map { it.toDomainUser() }
 
             LoadResult.Page(
                 data = list,

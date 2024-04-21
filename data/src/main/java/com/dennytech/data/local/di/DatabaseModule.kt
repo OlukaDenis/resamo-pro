@@ -11,7 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-val APP_DATABASE_DB = if(BuildConfig.DEBUG) "rsm.db" else "resamo.db"
+val APP_DATABASE_DB = if(BuildConfig.DEBUG) "rsm1.db" else "resamo1.db"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -36,5 +36,9 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideStoreDao(database: AppDatabase) = database.storeDao()
+
+    @Singleton
+    @Provides
+    fun provideStoreUserDao(database: AppDatabase) = database.storeUserDao()
 
 }

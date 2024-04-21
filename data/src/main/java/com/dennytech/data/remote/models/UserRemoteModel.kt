@@ -1,6 +1,7 @@
 package com.dennytech.data.remote.models
 
 import com.dennytech.data.remote.models.RemoteStoreModel.Companion.toDomain
+import com.dennytech.domain.models.StoreUserDomainModel
 import com.dennytech.domain.models.UserDomainModel
 
 data class CheckUsernameResponse(
@@ -35,19 +36,36 @@ data class UserRemoteModel(
 ) {
 
     companion object {
-        fun UserRemoteModel.toDomain(): UserDomainModel {
+        fun UserRemoteModel.toDomainUser(): UserDomainModel {
             return UserDomainModel(
                 id = this.id,
                 firstName = this.firstName.orEmpty(),
                 lastName = this.lastName.orEmpty(),
                 phone = this.phone.orEmpty(),
                 email = this.email.orEmpty(),
-                role = this.role ?: 0,
+                role = this.role ?: -1,
                 status = this.status ?: 0,
                 fullName = "$firstName $lastName",
                 lastLogin = this.lastLogin.orEmpty(),
                 stores = stores?.map { it.toDomain(this.id) }.orEmpty(),
                 defaultStore = defaultStore.orEmpty()
+            )
+        }
+
+        fun UserRemoteModel.toDomainStoreUser(storeId: String): StoreUserDomainModel {
+            return StoreUserDomainModel(
+                id = this.id,
+                firstName = this.firstName.orEmpty(),
+                lastName = this.lastName.orEmpty(),
+                phone = this.phone.orEmpty(),
+                email = this.email.orEmpty(),
+                role = this.role ?: -1,
+                status = this.status ?: 0,
+                fullName = "$firstName $lastName",
+                lastLogin = this.lastLogin.orEmpty(),
+                stores = stores?.map { it.toDomain(this.id) }.orEmpty(),
+                defaultStore = defaultStore.orEmpty(),
+                storeId = storeId
             )
         }
     }
