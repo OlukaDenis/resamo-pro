@@ -8,7 +8,10 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.domain.models.Resource
+import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.models.UserDomainModel
+import com.dennytech.domain.usecases.store.GetSelectedStoreUseCase
+import com.dennytech.domain.usecases.store.SetSelectedStoreUseCase
 import com.dennytech.domain.usecases.user.GetUsersUseCase
 import com.dennytech.domain.usecases.user.ToggleUserActivationUseCase
 import com.dennytech.resamopro.ui.screen.main.products.ProductEvent
@@ -21,11 +24,13 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val getUsersUseCase: GetUsersUseCase,
-    private val toggleUserActivationUseCase: ToggleUserActivationUseCase
+    private val toggleUserActivationUseCase: ToggleUserActivationUseCase,
+    private val getSelectedStoreUseCase: GetSelectedStoreUseCase,
 ): ViewModel() {
 
     init {
         onEvent(UserEvent.GetUsers)
+        getCurrentStore()
     }
 
     private val _usersState: MutableStateFlow<PagingData<UserDomainModel>> =
@@ -33,6 +38,7 @@ class UserViewModel @Inject constructor(
     val usersState get() = _usersState
     var error by mutableStateOf("")
     var loading by mutableStateOf(false)
+    var state by mutableStateOf(UserState())
 
     fun onEvent(event: UserEvent) {
         when(event) {
@@ -42,6 +48,14 @@ class UserViewModel @Inject constructor(
 
             is UserEvent.ToggleUserActivation -> {
                 toggleUserActivation(userId = event.userId, userStatus = event.userStatus)
+            }
+        }
+    }
+
+    private fun getCurrentStore() {
+        viewModelScope.launch {
+            getSelectedStoreUseCase().collect {
+                state = state.copy(currentStore = it)
             }
         }
     }
@@ -82,6 +96,10 @@ class UserViewModel @Inject constructor(
 
 
 }
+
+data class UserState(
+    val currentStore: StoreDomainModel? = null
+)
 
 sealed class UserEvent {
     data object GetUsers: UserEvent()

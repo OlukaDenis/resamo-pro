@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dennytech.domain.models.Resource
+import com.dennytech.domain.models.StoreDomainModel
+import com.dennytech.domain.usecases.store.GetSelectedStoreUseCase
 import com.dennytech.domain.usecases.user.CreateUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -13,11 +15,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateUserViewModel @Inject constructor(
-    private val createUserUseCase: CreateUserUseCase
+    private val createUserUseCase: CreateUserUseCase,
+    private val getSelectedStoreUseCase: GetSelectedStoreUseCase,
 ): ViewModel() {
+
+    init {
+        getCurrentStore()
+    }
 
     var state by mutableStateOf(CreateUserState())
     var complete by mutableStateOf(false)
+
 
     fun onEvent(event: CreateUserEvent) {
         when(event) {
@@ -92,6 +100,14 @@ class CreateUserViewModel @Inject constructor(
         }
     }
 
+    private fun getCurrentStore() {
+        viewModelScope.launch {
+            getSelectedStoreUseCase().collect {
+                state = state.copy(currentStore = it)
+            }
+        }
+    }
+
     private fun validate() {
 
         if (state.firstName.isEmpty()) {
@@ -132,6 +148,7 @@ data class CreateUserState(
     val dirty: Boolean = false,
     val showSuccessDialog: Boolean = false,
     val errorDialog: Boolean = false,
+    val currentStore: StoreDomainModel? = null
 )
 
 sealed class CreateUserEvent {

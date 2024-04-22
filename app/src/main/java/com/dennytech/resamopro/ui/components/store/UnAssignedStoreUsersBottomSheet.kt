@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -28,10 +30,13 @@ import com.dennytech.resamopro.ui.components.HorizontalSpacer
 import com.dennytech.resamopro.ui.components.LoadingCircle
 import com.dennytech.resamopro.ui.components.ProfileIcon
 import com.dennytech.resamopro.ui.components.VerticalSpacer
+import com.dennytech.resamopro.ui.screen.main.stores.detail.StoreDetailEvent
 import com.dennytech.resamopro.ui.screen.main.stores.detail.StoreDetailViewModel
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.LightGrey
+import com.dennytech.resamopro.ui.theme.TruliBlue
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +72,7 @@ fun UnAssignedStoreUsersBottomSheet(
             }
 
             VerticalSpacer(Dimens._8dp)
-            val stores = viewModel.state.unassignedUsers
+            val users = viewModel.state.unassignedUsers
 
             if (viewModel.state.loading) {
                 Column(modifier = Modifier.padding(vertical = Dimens._30dp)) {
@@ -77,7 +82,7 @@ fun UnAssignedStoreUsersBottomSheet(
                 LazyColumn(
                     modifier = Modifier
                 ) {
-                    items(stores) { item ->
+                    items(users) { item ->
                         Card(
                             elevation = CardDefaults.cardElevation(
                                 defaultElevation = Dimens._0dp
@@ -93,7 +98,9 @@ fun UnAssignedStoreUsersBottomSheet(
                             ) {
 
                                 if (viewModel.state.unassignedUsers.isEmpty()) {
-                                    Text(text = "Empty users", color = Color.Gray)
+                                   Column(modifier = Modifier.padding(vertical = Dimens._30dp)) {
+                                       Text(text = "Empty users", color = Color.Gray)
+                                   }
                                 } else {
                                     Column() {
 
@@ -118,15 +125,26 @@ fun UnAssignedStoreUsersBottomSheet(
                                                 )
                                             }
 
-                                            TextButton(onClick = {
-                                                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                                    if (!sheetState.isVisible) {
-                                                        onDismiss()
-                                                    }
+                                            if (viewModel.state.assigningUser) {
+                                                CircularProgressIndicator(
+                                                    modifier = Modifier.size(Dimens._30dp),
+                                                    color = TruliBlue,
+                                                    strokeWidth = Dimens._3dp,
+                                                )
+                                            } else {
+                                                TextButton(onClick = {
+//                                                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+//                                                        if (!sheetState.isVisible) {
+//                                                            onDismiss()
+//                                                        }
+//                                                    }
+                                                    viewModel.onEvent(StoreDetailEvent.AssignUser(
+                                                        userId = item.id,
+                                                        storeId = storeId
+                                                    ))
+                                                }) {
+                                                    Text(text = "Assign")
                                                 }
-
-                                            }) {
-                                                Text(text = "Assign")
                                             }
                                         }
                                     }

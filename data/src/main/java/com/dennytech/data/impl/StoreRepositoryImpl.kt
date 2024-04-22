@@ -70,6 +70,7 @@ class StoreRepositoryImpl @Inject constructor(
 
     override suspend fun saveStores(stores: List<StoreDomainModel>) {
         runBlocking { storeDao.clear() }
+        runBlocking { storeUserDao.clear() }
 
         stores.map {
             saveStore(it)

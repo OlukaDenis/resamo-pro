@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,10 +40,13 @@ import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.CustomTextField
 import com.dennytech.resamopro.ui.components.SuccessDialog
+import com.dennytech.resamopro.ui.components.VerticalSpacer
 import com.dennytech.resamopro.ui.screen.main.products.create.CreateProductEvent
 import com.dennytech.resamopro.ui.screen.main.users.UserEvent
 import com.dennytech.resamopro.ui.screen.main.users.UserViewModel
 import com.dennytech.resamopro.ui.theme.Dimens
+import com.dennytech.resamopro.ui.theme.RedLight400
+import com.dennytech.resamopro.ui.theme.TruliBlueLight900
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,6 +103,24 @@ fun CreateUserFragment(
             Column(
                 modifier = Modifier.padding(Dimens._16dp)
             ) {
+
+                Card(
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = Dimens._0dp
+                    ),
+                    shape = RoundedCornerShape(Dimens._16dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = TruliBlueLight900,
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    Column( modifier = Modifier.padding(Dimens._12dp)) {
+                        Text(text = "Adding new user to ${viewModel.state.currentStore?.name} store")
+                    }
+                }
+
+                VerticalSpacer(Dimens._16dp)
                 CustomTextField(
                     value = viewModel.state.firstName,
                     onValueChange = { viewModel.onEvent(CreateUserEvent.FirstNameChanged(it)) },

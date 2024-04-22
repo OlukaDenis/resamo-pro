@@ -104,8 +104,13 @@ class ProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun assignUserToStore(storeId: String, request: HashMap<String, Any>) {
-        TODO("Not yet implemented")
+    override suspend fun assignUserToStore(storeId: String, request: HashMap<String, Any>) : String{
+        return try {
+            apiService.assignUserToStore(storeId, request)
+            "Success"
+        } catch (throwable: Throwable) {
+            throw throwable
+        }
     }
 
     override suspend fun fetchUnassignedUsers(request: HashMap<String, Any>): List<UserDomainModel> {

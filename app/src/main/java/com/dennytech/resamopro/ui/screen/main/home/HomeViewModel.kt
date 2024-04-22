@@ -9,6 +9,7 @@ import com.dennytech.domain.models.Resource
 import com.dennytech.domain.models.SaleCountsDomainModel
 import com.dennytech.domain.models.SaleDomainModel
 import com.dennytech.domain.models.StoreDomainModel
+import com.dennytech.domain.usecases.account.FetchCurrentUserUseCase
 import com.dennytech.domain.usecases.sales.GetRecentSalesUseCase
 import com.dennytech.domain.usecases.sales.GetRevenueUseCase
 import com.dennytech.domain.usecases.sales.GetSaleCountsUseCase
@@ -31,7 +32,8 @@ class HomeViewModel @Inject constructor(
     private val getRecentSalesUseCase: GetRecentSalesUseCase,
     private val getSelectedStoreUseCase: GetSelectedStoreUseCase,
     private val getUserStoreListUseCase: GetUserStoreListUseCase,
-    private val setSelectedStoreUseCase: SetSelectedStoreUseCase
+    private val setSelectedStoreUseCase: SetSelectedStoreUseCase,
+    private val fetchCurrentUserUseCase: FetchCurrentUserUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeState())
@@ -41,11 +43,13 @@ class HomeViewModel @Inject constructor(
     }
 
     fun initialize() {
-        onEvent(HomeEvent.GetRevenue)
-        onEvent(HomeEvent.GetSaleCounts)
-        onEvent(HomeEvent.GetSales)
-        onEvent(HomeEvent.GetCurrentStore)
-        onEvent(HomeEvent.GetUserStores)
+//        onEvent(HomeEvent.GetRevenue)
+//        onEvent(HomeEvent.GetSaleCounts)
+//        onEvent(HomeEvent.GetSales)
+//        onEvent(HomeEvent.GetCurrentStore)
+//        onEvent(HomeEvent.GetUserStores)
+
+        fetchCurrentUser()
     }
 
 
@@ -82,6 +86,12 @@ class HomeViewModel @Inject constructor(
             getUserStoreListUseCase().collect {
                 state = state.copy(userStores = it)
             }
+        }
+    }
+
+    private fun fetchCurrentUser() {
+        viewModelScope.launch {
+            fetchCurrentUserUseCase()
         }
     }
 

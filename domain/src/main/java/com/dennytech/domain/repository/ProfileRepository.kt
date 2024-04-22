@@ -15,6 +15,6 @@ interface ProfileRepository {
     suspend fun assignUserToStore(
         storeId: String,
         request: HashMap<String, Any>
-    )
+    ): String
     suspend fun fetchUnassignedUsers(request: HashMap<String, Any>): List<UserDomainModel>
 }

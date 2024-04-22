@@ -68,8 +68,8 @@ fun HomeFragment(
                 .verticalScroll(rememberScrollState())
         ) {
 
-            LaunchedEffect(Unit) {
-//                viewModel.initialize()
+            LaunchedEffect(true) {
+                viewModel.initialize()
             }
 
             Column(

@@ -3,6 +3,7 @@ package com.dennytech.domain.usecases.store
 import com.dennytech.domain.base.BaseFlowUseCase
 import com.dennytech.domain.dispacher.AppDispatcher
 import com.dennytech.domain.models.AppResource
+import com.dennytech.domain.models.Resource
 import com.dennytech.domain.repository.AuthRepository
 import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.UtilRepository
@@ -15,15 +16,15 @@ class AssignUserToStoreUseCase @Inject constructor(
     private val dispatcher: AppDispatcher,
     private val utilRepository: UtilRepository,
     private val profileRepository: ProfileRepository,
-) : BaseFlowUseCase<AssignUserToStoreUseCase.Param, AppResource<String>>(dispatcher) {
+) : BaseFlowUseCase<AssignUserToStoreUseCase.Param, Resource<String>>(dispatcher) {
 
     data class Param(
         val userId: String,
         val storeId: String
     )
 
-    override fun run(param: Param?): Flow<AppResource<String>> = flow {
-        emit(AppResource.Loading)
+    override fun run(param: Param?): Flow<Resource<String>> = flow {
+        emit(Resource.Loading)
 
         try {
             if (param == null) throw Exception("Invalid params")
@@ -35,12 +36,12 @@ class AssignUserToStoreUseCase @Inject constructor(
            runBlocking { profileRepository.assignUserToStore(param.storeId, request) }
 
             // Fetch current user info
-            profileRepository.fetchCurrentUser()
+            runBlocking { profileRepository.fetchCurrentUser() }
 
-            emit(AppResource.Success("Success"))
+            emit(Resource.Success("Success"))
 
         } catch (throwable: Throwable) {
-            emit(AppResource.Error(exception = utilRepository.getErrorBody(throwable)))
+            emit(Resource.Error(exception = utilRepository.getNetworkError(throwable)))
         }
     }
 }
