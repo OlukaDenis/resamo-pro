@@ -28,9 +28,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.components.LeftRightLabel
-import com.dennytech.resamopro.ui.components.StoreUserItem
+import com.dennytech.resamopro.ui.components.store.StoreUserItem
+import com.dennytech.resamopro.ui.components.store.UnAssignedStoreUsersBottomSheet
 import com.dennytech.resamopro.ui.theme.Dimens
-import com.dennytech.resamopro.ui.theme.LightGrey
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,7 +119,10 @@ fun StoreDetailFragment(
                 LeftRightLabel(
                     startText = "Users",
                     endText = "+ Assign user",
-                    onActionClick = {}
+                    onActionClick = {
+                        viewModel.onEvent(StoreDetailEvent.FetchUnAssignedUsers(storeId = storeId))
+                        viewModel.onEvent(StoreDetailEvent.ToggleUnAssignedDialog)
+                    }
                 )
 
                 val users = viewModel.state.store?.users.orEmpty()
@@ -136,6 +139,13 @@ fun StoreDetailFragment(
                             )
                         }
                     }
+                }
+
+                if (viewModel.state.showUnAssignedDialog) {
+                    UnAssignedStoreUsersBottomSheet(
+                        storeId = storeId,
+                        onDismiss = {viewModel.onEvent(StoreDetailEvent.ToggleUnAssignedDialog)}
+                    )
                 }
             }
         }

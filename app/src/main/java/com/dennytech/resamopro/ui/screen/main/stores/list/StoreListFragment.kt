@@ -26,7 +26,7 @@ import androidx.navigation.NavController
 import com.dennytech.domain.models.UserDomainModel.Companion.isOwner
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.MainViewModel
-import com.dennytech.resamopro.ui.components.StoreItem
+import com.dennytech.resamopro.ui.components.store.StoreItem
 import com.dennytech.resamopro.ui.navigation.MainScreen
 import com.dennytech.resamopro.ui.theme.Dimens
 

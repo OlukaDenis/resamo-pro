@@ -2,6 +2,7 @@ package com.dennytech.domain.repository
 
 import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.models.StoreUserDomainModel
+import com.dennytech.domain.models.UserDomainModel
 import kotlinx.coroutines.flow.Flow
 
 interface StoreRepository {

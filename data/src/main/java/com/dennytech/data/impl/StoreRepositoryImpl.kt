@@ -5,9 +5,11 @@ import com.dennytech.data.local.dao.StoreUserDao
 import com.dennytech.data.local.mappers.StoreEntityMapper
 import com.dennytech.data.local.mappers.StoreUserEntityMapper
 import com.dennytech.data.remote.models.RemoteStoreModel.Companion.toDomain
+import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomainUser
 import com.dennytech.data.remote.services.ApiService
 import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.models.StoreUserDomainModel
+import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.repository.StoreRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -73,5 +75,4 @@ class StoreRepositoryImpl @Inject constructor(
             saveStore(it)
         }
     }
-
 }

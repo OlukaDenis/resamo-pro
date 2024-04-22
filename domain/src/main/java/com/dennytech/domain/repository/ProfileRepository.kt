@@ -12,9 +12,9 @@ interface ProfileRepository {
     suspend fun deactivate(userId: String): UserDomainModel
     fun getCurrentUser(): Flow<UserDomainModel?>
     suspend fun saveCurrentUser(user: UserDomainModel)
-    suspend fun fetchUnassignedUsers(request: HashMap<String, Any>)
     suspend fun assignUserToStore(
         storeId: String,
         request: HashMap<String, Any>
     )
+    suspend fun fetchUnassignedUsers(request: HashMap<String, Any>): List<UserDomainModel>
 }

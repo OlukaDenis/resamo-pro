@@ -29,7 +29,6 @@ class ProfileRepositoryImpl @Inject constructor(
     private val userPreferences: DataStore<UserPreferences>,
     private val userPreferencesMapper: UserPreferencesMapper,
     private val storeRepository: StoreRepository
-
 ) : ProfileRepository {
     override suspend fun fetchCurrentUser(): UserDomainModel {
         return try {
@@ -105,12 +104,17 @@ class ProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchUnassignedUsers(request: HashMap<String, Any>) {
+    override suspend fun assignUserToStore(storeId: String, request: HashMap<String, Any>) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun assignUserToStore(storeId: String, request: HashMap<String, Any>) {
-        TODO("Not yet implemented")
+    override suspend fun fetchUnassignedUsers(request: HashMap<String, Any>): List<UserDomainModel> {
+        return try {
+            val users = apiService.getUnassignedUsers(request).data
+            users.map { it.toDomainUser() }
+        } catch (throwable: Throwable) {
+            throw throwable
+        }
     }
 
 }

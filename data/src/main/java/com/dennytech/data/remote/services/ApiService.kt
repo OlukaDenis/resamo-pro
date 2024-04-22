@@ -78,7 +78,7 @@ interface ApiService {
     @GET("user/people/unassigned")
     suspend fun getUnassignedUsers(
         @QueryMap request: HashMap<String, Any>
-    ): UserResponse
+    ): UserListResponse
 
     @GET("store/assign/{id}")
     suspend fun assignUserToStore(
