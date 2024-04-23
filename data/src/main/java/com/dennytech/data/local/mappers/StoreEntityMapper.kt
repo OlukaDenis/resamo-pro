@@ -4,7 +4,7 @@ import com.dennytech.data.local.models.StoreEntity
 import com.dennytech.domain.models.StoreDomainModel
 import javax.inject.Inject
 
-class StoreEntityMapper @Inject constructor(): BaseLocalMapper<StoreEntity, StoreDomainModel> {
+class StoreEntityMapper @Inject constructor() : BaseLocalMapper<StoreEntity, StoreDomainModel> {
     override fun toDomain(entity: StoreEntity): StoreDomainModel {
         return StoreDomainModel(
             id = entity.id,
@@ -15,7 +15,9 @@ class StoreEntityMapper @Inject constructor(): BaseLocalMapper<StoreEntity, Stor
             userId = entity.userId,
             createdBy = "",
             users = emptyList(),
-            brands = entity.brands
+            categories = emptyList(),
+            brands = entity.brands,
+            productTypes = entity.productTypes
         )
     }
 
@@ -28,6 +30,7 @@ class StoreEntityMapper @Inject constructor(): BaseLocalMapper<StoreEntity, Stor
             location = entity.location,
             userId = entity.userId,
             brands = entity.brands,
+            productTypes = entity.productTypes
         )
     }
 

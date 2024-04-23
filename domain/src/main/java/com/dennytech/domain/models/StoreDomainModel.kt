@@ -9,5 +9,7 @@ data class StoreDomainModel(
     val userId: String,
     val createdBy: String,
     val users: List<StoreUserDomainModel>,
+    val categories: List<ProductCategoryDomainModel>,
     val brands: List<String>,
+    val productTypes: List<String>,
 )

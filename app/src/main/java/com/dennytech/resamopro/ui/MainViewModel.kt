@@ -9,7 +9,10 @@ import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.usecases.LogoutUseCase
 import com.dennytech.domain.usecases.account.GetCurrentUserUseCase
+import com.dennytech.domain.usecases.store.GetSelectedStoreUseCase
 import com.dennytech.domain.usecases.store.GetUserStoreListUseCase
+import com.dennytech.resamopro.models.KeyValueModel
+import com.dennytech.resamopro.utils.Helpers.capitalize
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -20,6 +23,7 @@ class MainViewModel @Inject constructor(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val getUserStoreListUseCase: GetUserStoreListUseCase,
+    private val getSelectedStoreUseCase: GetSelectedStoreUseCase,
 ) : ViewModel() {
 
     var state by mutableStateOf(MainState())
@@ -27,6 +31,7 @@ class MainViewModel @Inject constructor(
     init {
         getCurrentUser()
         getUserStores()
+        getCurrentStore()
     }
 
     private fun getCurrentUser() {
@@ -51,6 +56,22 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun getCurrentStore() {
+        viewModelScope.launch {
+            getSelectedStoreUseCase().collect { store ->
+                val types = if (store.productTypes.isNotEmpty())
+                    store.productTypes.map { KeyValueModel(it, it.capitalize()) }
+                else emptyList()
+
+                val categories = if (store.categories.isNotEmpty())
+                    store.categories.map { KeyValueModel(it.id, it.name) }
+                else emptyList()
+
+                state = state.copy(currentStore = store, productTypes = types, productCategories = categories)
+            }
+        }
+    }
+
     fun logout() {
         viewModelScope.launch {
             logoutUseCase()
@@ -61,5 +82,8 @@ class MainViewModel @Inject constructor(
 data class MainState(
     val error: String = "",
     val user: UserDomainModel? = null,
-    val userStores: List<StoreDomainModel> = emptyList()
+    val userStores: List<StoreDomainModel> = emptyList(),
+    val currentStore: StoreDomainModel? = null,
+    val productTypes: List<KeyValueModel> = emptyList(),
+    val productCategories: List<KeyValueModel> = emptyList()
 )

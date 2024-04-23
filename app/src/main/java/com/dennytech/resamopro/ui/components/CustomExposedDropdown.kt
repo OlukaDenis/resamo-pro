@@ -2,6 +2,7 @@ package com.dennytech.resamopro.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -68,13 +69,14 @@ fun CustomExposedDropdown(
 
             ExposedDropdownMenu(
                 expanded = isExpanded,
-                modifier = Modifier.background(Color.White),
+                modifier = Modifier,
                 onDismissRequest = {
                     isExpanded = false
                 }
             ) {
                 items.map { item ->
                     DropdownMenuItem(
+                        modifier = Modifier.fillMaxWidth(),
                         text = {
                             Text(text = item.value)
                         },

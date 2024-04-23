@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.screen.main.products.ProductEvent
 import com.dennytech.resamopro.ui.screen.main.products.ProductViewModel
 import com.dennytech.resamopro.ui.theme.Dimens
@@ -35,6 +36,7 @@ import com.dennytech.resamopro.utils.Helpers
 @Composable
 fun FilterDialog(
     viewModel: ProductViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel(),
     dismissDialog: () -> Unit,
     confirm: () -> Unit,
 ) {
@@ -122,7 +124,7 @@ fun FilterDialog(
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = "",
                     onValueChange = { viewModel.onEvent(ProductEvent.SetTypeFilter(it)) },
-                    items = Helpers.shoeTypes()
+                    items = mainViewModel.state.productTypes
                 )
 
                 Row(

@@ -52,4 +52,5 @@
     <string name="new_store">New Store</string>
     <string name="create_store">Create Store</string>
     <string name="stores">Stores</string>
+    <string name="category">Category</string>
 </resources>

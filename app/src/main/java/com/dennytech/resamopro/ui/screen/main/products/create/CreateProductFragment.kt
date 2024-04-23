@@ -50,21 +50,28 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.resamopro.R
+import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.AddCircleIcon
 import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.CustomExposedDropdown
 import com.dennytech.resamopro.ui.components.CustomTextField
 import com.dennytech.resamopro.ui.components.ErrorLabel
+import com.dennytech.resamopro.ui.components.HorizontalSpacer
 import com.dennytech.resamopro.ui.components.SuccessDialog
+import com.dennytech.resamopro.ui.components.VerticalSpacer
+import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
+import com.dennytech.resamopro.ui.theme.TruliBlueLight900
 import com.dennytech.resamopro.utils.Helpers
 import com.dennytech.resamopro.utils.Helpers.productTypeValue
 import com.dennytech.resamopro.utils.Helpers.toMegaBytes
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateProductFragment(
     viewModel: CreateProductViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel(),
     isUpdate: Boolean = false,
     product: ProductDomainModel? = null,
     navigateUp: () -> Unit
@@ -109,7 +116,7 @@ fun CreateProductFragment(
                 dismissDialog = {
                     if (isUpdate)
                         viewModel.state = viewModel.state.copy(showSuccessDialog = false)
-                       else viewModel.onEvent(CreateProductEvent.ToggleSuccessDialog)
+                    else viewModel.onEvent(CreateProductEvent.ToggleSuccessDialog)
                 },
                 message = if (isUpdate) "Successfully updated product" else "Successfully created product"
             )
@@ -146,7 +153,7 @@ fun CreateProductFragment(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(Dimens._16dp))
+                    VerticalSpacer(Dimens._10dp)
                     ErrorLabel(message = viewModel.state.imageError)
                 }
             }
@@ -154,6 +161,26 @@ fun CreateProductFragment(
             Column(
                 modifier = Modifier.padding(Dimens._16dp)
             ) {
+                Card(
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = Dimens._0dp
+                    ),
+                    shape = RoundedCornerShape(Dimens._16dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = TruliBlueLight900,
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    Column(modifier = Modifier.padding(Dimens._12dp)) {
+                        Text(
+                            text = "Adding new product to ${mainViewModel.state.currentStore?.name} store",
+                            color = DeepSeaBlue
+                        )
+                    }
+                }
+                VerticalSpacer(Dimens._16dp)
+
                 CustomTextField(
                     value = viewModel.state.name,
                     onValueChange = { viewModel.onEvent(CreateProductEvent.NameChanged(it)) },
@@ -165,46 +192,7 @@ fun CreateProductFragment(
                         keyboardType = KeyboardType.Text,
                     ),
                 )
-                Spacer(modifier = Modifier.height(Dimens._16dp))
-
-                CustomTextField(
-                    value = viewModel.state.size,
-                    onValueChange = { viewModel.onEvent(CreateProductEvent.SizeChanged(it)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = "Size",
-                    isError = viewModel.state.sizeError.isNotEmpty(),
-                    errorMessage = viewModel.state.sizeError,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                    ),
-                )
-                Spacer(modifier = Modifier.height(Dimens._16dp))
-
-                CustomTextField(
-                    value = viewModel.state.brand,
-                    onValueChange = { viewModel.onEvent(CreateProductEvent.BrandChanged(it)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = "Brand",
-                    isError = viewModel.state.brandError.isNotEmpty(),
-                    errorMessage = viewModel.state.brandError,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                    ),
-                )
-                Spacer(modifier = Modifier.height(Dimens._16dp))
-
-                CustomTextField(
-                    value = viewModel.state.color,
-                    onValueChange = { viewModel.onEvent(CreateProductEvent.ColorChanged(it)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = "Color",
-                    isError = viewModel.state.colorError.isNotEmpty(),
-                    errorMessage = viewModel.state.colorError,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                    ),
-                )
-                Spacer(modifier = Modifier.height(Dimens._16dp))
+                VerticalSpacer(Dimens._10dp)
 
                 CustomTextField(
                     value = viewModel.state.price,
@@ -217,23 +205,88 @@ fun CreateProductFragment(
                         keyboardType = KeyboardType.Number,
                     ),
                 )
-                Spacer(modifier = Modifier.height(Dimens._16dp))
+                VerticalSpacer(Dimens._10dp)
 
                 CustomExposedDropdown(
                     placeholder = stringResource(R.string.product_type),
                     selectedValue = viewModel.selectedProductType.productTypeValue(),
                     onValueChange = { viewModel.onEvent(CreateProductEvent.TypeChanged(it)) },
-                    items = Helpers.shoeTypes(),
+                    items = mainViewModel.state.productTypes,
                     modifier = Modifier.fillMaxWidth(),
                     errorMessage = viewModel.state.typeError
                 )
+                VerticalSpacer(Dimens._10dp)
+
+                CustomExposedDropdown(
+                    placeholder = stringResource(R.string.category),
+                    selectedValue = viewModel.state.category?.value.orEmpty(),
+                    onValueChange = {value ->
+                        Timber.d("Category selected: %s", value)
+                        val model = mainViewModel.state.productCategories.find { it.key == value}
+                        model?.let {
+                            viewModel.onEvent(CreateProductEvent.CategoryChanged(it))
+                        }
+                    },
+                    items = mainViewModel.state.productCategories,
+                    modifier = Modifier.fillMaxWidth(),
+                    errorMessage = viewModel.state.typeError
+                )
+                VerticalSpacer(Dimens._10dp)
+                CustomTextField(
+                    value = viewModel.state.quantity,
+                    onValueChange = { viewModel.onEvent(CreateProductEvent.QuantityChanged(it)) },
+                    placeholder = "Quantity",
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = viewModel.state.quantityError.isNotEmpty(),
+                    errorMessage = viewModel.state.quantityError,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                    ),
+                )
+
+                VerticalSpacer(Dimens._10dp)
+                CustomTextField(
+                    value = viewModel.state.size,
+                    onValueChange = { viewModel.onEvent(CreateProductEvent.SizeChanged(it)) },
+                    placeholder = "Size",
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                    ),
+                )
+                VerticalSpacer(Dimens._10dp)
+                CustomTextField(
+                    value = viewModel.state.color,
+                    onValueChange = { viewModel.onEvent(CreateProductEvent.ColorChanged(it)) },
+                    placeholder = "Color",
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                    ),
+                )
+
+                VerticalSpacer(Dimens._10dp)
+
+                CustomTextField(
+                    value = viewModel.state.brand,
+                    onValueChange = { viewModel.onEvent(CreateProductEvent.BrandChanged(it)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = "Brand",
+                    isError = viewModel.state.brandError.isNotEmpty(),
+                    errorMessage = viewModel.state.brandError,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                    ),
+                )
+                VerticalSpacer(Dimens._10dp)
+
 
                 if (viewModel.state.error.isNotEmpty()) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier.height(Dimens._16dp))
+                        VerticalSpacer(Dimens._10dp)
                         ErrorLabel(message = viewModel.state.error)
                     }
                 }

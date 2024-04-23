@@ -15,5 +15,7 @@ data class StoreEntity(
     val location: String,
     val userId: String,
     @TypeConverters(StringListConverter::class)
-    val brands: List<String>
+    val brands: List<String>,
+    @TypeConverters(StringListConverter::class)
+    val productTypes: List<String>,
 )

@@ -67,10 +67,18 @@ class ProductRepositoryImpl @Inject constructor(
                 val fieldsMap = HashMap<String, RequestBody?>().apply {
                     put("name", fields["name"]?.toRequestBody("*/*".toMediaTypeOrNull()))
                     put("price", fields["price"]?.toRequestBody("*/*".toMediaTypeOrNull()))
-                    put("color", fields["color"]?.toRequestBody("*/*".toMediaTypeOrNull()))
-                    put("size", fields["size"]?.toRequestBody("*/*".toMediaTypeOrNull()))
                     put("type", fields["type"]?.toRequestBody("*/*".toMediaTypeOrNull()))
                     put("brand", fields["brand"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    put("quantity", fields["quantity"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    put("categoryId", fields["categoryId"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+
+                    if (fields["size"]?.isNotEmpty() == true) {
+                        put("size", fields["size"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    }
+
+                    if (fields["color"]?.isNotEmpty() == true) {
+                        put("color", fields["color"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    }
                 }
 
                 apiService.createProduct(filePart, fieldsMap).data.toDomain()

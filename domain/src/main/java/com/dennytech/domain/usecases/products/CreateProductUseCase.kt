@@ -24,10 +24,12 @@ class CreateProductUseCase @Inject constructor(
         val fileUri: Uri,
         val brand: String,
         val name: String,
-        val color: String,
-        val size: String,
+        val color: String?,
+        val size: String?,
         val type: String,
-        val price: String
+        val price: String,
+        val quantity: String,
+        val categoryId: String
     )
 
     override fun run(param: Param?): Flow<Resource<ProductDomainModel>> = flow {
@@ -39,10 +41,18 @@ class CreateProductUseCase @Inject constructor(
             val request = HashMap<String, String>().apply {
                 this["brand"] = param.brand
                 this["name"] = param.name
-                this["color"] = param.color
-                this["size"] = param.size
                 this["type"] = param.type
                 this["price"] = param.price
+                this["categoryId"] = param.categoryId
+                this["quantity"] = param.quantity
+
+                param.color?.let {
+                    this["color"] = it
+                }
+
+                param.size?.let {
+                    this["size"] = it
+                }
             }
 
             val response =

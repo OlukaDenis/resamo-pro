@@ -57,7 +57,7 @@ fun CustomTextField(
 
     val focusManager = LocalFocusManager.current
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column() {
         TextField(
             value = value,
             onValueChange = onValueChange,

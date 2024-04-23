@@ -10,6 +10,7 @@ import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.domain.models.Resource
 import com.dennytech.domain.usecases.products.CreateProductUseCase
 import com.dennytech.domain.usecases.products.UpdateProductUseCase
+import com.dennytech.resamopro.models.KeyValueModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -46,11 +47,15 @@ class CreateProductViewModel @Inject constructor(
             }
 
             is CreateProductEvent.ColorChanged -> {
-                state = state.copy(color = event.value, colorError = "", dirty = false)
+                state = state.copy(color = event.value)
             }
 
             is CreateProductEvent.SizeChanged -> {
-                state = state.copy(size = event.value, sizeError = "", dirty = false)
+                state = state.copy(size = event.value)
+            }
+
+            is CreateProductEvent.QuantityChanged -> {
+                state = state.copy(quantity = event.value, quantityError = "", dirty = false)
             }
 
             is CreateProductEvent.BrandChanged -> {
@@ -59,6 +64,10 @@ class CreateProductViewModel @Inject constructor(
 
             is CreateProductEvent.TypeChanged -> {
                 state = state.copy(type = event.value, typeError = "", dirty = false)
+            }
+
+            is CreateProductEvent.CategoryChanged -> {
+                state = state.copy(category = event.value, categoryError = "", dirty = false)
             }
 
             is CreateProductEvent.Reset -> {
@@ -73,11 +82,14 @@ class CreateProductViewModel @Inject constructor(
                 validate()
 
                 if (!state.dirty) {
+                    Timber.d("Not dirty")
                     if (!isUpdate && state.imageUri == null) {
                         state = state.copy(error = "Select product image")
                     } else {
                         if (isUpdate) updateProduct() else saveProduct()
                     }
+                } else {
+                    Timber.d("Dirty")
                 }
             }
         }
@@ -88,12 +100,14 @@ class CreateProductViewModel @Inject constructor(
             
             val param = CreateProductUseCase.Param(
                 brand = state.brand.trim(),
-                size = state.size.trim(),
+                size = state.size.trim().ifEmpty { null },
                 fileUri = state.imageUri!!,
-                color = state.color.trim(),
+                color = state.color.trim().ifEmpty { null },
                 type = state.type.trim(),
                 name = state.name.trim(),
-                price = state.price.trim()
+                price = state.price.trim(),
+                quantity = state.quantity.trim(),
+                categoryId = state.category!!.key
             )
             
             createProductUseCase(param).collect {
@@ -164,12 +178,12 @@ class CreateProductViewModel @Inject constructor(
             state = state.copy(nameError = "Field required", dirty = true)
         }
 
-        if (state.size.isEmpty()) {
-            state = state.copy(sizeError = "Field required", dirty = true)
+        if (state.category == null) {
+            state = state.copy(categoryError = "Field required", dirty = true)
         }
 
-        if (state.color.isEmpty()) {
-            state = state.copy(colorError = "Field required", dirty = true)
+        if (state.quantity.isEmpty()) {
+            state = state.copy(quantityError = "Field required", dirty = true)
         }
 
         if (state.type.isEmpty()) {
@@ -193,9 +207,9 @@ data class CreateProductState(
     val name: String = "",
     val nameError: String = "",
     val size: String = "",
-    val sizeError: String = "",
+//    val sizeError: String = "",
     val color: String = "",
-    val colorError: String = "",
+//    val colorError: String = "",
     val type: String = "",
     val typeError: String = "",
     val brand: String = "",
@@ -205,7 +219,11 @@ data class CreateProductState(
     val dirty: Boolean = false,
     val error: String = "",
     val loading: Boolean = false,
-    val showSuccessDialog: Boolean = false
+    val showSuccessDialog: Boolean = false,
+    val category: KeyValueModel? = null,
+    val categoryError: String = "",
+    val quantity: String = "1",
+    val quantityError: String = ""
 )
 
 sealed class CreateProductEvent {
@@ -214,8 +232,10 @@ sealed class CreateProductEvent {
     data object ToggleSuccessDialog: CreateProductEvent()
     data class NameChanged(val value: String): CreateProductEvent()
     data class SizeChanged(val value: String): CreateProductEvent()
+    data class QuantityChanged(val value: String): CreateProductEvent()
     data class ColorChanged(val value: String): CreateProductEvent()
     data class TypeChanged(val value: String): CreateProductEvent()
+    data class CategoryChanged(val value: KeyValueModel): CreateProductEvent()
     data class BrandChanged(val value: String): CreateProductEvent()
     data class PriceChanged(val value: String): CreateProductEvent()
     data object Submit: CreateProductEvent()

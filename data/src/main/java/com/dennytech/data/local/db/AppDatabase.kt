@@ -5,9 +5,11 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.dennytech.data.local.converters.StringListConverter
+import com.dennytech.data.local.dao.ProductCategoryDao
 import com.dennytech.data.local.dao.StoreDao
 import com.dennytech.data.local.dao.StoreUserDao
 import com.dennytech.data.local.dao.UserDao
+import com.dennytech.data.local.models.ProductCategoryEntity
 import com.dennytech.data.local.models.StoreEntity
 import com.dennytech.data.local.models.StoreUserEntity
 import com.dennytech.data.local.models.UserEntity
@@ -16,7 +18,8 @@ import com.dennytech.data.local.models.UserEntity
     entities = [
         UserEntity::class,
         StoreUserEntity::class,
-        StoreEntity::class
+        StoreEntity::class,
+        ProductCategoryEntity::class
     ],
     version = 1,
     exportSchema = true,
@@ -29,4 +32,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun storeDao(): StoreDao
     abstract fun storeUserDao(): StoreUserDao
+    abstract fun productCategoryDao(): ProductCategoryDao
 }

@@ -102,15 +102,6 @@ fun ProductItem(
 
 
                     Column (modifier = Modifier.padding(vertical = Dimens._14dp)){
-                        Row(
-                            modifier = Modifier
-                                .padding(horizontal = Dimens._14dp)
-                                .wrapContentSize(Alignment.Center),
-                        ) {
-                            ProductLabel(title = product.size.toString())
-                            Spacer(modifier = Modifier.width(Dimens._6dp))
-                            ProductLabel(title = product.color.capitalize())
-                        }
 
                         Spacer(modifier = Modifier.height(Dimens._6dp))
                         Row(
@@ -119,6 +110,21 @@ fun ProductItem(
                             ProductLabel(title = product.type.capitalize())
                             Spacer(modifier = Modifier.width(Dimens._6dp))
                             ProductLabel(title = product.brand.capitalize())
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .padding(horizontal = Dimens._14dp)
+                                .wrapContentSize(Alignment.Center),
+                        ) {
+                            if (product.size > 0) {
+                                ProductLabel(title = product.size.toString())
+                                Spacer(modifier = Modifier.width(Dimens._6dp))
+                            }
+
+                            if (product.color.isNotEmpty()) {
+                                ProductLabel(title = product.color.capitalize())
+                            }
                         }
                     }
                 }

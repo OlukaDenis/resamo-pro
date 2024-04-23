@@ -31,6 +31,7 @@ import com.dennytech.resamopro.ui.components.LeftRightLabel
 import com.dennytech.resamopro.ui.components.store.StoreUserItem
 import com.dennytech.resamopro.ui.components.store.UnAssignedStoreUsersBottomSheet
 import com.dennytech.resamopro.ui.theme.Dimens
+import com.dennytech.resamopro.utils.Helpers.capitalize
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,18 +78,18 @@ fun StoreDetailFragment(
                 modifier = Modifier.padding(Dimens._16dp)
             ) {
                 LeftRightLabel(
-                    startText = "Brands",
-                    endText = "+ Add brand",
+                    startText = "Product Types",
+                    endText = "+ Add type",
                     onActionClick = {}
                 )
 
-                val brands = viewModel.state.store?.brands.orEmpty()
+                val productTypes = viewModel.state.store?.productTypes.orEmpty()
 
-                if (brands.isNotEmpty()) {
+                if (productTypes.isNotEmpty()) {
                     LazyRow(
                         modifier = Modifier
                     ) {
-                        items(brands) {
+                        items(productTypes) {
                             Card(
                                 elevation = CardDefaults.cardElevation(
                                     defaultElevation = Dimens._0dp
@@ -103,7 +104,7 @@ fun StoreDetailFragment(
                             ) {
                                 
                                 Column(modifier = Modifier.padding(Dimens._16dp)) {
-                                    Text(text = it)
+                                    Text(text = it.capitalize())
                                 }
                             }
                         }
@@ -115,6 +116,34 @@ fun StoreDetailFragment(
                     endText = "+ Add category",
                     onActionClick = {}
                 )
+
+                val categories = viewModel.state.store?.categories.orEmpty()
+
+                if (categories.isNotEmpty()) {
+                    LazyRow(
+                        modifier = Modifier
+                    ) {
+                        items(categories) {
+                            Card(
+                                elevation = CardDefaults.cardElevation(
+                                    defaultElevation = Dimens._0dp
+                                ),
+                                shape = RoundedCornerShape(Dimens._8dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color.White,
+                                ),
+                                modifier = Modifier
+                                    .padding(Dimens._4dp)
+                                    .fillMaxWidth()
+                            ) {
+
+                                Column(modifier = Modifier.padding(Dimens._16dp)) {
+                                    Text(text = it.name.capitalize())
+                                }
+                            }
+                        }
+                    }
+                }
 
                 LeftRightLabel(
                     startText = "Users",
