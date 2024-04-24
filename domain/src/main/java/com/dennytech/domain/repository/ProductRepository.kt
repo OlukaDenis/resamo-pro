@@ -20,4 +20,6 @@ interface ProductRepository {
     ): ProductDomainModel
 
     suspend fun createProductSale(request: HashMap<String, Any>): Int
+
+    suspend fun createProductType(storeId: String, request: HashMap<String, Any>): String
 }

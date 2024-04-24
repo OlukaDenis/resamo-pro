@@ -3,6 +3,7 @@ package com.dennytech.data.remote.models
 import com.dennytech.data.remote.models.RemoteCategoryModel.Companion.toDomain
 import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomainStoreUser
 import com.dennytech.domain.models.StoreDomainModel
+import com.dennytech.domain.utils.DomainHelpers.strCapitalize
 
 data class StoreResponseModel(
     val data: RemoteStoreModel
@@ -33,7 +34,7 @@ data class RemoteStoreModel(
                 users = this.users?.map { it.toDomainStoreUser(this.id) } ?: emptyList(),
                 categories = this.categories?.map { it.toDomain(this.id) } ?: emptyList(),
                 brands = this.brands.orEmpty(),
-                productTypes = this.productTypes.orEmpty()
+                productTypes = this.productTypes?.map { it.replace("-", " ").strCapitalize() }.orEmpty()
             )
         }
     }

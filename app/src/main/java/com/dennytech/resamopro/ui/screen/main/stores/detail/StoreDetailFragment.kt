@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.components.LeftRightLabel
+import com.dennytech.resamopro.ui.components.store.CreateProductTypeBottomSheet
 import com.dennytech.resamopro.ui.components.store.StoreUserItem
 import com.dennytech.resamopro.ui.components.store.UnAssignedStoreUsersBottomSheet
 import com.dennytech.resamopro.ui.theme.Dimens
@@ -68,6 +69,7 @@ fun StoreDetailFragment(
 
         LaunchedEffect(true) {
             viewModel.onEvent(StoreDetailEvent.GetStore(storeId))
+            viewModel.onEvent(StoreDetailEvent.Init(storeId))
         }
 
         Column(
@@ -80,7 +82,7 @@ fun StoreDetailFragment(
                 LeftRightLabel(
                     startText = "Product Types",
                     endText = "+ Add type",
-                    onActionClick = {}
+                    onActionClick = { viewModel.onEvent(StoreDetailEvent.ToggleCreateTypeDialog)}
                 )
 
                 val productTypes = viewModel.state.store?.productTypes.orEmpty()
@@ -109,6 +111,13 @@ fun StoreDetailFragment(
                             }
                         }
                     }
+                }
+
+                if (viewModel.state.showCreateTypeDialog) {
+                    CreateProductTypeBottomSheet(
+                        storeId = storeId,
+                        onDismiss = {viewModel.onEvent(StoreDetailEvent.ToggleCreateTypeDialog)}
+                    )
                 }
                 
                 LeftRightLabel(

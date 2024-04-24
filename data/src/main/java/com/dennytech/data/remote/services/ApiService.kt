@@ -86,6 +86,11 @@ interface ApiService {
         @QueryMap request: HashMap<String, Any>
     ): GenericUserResponse
 
+    @GET("store/{id}/productType/new")
+    suspend fun createProductType(
+        @Path("id") storeId: String,
+        @QueryMap request: HashMap<String, Any>
+    ): GenericUserResponse
 
     @POST("sale")
     suspend fun createSale(@Body body: HashMap<String, Any>): CreateSaleResponseModel
