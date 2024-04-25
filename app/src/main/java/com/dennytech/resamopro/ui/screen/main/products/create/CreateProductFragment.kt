@@ -56,13 +56,11 @@ import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.CustomExposedDropdown
 import com.dennytech.resamopro.ui.components.CustomTextField
 import com.dennytech.resamopro.ui.components.ErrorLabel
-import com.dennytech.resamopro.ui.components.HorizontalSpacer
-import com.dennytech.resamopro.ui.components.SuccessDialog
+import com.dennytech.resamopro.ui.components.dialogs.SuccessDialog
 import com.dennytech.resamopro.ui.components.VerticalSpacer
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.TruliBlueLight900
-import com.dennytech.resamopro.utils.Helpers
 import com.dennytech.resamopro.utils.Helpers.productTypeValue
 import com.dennytech.resamopro.utils.Helpers.toMegaBytes
 import timber.log.Timber

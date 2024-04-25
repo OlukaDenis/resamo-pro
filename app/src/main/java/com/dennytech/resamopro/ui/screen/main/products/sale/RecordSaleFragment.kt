@@ -2,9 +2,10 @@ package com.dennytech.resamopro.ui.screen.main.products.sale
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,15 +38,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.resamopro.R
+import com.dennytech.resamopro.ui.components.CalendarDatePicker
+import com.dennytech.resamopro.ui.components.CalendarIcon
 import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.CustomTextField
-import com.dennytech.resamopro.ui.components.SuccessDialog
-import com.dennytech.resamopro.ui.screen.main.products.create.CreateProductEvent
+import com.dennytech.resamopro.ui.components.dialogs.SuccessDialog
 import com.dennytech.resamopro.ui.theme.Dimens
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -154,6 +154,83 @@ fun RecordSaleFragment(
                             keyboardType = KeyboardType.Number,
                         ),
                     )
+                    Spacer(modifier = Modifier.height(Dimens._16dp))
+
+                    CustomTextField(
+                        value = viewModel.state.quantity,
+                        onValueChange = { viewModel.onEvent(RecordSaleEvent.QuantityChanged(it)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = "Quantity",
+                        isError = viewModel.state.quantityError.isNotEmpty(),
+                        errorMessage = viewModel.state.quantityError,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(Dimens._16dp))
+
+                    Column(
+                    ) {
+                        Card(
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = Dimens._0dp
+                            ),
+                            shape = RoundedCornerShape(Dimens._16dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.White,
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+
+                            Column(
+                                modifier = Modifier
+                                    .clickable {
+                                        viewModel.onEvent(RecordSaleEvent.ToggleSaleDatePicker)
+                                    },
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(Dimens._56dp)
+                                        .padding(Dimens._16dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+
+                                    Text(
+                                        text = viewModel.state.saleDateText.ifEmpty { "Sale Date" },
+                                        color = if(viewModel.state.saleDate.isEmpty()) Color.Gray else Color.Black
+                                    )
+                                    CalendarIcon(tint = MaterialTheme.colorScheme.primary)
+                                }
+                            }
+                        }
+
+                        if (viewModel.state.saleDateError.isNotEmpty()) {
+                            Text(
+                                viewModel.state.saleDateError,
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier.padding(start = Dimens._8dp)
+                            )
+                        }
+
+//                        CustomTextField(
+//                            value = viewModel.state.saleDate,
+//                            onValueChange = { viewModel.onEvent(RecordSaleEvent.SaleDateChanged(it)) },
+//                            modifier = Modifier
+//                                .fillMaxWidth(),
+//                            placeholder = "Sale Date",
+//                            readOnly = true,
+//                            isError = viewModel.state.saleDateError.isNotEmpty(),
+//                            errorMessage = viewModel.state.saleDateError,
+//                            keyboardOptions = KeyboardOptions(
+//                                keyboardType = KeyboardType.Text,
+//                            ),
+//                            trailingIcon = {
+//                                CalendarIcon(tint = MaterialTheme.colorScheme.primary)
+//                            }
+//                        )
+                    }
                     Spacer(modifier = Modifier.height(Dimens._30dp))
 
                     CustomButton(title = stringResource(R.string.record_sale),
@@ -163,6 +240,15 @@ fun RecordSaleFragment(
 
                     Spacer(modifier = Modifier.height(Dimens._20dp))
                 }
+            }
+
+            if (viewModel.state.showSaleDatePicker) {
+                CalendarDatePicker(
+                    useTimeMillis = true,
+                    showDatePicker = viewModel.state.showSaleDatePicker,
+                    toggleCalender = { viewModel.onEvent(RecordSaleEvent.ToggleSaleDatePicker) },
+                    onDateChanged = { viewModel.onEvent(RecordSaleEvent.SaleDateChanged(it)) }
+                )
             }
         }
 

@@ -34,7 +34,7 @@ fun CustomButton(
             onClick = {
                 if (!loading) onClick()
             },
-            shape = RoundedCornerShape(Dimens._12dp),
+            shape = RoundedCornerShape(Dimens._14dp),
             modifier = modifier.height(Dimens._52dp),
             colors = colors,
         ) {

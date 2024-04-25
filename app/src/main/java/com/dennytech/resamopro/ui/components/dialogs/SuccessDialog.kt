@@ -1,6 +1,5 @@
-package com.dennytech.resamopro.ui.components
+package com.dennytech.resamopro.ui.components.dialogs
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,22 +17,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
-import com.dennytech.resamopro.R
-import com.dennytech.resamopro.ui.screen.main.products.ProductEvent
-import com.dennytech.resamopro.ui.screen.main.products.ProductViewModel
+import com.dennytech.resamopro.ui.components.CheckCircleIcon
 import com.dennytech.resamopro.ui.theme.Dimens
-import com.dennytech.resamopro.ui.theme.Green800
 import com.dennytech.resamopro.ui.theme.Grey100
 import com.dennytech.resamopro.ui.theme.TruliBlue
 import com.dennytech.resamopro.ui.theme.TruliGreen

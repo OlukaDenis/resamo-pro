@@ -39,13 +39,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.CustomTextField
-import com.dennytech.resamopro.ui.components.SuccessDialog
+import com.dennytech.resamopro.ui.components.dialogs.SuccessDialog
 import com.dennytech.resamopro.ui.components.VerticalSpacer
-import com.dennytech.resamopro.ui.screen.main.products.create.CreateProductEvent
 import com.dennytech.resamopro.ui.screen.main.users.UserEvent
 import com.dennytech.resamopro.ui.screen.main.users.UserViewModel
 import com.dennytech.resamopro.ui.theme.Dimens
-import com.dennytech.resamopro.ui.theme.RedLight400
 import com.dennytech.resamopro.ui.theme.TruliBlueLight900
 
 @OptIn(ExperimentalMaterial3Api::class)

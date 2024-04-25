@@ -160,7 +160,7 @@ fun TextField(
         textStyle = textStyle,
         label = label,
         placeholder = placeholder,
-        shape = RoundedCornerShape(Dimens._8dp),
+        shape = RoundedCornerShape(Dimens._14dp),
         modifier = modifier,
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,

@@ -1,4 +1,4 @@
-package com.dennytech.resamopro.ui.components
+package com.dennytech.resamopro.ui.components.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +19,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -27,11 +26,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.resamopro.ui.MainViewModel
+import com.dennytech.resamopro.ui.components.CustomExposedDropdown
+import com.dennytech.resamopro.ui.components.CustomTextField
 import com.dennytech.resamopro.ui.screen.main.products.ProductEvent
 import com.dennytech.resamopro.ui.screen.main.products.ProductViewModel
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.Grey100
-import com.dennytech.resamopro.utils.Helpers
 
 @Composable
 fun FilterDialog(

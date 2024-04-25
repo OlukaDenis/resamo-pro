@@ -49,7 +49,7 @@ import com.dennytech.resamopro.R
 import com.dennytech.resamopro.models.ProductFilerModel.Companion.isNoEmpty
 import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.ErrorLabel
-import com.dennytech.resamopro.ui.components.FilterDialog
+import com.dennytech.resamopro.ui.components.dialogs.FilterDialog
 import com.dennytech.resamopro.ui.components.LoadingCircle
 import com.dennytech.resamopro.ui.components.LoadingMore
 import com.dennytech.resamopro.ui.components.ProductItem
@@ -58,8 +58,6 @@ import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.Grey100
 import com.dennytech.resamopro.ui.theme.TruliBlue
 import com.google.gson.GsonBuilder
-import kotlinx.coroutines.flow.retry
-import timber.log.Timber
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 

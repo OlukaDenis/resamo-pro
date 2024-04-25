@@ -19,6 +19,8 @@ class CreateSaleUseCase @Inject constructor(
     data class Param(
         val productId: String,
         val sellingPrice: Int,
+        val saleDate: String,
+        val quantity: Int
     )
 
     override fun run(param: Param?): Flow<Resource<Int>> = flow {
@@ -30,7 +32,8 @@ class CreateSaleUseCase @Inject constructor(
             val request = HashMap<String, Any>().apply {
                 this["productId"] = param.productId
                 this["sellingPrice"] = param.sellingPrice
-                this["negotiated"] = false
+                this["saleDate"] = param.saleDate
+                this["quantity"] = param.quantity
             }
 
             val response =

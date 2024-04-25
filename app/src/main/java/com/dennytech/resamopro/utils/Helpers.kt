@@ -1,12 +1,18 @@
 package com.dennytech.resamopro.utils
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.dennytech.resamopro.models.KeyValueModel
 import java.text.NumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Currency
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 object Helpers {
 
@@ -32,10 +38,25 @@ object Helpers {
 
     fun millisecondsToDate(millis: Long): String {
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val calendar = Calendar.getInstance()
+        formatter.timeZone = TimeZone.getDefault()
 
-        calendar.timeInMillis = millis
-        return formatter.format(calendar.time)
+        val date = Date(millis)
+        return formatter.format(date)
+    }
+
+    fun millisecondsToDate(millis: Long, format: String): String {
+        val formatter = SimpleDateFormat(format, Locale.getDefault())
+        formatter.timeZone = TimeZone.getDefault()
+
+        val date = Date(millis)
+        return formatter.format(date)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getCurrentTimeInMillis(): Long {
+        val currentTime = LocalTime.now()
+        val midnight = LocalTime.MIDNIGHT
+        return midnight.until(currentTime, ChronoUnit.MILLIS)
     }
 
     fun Double.formatCurrency(symbol: String? = "UGX"): String{
