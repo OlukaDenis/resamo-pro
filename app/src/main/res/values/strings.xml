@@ -49,8 +49,15 @@
     <string name="update">Update</string>
     <string name="sales">Sales</string>
     <string name="sales_report">Sales Report</string>
-    <string name="new_store">New Store</string>
-    <string name="create_store">Create Store</string>
-    <string name="stores">Stores</string>
+    <string name="new_store">New Shop</string>
+    <string name="create_store">Create Shop</string>
+    <string name="stores">Shops</string>
     <string name="category">Category</string>
+    <string name="shop_list">Shop List</string>
+    <string name="shop_management">Shop Management</string>
+    <string name="user_management">User Management</string>
+    <string name="logout">Logout</string>
+    <string name="name">Name</string>
+    <string name="location">Location</string>
+    <string name="description">Description</string>
 </resources>

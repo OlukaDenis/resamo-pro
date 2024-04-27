@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowBack
@@ -90,14 +91,6 @@ fun UsersFragment(
         }
     ) {values ->
 
-        if (viewModel.loading) {
-            Toast.makeText(
-                context,
-                "Please wait...",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
         Column(
             modifier = Modifier.padding(values)
         ) {
@@ -106,16 +99,18 @@ fun UsersFragment(
                 modifier = Modifier.padding(Dimens._0dp)
             ) {
 
-                val products: LazyPagingItems<UserDomainModel> =
-                    viewModel.usersState.collectAsLazyPagingItems()
+                if (viewModel.loading) {
+                    Column(modifier = Modifier.padding(vertical = Dimens._30dp)) {
+                        LoadingCircle()
+                    }
+                }
+
+                val users = viewModel.state.storeUsers
                 LazyColumn(
                     modifier = Modifier
                         .padding(horizontal = Dimens._16dp, vertical = Dimens._14dp),
                 ) {
-                    items(
-                        products.itemCount,
-                    ) { index ->
-                        val item = products[index]!!
+                    items(users) { item ->
                         UserItem(
                             user = item,
                             onClick = {},
@@ -126,42 +121,6 @@ fun UsersFragment(
                                 ))
                             }
                         )
-                    }
-
-                    products.apply {
-                        when {
-                            loadState.refresh is LoadState.Loading -> {
-                               item { LoadingCircle() }
-                            }
-
-                            loadState.refresh is LoadState.Error -> {
-                                val error = products.loadState.refresh as LoadState.Error
-                                item {
-                                    ErrorLabel(
-                                        message = error.error.resolveError(),
-                                        retry = true,
-                                        onRetry = {retry()}
-                                    )
-                                }
-                            }
-
-                            loadState.append is LoadState.Loading -> {
-                               item {
-                                   LoadingMore()
-                               }
-                            }
-
-                            loadState.append is LoadState.Error -> {
-                                val error = products.loadState.append as LoadState.Error
-                                item {
-                                    ErrorLabel(
-                                        message = error.error.resolveError(),
-                                        retry = true,
-                                        onRetry = {retry()}
-                                    )
-                                }
-                            }
-                        }
                     }
                 }
             }

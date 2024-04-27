@@ -64,7 +64,7 @@ fun StoreListFragment(
                 actions = {
                     mainViewModel.state.user?.let {
                         if(it.isOwner()) {
-                            IconButton(onClick = {  }) {
+                            IconButton(onClick = { navigateToNewStore()  }) {
                                 Icon(
                                     imageVector = Icons.Rounded.Add,
                                     contentDescription = stringResource(id = R.string.add),

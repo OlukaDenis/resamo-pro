@@ -15,7 +15,6 @@ class GetProductsUseCase @Inject constructor(
 ) : BaseSuspendUseCase<GetProductsUseCase.Param, Flow<PagingData<ProductDomainModel>>>(dispatcher) {
 
     data class Param(
-        val inStock: Boolean,
         val brand: String,
         val color: String,
         val type: String,
@@ -25,7 +24,8 @@ class GetProductsUseCase @Inject constructor(
     override suspend fun run(param: Param?): Flow<PagingData<ProductDomainModel>> {
         return param?.let { p ->
             val filter = HashMap<String, Any>().apply {
-                this["inStock"] = p.inStock
+                this["inStock"] = true
+                this["damaged"] = false
             }
 
             if (p.brand.isNotEmpty()) filter["brand"] = p.brand

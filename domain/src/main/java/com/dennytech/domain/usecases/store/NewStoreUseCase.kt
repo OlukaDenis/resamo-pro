@@ -11,6 +11,7 @@ import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 import javax.inject.Inject
 
 class NewStoreUseCase @Inject constructor(
@@ -25,7 +26,7 @@ class NewStoreUseCase @Inject constructor(
         val name: String,
         val location: String,
         val description: String?,
-        val category: String
+        val category: String?
     )
 
     override fun run(param: Param?): Flow<Resource<StoreDomainModel>> = flow {
@@ -37,7 +38,10 @@ class NewStoreUseCase @Inject constructor(
             val request = HashMap<String, Any>().apply {
                 this["name"] = param.name
                 this["location"] = param.location
-                this["category"] = param.category
+                param.category?.let {
+                    this["category"] = it
+                }
+
                 param.description?.let {
                     this["description"] = it
                 }
@@ -47,7 +51,7 @@ class NewStoreUseCase @Inject constructor(
             runBlocking { preferenceRepository.setCurrentStore(response.id) }
 
             // update current user
-            profileRepository.fetchCurrentUser()
+            runBlocking { profileRepository.fetchCurrentUser() }
 
             emit(Resource.Success(response))
 

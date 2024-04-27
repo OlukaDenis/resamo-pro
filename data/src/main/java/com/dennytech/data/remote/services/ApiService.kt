@@ -80,6 +80,9 @@ interface ApiService {
         @QueryMap request: HashMap<String, Any>
     ): UserListResponse
 
+    @GET("user/store/people")
+    suspend fun getStoreUsers(): UserListResponse
+
     @GET("store/assign/{id}")
     suspend fun assignUserToStore(
         @Path("id") id: String,

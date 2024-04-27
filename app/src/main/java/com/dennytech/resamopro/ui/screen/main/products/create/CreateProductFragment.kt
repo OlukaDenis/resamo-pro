@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -69,9 +70,10 @@ import timber.log.Timber
 @Composable
 fun CreateProductFragment(
     viewModel: CreateProductViewModel = hiltViewModel(),
-    mainViewModel: MainViewModel = hiltViewModel(),
+//    mainViewModel: MainViewModel = hiltViewModel(),
     isUpdate: Boolean = false,
     product: ProductDomainModel? = null,
+    navigateToProducts: () -> Unit,
     navigateUp: () -> Unit
 ) {
 
@@ -104,37 +106,28 @@ fun CreateProductFragment(
     ) { padding ->
 
         viewModel.isUpdate = isUpdate
-
-        product?.let {
-            viewModel.selectedProductType = it.type
-        }
+//        product?.let { model ->
+//            val category = mainViewModel.state.productCategories.find { it.key == model.categoryId }
+//            viewModel.state = viewModel.state.copy(category = category)
+//        }
 
         if (viewModel.state.showSuccessDialog) {
             SuccessDialog(
                 dismissDialog = {
-                    if (isUpdate)
+                    if (isUpdate) {
                         viewModel.state = viewModel.state.copy(showSuccessDialog = false)
-                    else viewModel.onEvent(CreateProductEvent.ToggleSuccessDialog)
+                        navigateToProducts()
+                    } else viewModel.onEvent(CreateProductEvent.ToggleSuccessDialog)
                 },
                 message = if (isUpdate) "Successfully updated product" else "Successfully created product"
             )
         }
 
-        LaunchedEffect(Unit) {
+        LaunchedEffect(true) {
             if (isUpdate) {
-                viewModel.onEvent(
-                    CreateProductEvent.SetProductState(
-                        CreateProductState(
-                            productId = product?.id.orEmpty(),
-                            name = product?.name?.replace("+", " ").orEmpty(),
-                            brand = product?.brand.orEmpty(),
-                            size = product?.size.toString(),
-                            color = product?.color.orEmpty(),
-                            price = product?.price.toString(),
-                            type = product?.type.orEmpty(),
-                        )
-                    )
-                )
+                product?.let { model ->
+                    viewModel.onEvent(CreateProductEvent.SetProductState(model))
+                }
             }
         }
 
@@ -172,7 +165,7 @@ fun CreateProductFragment(
 
                     Column(modifier = Modifier.padding(Dimens._12dp)) {
                         Text(
-                            text = "Adding new product to ${mainViewModel.state.currentStore?.name} store",
+                            text = "Adding new product to ${viewModel.state.currentStore?.name} store",
                             color = DeepSeaBlue
                         )
                     }
@@ -205,30 +198,73 @@ fun CreateProductFragment(
                 )
                 VerticalSpacer(Dimens._10dp)
 
-                CustomExposedDropdown(
-                    placeholder = stringResource(R.string.product_type),
-                    selectedValue = viewModel.selectedProductType.productTypeValue(),
-                    onValueChange = { viewModel.onEvent(CreateProductEvent.TypeChanged(it)) },
-                    items = mainViewModel.state.productTypes,
-                    modifier = Modifier.fillMaxWidth(),
-                    errorMessage = viewModel.state.typeError
-                )
+                if (!isUpdate) {
+                    CustomExposedDropdown(
+                        placeholder = stringResource(R.string.product_type),
+                        selectedValue = viewModel.state.type?.value.orEmpty(),
+                        onValueChange = { value ->
+                            val model = viewModel.state.productTypes.find { it.key == value }
+                            Timber.d("Selected type: %s", model)
+                            model?.let {
+                                viewModel.onEvent(CreateProductEvent.TypeChanged(it))
+                            }
+                        },
+                        items = viewModel.state.productTypes,
+                        modifier = Modifier.fillMaxWidth(),
+                        errorMessage = viewModel.state.typeError
+                    )
+                }
+
+                if (isUpdate && viewModel.state.type != null) {
+                    CustomExposedDropdown(
+                        placeholder = stringResource(R.string.product_type),
+                        selectedValue = viewModel.state.type?.value.orEmpty(),
+                        onValueChange = { value ->
+                            val model = viewModel.state.productTypes.find { it.key == value}
+                            model?.let {
+                                viewModel.onEvent(CreateProductEvent.TypeChanged(it))
+                            }
+                        },
+                        items = viewModel.state.productTypes,
+                        modifier = Modifier.fillMaxWidth(),
+                        errorMessage = viewModel.state.typeError
+                    )
+                }
+
                 VerticalSpacer(Dimens._10dp)
 
-                CustomExposedDropdown(
-                    placeholder = stringResource(R.string.category),
-                    selectedValue = viewModel.state.category?.value.orEmpty(),
-                    onValueChange = {value ->
-                        Timber.d("Category selected: %s", value)
-                        val model = mainViewModel.state.productCategories.find { it.key == value}
-                        model?.let {
-                            viewModel.onEvent(CreateProductEvent.CategoryChanged(it))
-                        }
-                    },
-                    items = mainViewModel.state.productCategories,
-                    modifier = Modifier.fillMaxWidth(),
-                    errorMessage = viewModel.state.typeError
-                )
+                if(!isUpdate) {
+                    CustomExposedDropdown(
+                        placeholder = stringResource(R.string.category),
+                        selectedValue = viewModel.state.category?.value.orEmpty(),
+                        onValueChange = { value ->
+                            val model = viewModel.state.productCategories.find { it.key == value }
+                            Timber.d("Selected type: %s", model)
+                            model?.let {
+                                viewModel.onEvent(CreateProductEvent.CategoryChanged(it))
+                            }
+                        },
+                        items = viewModel.state.productCategories,
+                        modifier = Modifier.fillMaxWidth(),
+                        errorMessage = viewModel.state.typeError
+                    )
+                }
+
+                if (isUpdate && viewModel.state.category != null) {
+                    CustomExposedDropdown(
+                        placeholder = stringResource(R.string.category),
+                        selectedValue = viewModel.state.category?.value.orEmpty(),
+                        onValueChange = {value ->
+                            val model = viewModel.state.productCategories.find { it.key == value}
+                            model?.let {
+                                viewModel.onEvent(CreateProductEvent.CategoryChanged(it))
+                            }
+                        },
+                        items = viewModel.state.productCategories,
+                        modifier = Modifier.fillMaxWidth(),
+                        errorMessage = viewModel.state.typeError
+                    )
+                }
                 VerticalSpacer(Dimens._10dp)
                 CustomTextField(
                     value = viewModel.state.quantity,
@@ -241,8 +277,21 @@ fun CreateProductFragment(
                         keyboardType = KeyboardType.Number,
                     ),
                 )
-
                 VerticalSpacer(Dimens._10dp)
+
+                CustomTextField(
+                    value = viewModel.state.brand,
+                    onValueChange = { viewModel.onEvent(CreateProductEvent.BrandChanged(it)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = "Brand",
+                    isError = viewModel.state.brandError.isNotEmpty(),
+                    errorMessage = viewModel.state.brandError,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                    ),
+                )
+                VerticalSpacer(Dimens._10dp)
+
                 CustomTextField(
                     value = viewModel.state.size,
                     onValueChange = { viewModel.onEvent(CreateProductEvent.SizeChanged(it)) },
@@ -265,19 +314,9 @@ fun CreateProductFragment(
 
                 VerticalSpacer(Dimens._10dp)
 
-                CustomTextField(
-                    value = viewModel.state.brand,
-                    onValueChange = { viewModel.onEvent(CreateProductEvent.BrandChanged(it)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = "Brand",
-                    isError = viewModel.state.brandError.isNotEmpty(),
-                    errorMessage = viewModel.state.brandError,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                    ),
-                )
-                VerticalSpacer(Dimens._10dp)
-
+                if (viewModel.state.type != null) {
+                    Timber.d("Type selected: %s", viewModel.state.type)
+                }
 
                 if (viewModel.state.error.isNotEmpty()) {
                     Column(
@@ -286,6 +325,20 @@ fun CreateProductFragment(
                     ) {
                         VerticalSpacer(Dimens._10dp)
                         ErrorLabel(message = viewModel.state.error)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(Dimens._12dp))
+                
+                if (isUpdate) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = viewModel.state.damaged,
+                            onCheckedChange = {viewModel.onEvent(CreateProductEvent.DamagedChanged(it))}
+                        )
+                        Text(text = "Is Damaged?")
                     }
                 }
 

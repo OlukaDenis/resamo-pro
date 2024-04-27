@@ -125,7 +125,7 @@ fun ProfileFragment(
                    if (user.isAdmin()) {
                        HomeCardItem(
                            onClick = { navigateToUsers() },
-                           title = "User Management",
+                           title = stringResource(R.string.user_management),
                            icon = {
                                CircleIcon(
                                    onClick = { },
@@ -138,7 +138,7 @@ fun ProfileFragment(
 
                        HomeCardItem(
                            onClick = { navigateToStores() },
-                           title = "Store Management",
+                           title = stringResource(R.string.shop_management),
                            icon = {
                                CircleIcon(
                                    onClick = { },
@@ -155,7 +155,7 @@ fun ProfileFragment(
 
                 CustomButton(
                     modifier = Modifier.fillMaxWidth(),
-                    title = "Logout",
+                    title = stringResource(R.string.logout),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = TruliRed
                     ),

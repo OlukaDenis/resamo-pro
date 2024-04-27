@@ -60,6 +60,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
 
         composable(route = AuthScreen.NewStore.route) {
             CreateStoreFragment(
+                fromLogin = true,
                 navigateUp = { navController.navigateUp() },
                 navigateToHome = {
                     navController.navigate(Graph.MAIN) {
@@ -68,7 +69,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                         }
                     }
                 },
-
+                navigateToStores = { }
             )
         }
     }

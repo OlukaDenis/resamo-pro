@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 import javax.inject.Inject
 
 class StoreRepositoryImpl @Inject constructor(
@@ -33,7 +34,7 @@ class StoreRepositoryImpl @Inject constructor(
     override suspend fun createStore(request: HashMap<String, Any>): StoreDomainModel {
         return try {
             val response = runBlocking { apiService.createStore(request)}.data
-            response.toDomain(response.createdBy.orEmpty())
+            response.toDomain("")
         } catch (throwable: Throwable) {
             throw throwable
         }

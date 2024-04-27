@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface ProfileRepository {
     suspend fun fetchCurrentUser(): UserDomainModel
     suspend fun fetchUserList(): Flow<PagingData<UserDomainModel>>
+    suspend fun fetchStoreUserList(): List<UserDomainModel>
     suspend fun createUser(request: HashMap<String, Any>): UserDomainModel
     suspend fun activate(userId: String): UserDomainModel
     suspend fun deactivate(userId: String): UserDomainModel

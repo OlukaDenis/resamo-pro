@@ -77,7 +77,6 @@ class ProductViewModel @Inject constructor(
     private fun getProducts() {
         val filter = state.filters
         val param = GetProductsUseCase.Param(
-            inStock = true,
             brand = filter.brand.trim().replace(" ", "-"),
             color = filter.color.trim(),
             size = filter.size.trim(),

@@ -15,5 +15,10 @@ data class ProductDomainModel(
     val quantity: Int,
     val size: Int,
     val type: String,
-    val updatedAt: String
+    val updatedAt: String,
+    val damaged: Boolean,
+    val volume: Int,
+    val volumeUnit: String,
+    val weight: Int,
+    val weightUnit: String
 )

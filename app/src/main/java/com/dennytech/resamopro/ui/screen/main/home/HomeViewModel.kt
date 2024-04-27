@@ -43,13 +43,17 @@ class HomeViewModel @Inject constructor(
     }
 
     fun initialize() {
-//        onEvent(HomeEvent.GetRevenue)
-//        onEvent(HomeEvent.GetSaleCounts)
-//        onEvent(HomeEvent.GetSales)
-//        onEvent(HomeEvent.GetCurrentStore)
-//        onEvent(HomeEvent.GetUserStores)
+        onEvent(HomeEvent.GetRevenue)
+        onEvent(HomeEvent.GetSaleCounts)
+        onEvent(HomeEvent.GetSales)
+        onEvent(HomeEvent.GetUserStores)
 
+        loadCurrentStore()
         fetchCurrentUser()
+    }
+
+    fun loadCurrentStore() {
+        onEvent(HomeEvent.GetCurrentStore)
     }
 
 
@@ -99,6 +103,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             getSelectedStoreUseCase().collect {
                 state = state.copy(currentStore = it)
+                Timber.d("Current store: %s", it)
             }
         }
     }

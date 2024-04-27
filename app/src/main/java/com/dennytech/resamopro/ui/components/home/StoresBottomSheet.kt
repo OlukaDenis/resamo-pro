@@ -21,13 +21,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.components.CircleIcon
 import com.dennytech.resamopro.ui.components.HorizontalSpacer
 import com.dennytech.resamopro.ui.components.VerticalSpacer
@@ -47,6 +50,10 @@ fun StoresBottomSheet(
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
+    LaunchedEffect(true) {
+        viewModel.loadCurrentStore()
+    }
+
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = sheetState
@@ -61,7 +68,7 @@ fun StoresBottomSheet(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    "Store List",
+                    stringResource(R.string.shop_list),
                     fontWeight = FontWeight.Bold,
                     fontSize = Dimens._18sp
                 )

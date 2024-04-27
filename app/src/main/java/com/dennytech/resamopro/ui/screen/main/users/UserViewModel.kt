@@ -12,6 +12,7 @@ import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.usecases.store.GetSelectedStoreUseCase
 import com.dennytech.domain.usecases.store.SetSelectedStoreUseCase
+import com.dennytech.domain.usecases.user.GetStoreUsersUseCase
 import com.dennytech.domain.usecases.user.GetUsersUseCase
 import com.dennytech.domain.usecases.user.ToggleUserActivationUseCase
 import com.dennytech.resamopro.ui.screen.main.products.ProductEvent
@@ -26,6 +27,7 @@ class UserViewModel @Inject constructor(
     private val getUsersUseCase: GetUsersUseCase,
     private val toggleUserActivationUseCase: ToggleUserActivationUseCase,
     private val getSelectedStoreUseCase: GetSelectedStoreUseCase,
+    private val getStoreUsersUseCase: GetStoreUsersUseCase
 ): ViewModel() {
 
     init {
@@ -33,9 +35,6 @@ class UserViewModel @Inject constructor(
         getCurrentStore()
     }
 
-    private val _usersState: MutableStateFlow<PagingData<UserDomainModel>> =
-        MutableStateFlow(value = PagingData.empty())
-    val usersState get() = _usersState
     var error by mutableStateOf("")
     var loading by mutableStateOf(false)
     var state by mutableStateOf(UserState())
@@ -62,11 +61,19 @@ class UserViewModel @Inject constructor(
 
     private fun getUsers() {
         viewModelScope.launch {
-            getUsersUseCase()
-                .distinctUntilChanged()
-                .cachedIn(viewModelScope)
+            getStoreUsersUseCase()
                 .collect {
-                    _usersState.value = it
+                    when(it) {
+                        is Resource.Success -> {
+                            loading = false
+                            state = state.copy(storeUsers = it.data)
+                        }
+                        is Resource.Error -> {
+                            error = it.exception
+                            loading = false
+                        }
+                        is Resource.Loading -> loading = true
+                    }
                 }
         }
     }
@@ -98,7 +105,8 @@ class UserViewModel @Inject constructor(
 }
 
 data class UserState(
-    val currentStore: StoreDomainModel? = null
+    val currentStore: StoreDomainModel? = null,
+    val storeUsers: List<UserDomainModel> = emptyList()
 )
 
 sealed class UserEvent {

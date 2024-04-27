@@ -25,8 +25,8 @@ android {
         applicationId = "com.dennytech.resamopro"
         minSdk = 21
         targetSdk = 34
-        versionCode = 12
-        versionName = "1.0.2"
+        versionCode = 13
+        versionName = "1.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

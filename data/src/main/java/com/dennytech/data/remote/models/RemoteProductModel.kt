@@ -31,7 +31,12 @@ data class RemoteProductModel(
     val quantity: Int?,
     val size: Int?,
     val type: String?,
-    val updatedAt: String?
+    val updatedAt: String?,
+    val damaged: Boolean?,
+    val volume: Int?,
+    val volumeUnit: String?,
+    val weight: Int?,
+    val weightUnit: String?
 ) {
 
     companion object {
@@ -52,6 +57,11 @@ data class RemoteProductModel(
                 thumbnail = this.thumbnail.orEmpty(),
                 updatedAt = this.updatedAt.orEmpty(),
                 type = this.type.orEmpty(),
+                damaged = this.damaged ?: false,
+                volume = this.volume ?: -1,
+                volumeUnit = this.volumeUnit.orEmpty(),
+                weight = this.weight ?: -1,
+                weightUnit = this.weightUnit.orEmpty()
             )
         }
     }

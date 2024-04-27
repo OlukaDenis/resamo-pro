@@ -69,6 +69,8 @@ object Helpers {
 
     fun String.formatDateTime(): String {
         return try {
+            if (this.isEmpty()) return ""
+
             val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS", Locale.getDefault())
             val output = SimpleDateFormat("MMM dd, yyyy HH:mm a", Locale.getDefault())
             val date = input.parse(this) ?: throw Exception("wrong date")

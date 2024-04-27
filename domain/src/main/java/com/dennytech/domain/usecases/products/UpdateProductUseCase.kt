@@ -27,7 +27,10 @@ class UpdateProductUseCase @Inject constructor(
         val color: String?,
         val size: String?,
         val type: String?,
-        val price: String?
+        val price: String?,
+        val quantity: String?,
+        val categoryId: String?,
+        val damaged: String?
     )
 
     override fun run(param: Param?): Flow<Resource<ProductDomainModel>> = flow {
@@ -43,6 +46,9 @@ class UpdateProductUseCase @Inject constructor(
                 this["size"] = param.size
                 this["type"] = param.type
                 this["price"] = param.price
+                this["categoryId"] = param.categoryId
+                this["quantity"] = param.quantity
+                this["damaged"] =param.damaged
             }
 
             val response =

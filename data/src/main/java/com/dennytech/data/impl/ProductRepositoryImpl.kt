@@ -99,12 +99,42 @@ class ProductRepositoryImpl @Inject constructor(
             return try {
 
                 val fieldsMap = HashMap<String, RequestBody?>().apply {
-                    put("name", fields["name"]?.toRequestBody("*/*".toMediaTypeOrNull()))
-                    put("price", fields["price"]?.toRequestBody("*/*".toMediaTypeOrNull()))
-                    put("color", fields["color"]?.toRequestBody("*/*".toMediaTypeOrNull()))
-                    put("size", fields["size"]?.toRequestBody("*/*".toMediaTypeOrNull()))
-                    put("type", fields["type"]?.toRequestBody("*/*".toMediaTypeOrNull()))
-                    put("brand", fields["brand"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+
+                    if (fields["quantity"]?.isNotEmpty() == true) {
+                        put("quantity", fields["quantity"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    }
+
+                    if (fields["brand"]?.isNotEmpty() == true) {
+                        put("brand", fields["brand"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    }
+
+                    if (fields["type"]?.isNotEmpty() == true) {
+                        put("type", fields["type"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    }
+
+                    if (fields["size"]?.isNotEmpty() == true) {
+                        put("size", fields["size"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    }
+
+                    if (fields["color"]?.isNotEmpty() == true) {
+                        put("color", fields["color"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    }
+
+                    if (fields["price"]?.isNotEmpty() == true) {
+                        put("price", fields["price"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    }
+
+                    if (fields["name"]?.isNotEmpty() == true) {
+                        put("name", fields["name"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    }
+
+                    if (fields["categoryId"]?.isNotEmpty() == true) {
+                        put("categoryId", fields["categoryId"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    }
+
+                    if (fields["damaged"]?.isNotEmpty() == true) {
+                        put("damaged", fields["damaged"]?.toRequestBody("*/*".toMediaTypeOrNull()))
+                    }
                 }
 
 

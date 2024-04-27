@@ -29,6 +29,10 @@ class MainViewModel @Inject constructor(
     var state by mutableStateOf(MainState())
 
     init {
+        initiate()
+    }
+
+    fun initiate() {
         getCurrentUser()
         getUserStores()
         getCurrentStore()
@@ -68,6 +72,12 @@ class MainViewModel @Inject constructor(
                 else emptyList()
 
                 state = state.copy(currentStore = store, productTypes = types, productCategories = categories)
+
+//                Timber.d(
+//                    "Current store: " + store + "\n" +
+//                            "Current types: " + types + "\n" +
+//                            "Categories: " + categories
+//                )
             }
         }
     }

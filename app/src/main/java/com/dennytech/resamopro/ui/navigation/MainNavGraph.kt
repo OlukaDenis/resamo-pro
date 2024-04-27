@@ -28,7 +28,7 @@ fun MainNavGraph(
     NavHost(
         navController = bottomNavController,
         route = Graph.MAIN,
-        startDestination = MainScreen.Products.route, // Home
+        startDestination = MainScreen.Home.route, // Home
     ) {
 
         composable(route = MainScreen.Home.route) {
@@ -76,7 +76,16 @@ fun MainNavGraph(
             UsersFragment(
                 navController = bottomNavController,
                 navigateUp = { bottomNavController.navigateUp() },
-                navigateToNewUser = { bottomNavController.navigate(MainScreen.NewUser.route)}
+                navigateToNewUser = { bottomNavController.navigate(MainScreen.NewUser.route) }
+            )
+        }
+
+        composable(route = MainScreen.NewStore.route) {
+            CreateStoreFragment(
+                fromLogin = false,
+                navigateUp = { bottomNavController.navigateUp() },
+                navigateToHome = { bottomNavController.navigate(MainScreen.Home.route) },
+                navigateToStores = { bottomNavController.navigate(MainScreen.Stores.route) }
             )
         }
 
@@ -84,11 +93,11 @@ fun MainNavGraph(
             StoreListFragment(
                 navController = bottomNavController,
                 navigateUp = { bottomNavController.navigateUp() },
-                navigateToNewStore = { },
+                navigateToNewStore = { bottomNavController.navigate(MainScreen.NewStore.route) },
             )
         }
 
-        composable(route = MainScreen.StoreDetail.route) {navBackStackEntry->
+        composable(route = MainScreen.StoreDetail.route) { navBackStackEntry ->
             /* Extracting the transaction object json from the route */
             val storeId = navBackStackEntry.arguments?.getString("storeId")
 
@@ -111,7 +120,7 @@ fun MainNavGraph(
 //            )
 //        }
 
-        composable(route = MainScreen.UpdateProduct.route) {navBackStackEntry->
+        composable(route = MainScreen.UpdateProduct.route) { navBackStackEntry ->
             // Creating gson object
             val gson = GsonBuilder().create()
             /* Extracting the transaction object json from the route */
@@ -121,6 +130,7 @@ fun MainNavGraph(
 
             CreateProductFragment(
                 navigateUp = { bottomNavController.navigateUp() },
+                navigateToProducts = { bottomNavController.navigate(MainScreen.Products.route) },
                 product = transactionObj,
                 isUpdate = true
             )
@@ -129,6 +139,7 @@ fun MainNavGraph(
         composable(route = MainScreen.NewProduct.route) {
             CreateProductFragment(
                 navigateUp = { bottomNavController.navigateUp() },
+                navigateToProducts = { bottomNavController.navigate(MainScreen.Products.route) },
             )
         }
 

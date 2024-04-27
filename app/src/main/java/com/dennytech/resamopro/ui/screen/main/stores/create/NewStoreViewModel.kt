@@ -10,6 +10,7 @@ import com.dennytech.domain.usecases.store.NewStoreUseCase
 import com.dennytech.domain.usecases.user.CreateUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,20 +20,21 @@ class CreateStoreViewModel @Inject constructor(
 
     var state by mutableStateOf(CreateStoreState())
     var complete by mutableStateOf(false)
+    var fromLogin by mutableStateOf(false)
 
     fun onEvent(event: CreateStoreEvent) {
         when(event) {
             is CreateStoreEvent.NameChanged -> {
-                state = state.copy(name = event.value.trim(), nameError = "", dirty = false)
+                state = state.copy(name = event.value, nameError = "", dirty = false)
             }
             is CreateStoreEvent.LocationChanged -> {
-                state = state.copy(location = event.value.trim(), locationError = "", dirty = false)
+                state = state.copy(location = event.value, locationError = "", dirty = false)
             }
             is CreateStoreEvent.CategoryChanged -> {
-                state = state.copy(category = event.value.trim(), categoryError = "", dirty = false)
+                state = state.copy(category = event.value, categoryError = "", dirty = false)
             }
             is CreateStoreEvent.DescriptionChanged -> {
-                state = state.copy(description = event.value.trim(), descriptionError = "", dirty = false)
+                state = state.copy(description = event.value, descriptionError = "", dirty = false)
             }
 
             is CreateStoreEvent.Submit -> {
@@ -58,6 +60,7 @@ class CreateStoreViewModel @Inject constructor(
                 when(it) {
                     is Resource.Loading -> state = state.copy(loading = true)
                     is Resource.Success -> {
+                        Timber.d("shop creation success")
                         state = state.copy(
                             loading = false,
                             error = "",
@@ -67,6 +70,7 @@ class CreateStoreViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
+                        Timber.d("shop creation failed")
                         state = state.copy(
                             loading = false,
                             error = it.exception
@@ -86,7 +90,7 @@ class CreateStoreViewModel @Inject constructor(
         if (state.location.isEmpty()) {
             state = state.copy(locationError = "Location required", dirty = true)
         }
-        if (state.category.isEmpty()) {
+        if (fromLogin && state.category.isNullOrEmpty()) {
             state = state.copy(categoryError = "Category required", dirty = true)
         }
 
@@ -100,7 +104,7 @@ data class CreateStoreState(
     val descriptionError: String = "",
     val location: String = "",
     val locationError: String = "",
-    val category: String = "",
+    val category: String? = null,
     val categoryError: String = "",
     val loading: Boolean = false,
     val error: String = "",

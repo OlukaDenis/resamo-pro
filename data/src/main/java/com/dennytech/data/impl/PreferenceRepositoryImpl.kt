@@ -55,8 +55,12 @@ class PreferenceRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setCurrentStore(value: String) {
-        dataStore.edit { preferences ->
-            preferences[CURRENT_STORE_KEY] = value
+        try {
+            dataStore.edit { preferences ->
+                preferences[CURRENT_STORE_KEY] = value
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

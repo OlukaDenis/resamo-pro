@@ -58,6 +58,15 @@ class ProfileRepositoryImpl @Inject constructor(
         ).flow
     }
 
+    override suspend fun fetchStoreUserList(): List<UserDomainModel> {
+        return try {
+            val users = apiService.getStoreUsers().data
+            users.map { it.toDomainUser() }
+        } catch (throwable: Throwable) {
+            throw throwable
+        }
+    }
+
     override suspend fun createUser(request: HashMap<String, Any>): UserDomainModel {
         return try {
             apiService.createUser(request).data.toDomainUser()

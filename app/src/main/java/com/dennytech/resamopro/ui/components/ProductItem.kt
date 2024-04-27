@@ -111,7 +111,7 @@ fun ProductItem(
                             Spacer(modifier = Modifier.width(Dimens._6dp))
                             ProductLabel(title = product.brand.capitalize())
                         }
-
+                        Spacer(modifier = Modifier.height(Dimens._4dp))
                         Row(
                             modifier = Modifier
                                 .padding(horizontal = Dimens._14dp)

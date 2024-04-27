@@ -14,6 +14,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
@@ -86,6 +87,10 @@ private fun BottomNavBar(
     navController: NavController,
     currentSelectedScreen: MainScreen,
 ) {
+    LaunchedEffect(key1 = true) {
+        mainViewModel.initiate()
+    }
+
     val colors = NavigationBarItemDefaults.colors(
         selectedIconColor = MaterialTheme.colorScheme.primary,
         selectedTextColor = MaterialTheme.colorScheme.primary,
