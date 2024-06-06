@@ -14,6 +14,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -26,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dennytech.resamopro.ui.components.CloseIcon
 import com.dennytech.resamopro.ui.components.HorizontalSpacer
 import com.dennytech.resamopro.ui.components.LoadingCircle
 import com.dennytech.resamopro.ui.components.ProfileIcon
@@ -35,6 +38,7 @@ import com.dennytech.resamopro.ui.screen.main.stores.detail.StoreDetailViewModel
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.LightGrey
 import com.dennytech.resamopro.ui.theme.TruliBlue
+import com.dennytech.resamopro.ui.theme.TruliBlueLight900
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -45,31 +49,52 @@ fun UnAssignedStoreUsersBottomSheet(
     storeId: String,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(
+        confirmValueChange = {false}
+    )
     val scope = rememberCoroutineScope()
 
     ModalBottomSheet(
-        onDismissRequest = { onDismiss() },
+        onDismissRequest = {  },
         sheetState = sheetState
     ) {
 
-        Column(
-            modifier = Modifier.padding(Dimens._16dp)
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Dimens._16dp)
         ) {
 
             Column(
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .weight(1f)
             ) {
+
                 Text(
                     "Assign Users",
                     fontWeight = FontWeight.Bold,
                     fontSize = Dimens._18sp
                 )
-                VerticalSpacer(Dimens._4dp)
-                Divider(color = LightGrey)
-                VerticalSpacer(Dimens._4dp)
             }
+
+            IconButton(
+                onClick = { onDismiss() },
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = TruliBlueLight900
+                )
+            ) {
+                CloseIcon(tint = TruliBlue)
+            }
+        }
+
+
+        Column(
+            modifier = Modifier.padding(Dimens._16dp)
+        ) {
 
             VerticalSpacer(Dimens._8dp)
             val users = viewModel.state.unassignedUsers
@@ -125,19 +150,18 @@ fun UnAssignedStoreUsersBottomSheet(
                                                 )
                                             }
 
-                                            if (viewModel.state.assigningUser) {
-                                                CircularProgressIndicator(
-                                                    modifier = Modifier.size(Dimens._30dp),
-                                                    color = TruliBlue,
-                                                    strokeWidth = Dimens._3dp,
-                                                )
+                                            if (viewModel.state.assigningUser && viewModel.userIdSelected == item.id) {
+                                                Column(
+                                                    modifier = Modifier.padding(end = Dimens._8dp)
+                                                ) {
+                                                    CircularProgressIndicator(
+                                                        modifier = Modifier.size(Dimens._24dp),
+                                                        color = TruliBlue,
+                                                        strokeWidth = Dimens._3dp,
+                                                    )
+                                                }
                                             } else {
                                                 TextButton(onClick = {
-//                                                    scope.launch { sheetState.hide() }.invokeOnCompletion {
-//                                                        if (!sheetState.isVisible) {
-//                                                            onDismiss()
-//                                                        }
-//                                                    }
                                                     viewModel.onEvent(StoreDetailEvent.AssignUser(
                                                         userId = item.id,
                                                         storeId = storeId

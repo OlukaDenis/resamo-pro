@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -25,12 +27,37 @@ android {
         applicationId = "com.dennytech.resamopro"
         minSdk = 21
         targetSdk = 34
-        versionCode = 13
-        versionName = "1.0.3"
+        versionCode = getVersionCode()
+        versionName = getVersionName()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+
+        val versionPropsFile = file("../version.properties")
+
+        if (versionPropsFile.exists()) {
+            val versionProps = Properties()
+            versionProps.load(versionPropsFile.inputStream())
+
+            val versionCodeMajor = versionProps.getProperty("VERSION_CODE_MAJOR").toInt()
+            val versionCodeMinor = versionProps.getProperty("VERSION_CODE_MINOR").toInt()
+
+            defaultConfig {
+                versionCode = versionCodeMajor * 100 + versionCodeMinor
+                versionName = versionProps.getProperty("VERSION_NAME")
+            }
+        }
+
+        // Build a named APK
+        applicationVariants.all {
+            outputs.all {
+                this as com.android.build.gradle.internal.api.ApkVariantOutputImpl
+                val type = if (buildType.name == "release") "prod" else "staging"
+                val apkName = "resamo-$type-$versionName-($versionCode).apk"
+                outputFileName = apkName
+            }
         }
     }
 
@@ -67,6 +94,11 @@ android {
             )
         }
     }
+
+    applicationVariants.all {
+
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -84,6 +116,66 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+
+    tasks.getByName("preBuild").dependsOn("incrementVersion")
+}
+
+tasks.register("incrementVersion") {
+    doLast {
+        try {
+            val versionPropsFile = file("../version.properties")
+            if (versionPropsFile.exists()) {
+                val versionProps = Properties()
+                versionProps.load(versionPropsFile.inputStream())
+
+                val versionCodeMajor = versionProps.getProperty("VERSION_CODE_MAJOR").toInt()
+                val versionCodeMinor = versionProps.getProperty("VERSION_CODE_MINOR").toInt() + 1
+//                val versionName = versionProps.getProperty("VERSION_NAME")
+
+                versionProps.setProperty("VERSION_CODE_MINOR", versionCodeMinor.toString())
+                versionProps.setProperty("VERSION_NAME", "$versionCodeMajor.$versionCodeMinor")
+                versionProps.store(versionPropsFile.writer(), null)
+
+                println("Version code incremented to $versionCodeMajor.$versionCodeMinor")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
+fun getVersionCode(): Int {
+    val versionPropsFile = file("../version.properties")
+    if (versionPropsFile.exists()) {
+        val versionProps = Properties()
+        versionProps.load(versionPropsFile.inputStream())
+
+        val versionCodeMajor = versionProps.getProperty("VERSION_CODE_MAJOR").toInt()
+        val versionCodeMinor = versionProps.getProperty("VERSION_CODE_MINOR").toInt()
+
+        return versionCodeMajor * 10000 + versionCodeMinor
+    }
+    return 4 // Default version code if version properties file doesn't exist
+}
+
+
+fun getVersionName(): String {
+    println("Getting version name......")
+    val versionPropsFile = file("../version.properties")
+//    val properties = readProperties(file("../version.properties"))
+    if (versionPropsFile.exists()) {
+        val versionProps = Properties()
+        versionProps.load(versionPropsFile.inputStream())
+        return versionProps.getProperty("VERSION_NAME")
+    }
+//    println("Getting version name: NAme exists.... ${properties["VERSION_NAME"]}")
+    return "1.0.4" // Default version name if version properties file doesn't exist
+}
+
+fun readProperties(propertiesFile: File) = Properties().apply {
+    propertiesFile.inputStream().use { fis ->
+        load(fis)
     }
 }
 
@@ -129,6 +221,11 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
+
+//    implementation("com.patrykandpatrick.vico:core:2.0.0-alpha.21")
+//    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.21")
+//    implementation("com.github.tehras:charts:0.2.4-alpha")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

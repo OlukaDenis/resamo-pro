@@ -9,6 +9,8 @@ import com.dennytech.data.remote.models.RefreshTokenResponseModel
 import com.dennytech.data.remote.models.RemoteRevenueResponse
 import com.dennytech.data.remote.models.RemoteSaleCountsResponse
 import com.dennytech.data.remote.models.RemoteSaleListResponse
+import com.dennytech.data.remote.models.ReportModelResponse
+import com.dennytech.data.remote.models.SaleReportModelResponse
 import com.dennytech.data.remote.models.StoreResponseModel
 import com.dennytech.data.remote.models.UserListResponse
 import com.dennytech.data.remote.models.UserResponse
@@ -113,4 +115,13 @@ interface ApiService {
 
     @POST("store")
     suspend fun createStore(@Body body: HashMap<String, Any>): StoreResponseModel
+
+    @POST("category")
+    suspend fun createCategory(@Body body: HashMap<String, Any>): GenericUserResponse
+
+    @GET("report/salesByPeriod")
+    suspend fun getSalesByPeriod(): SaleReportModelResponse
+
+    @GET("report/popular/types")
+    suspend fun getPopularProductTypes(): ReportModelResponse
 }

@@ -1,7 +1,5 @@
 package com.dennytech.resamopro.ui.screen.main.home
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,10 +13,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,29 +22,26 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.domain.models.UserDomainModel.Companion.isAdmin
 import com.dennytech.resamopro.ui.MainViewModel
-import com.dennytech.resamopro.ui.components.CustomButton
-import com.dennytech.resamopro.ui.components.DateFilter
+import com.dennytech.resamopro.ui.components.EmptyComponent
 import com.dennytech.resamopro.ui.components.InsightCard
 import com.dennytech.resamopro.ui.components.LoadingCircle
 import com.dennytech.resamopro.ui.components.SaleItem
 import com.dennytech.resamopro.ui.components.VerticalSpacer
+import com.dennytech.resamopro.ui.components.charts.CombinedBarGraph
 import com.dennytech.resamopro.ui.components.home.CurrentStoreInfo
 import com.dennytech.resamopro.ui.components.home.HomeUserInfo
 import com.dennytech.resamopro.ui.components.home.NotActivatedCard
 import com.dennytech.resamopro.ui.components.home.StoresBottomSheet
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
-import com.dennytech.resamopro.ui.theme.RedLight400
-import com.dennytech.resamopro.ui.theme.RedLight800
-import com.dennytech.resamopro.ui.theme.TruliRed
+import com.dennytech.resamopro.ui.theme.TruliBlue
+import com.dennytech.resamopro.ui.theme.TruliOrange
 import com.dennytech.resamopro.utils.Helpers.formatCurrency
-import timber.log.Timber
 
 @Composable
 fun HomeFragment(
@@ -89,7 +81,7 @@ fun HomeFragment(
                     mainViewModel.state.user?.let {
                         if (it.isAdmin()) {
                             CurrentStoreInfo(
-                                onClick = {viewModel.onEvent(HomeEvent.ToggleStoreBottomSheet)},
+                                onClick = { viewModel.onEvent(HomeEvent.ToggleStoreBottomSheet) },
                                 storeName = viewModel.state.currentStore?.name ?: ""
                             )
                         }
@@ -114,7 +106,7 @@ fun HomeFragment(
 
                 if (viewModel.state.showStoreBottomSheet) {
                     StoresBottomSheet(
-                        onDismiss = {viewModel.onEvent(HomeEvent.ToggleStoreBottomSheet)}
+                        onDismiss = { viewModel.onEvent(HomeEvent.ToggleStoreBottomSheet) }
                     )
                 }
             }
@@ -135,6 +127,11 @@ fun HomeContent(
 
         mainViewModel.state.user?.let {
             if (it.isAdmin()) {
+
+                LaunchedEffect(key1 = true) {
+                    viewModel.adminInitialize()
+                }
+
                 InsightCard(
                     title = "Total Revenue",
                     value = viewModel.state.revenue.toDouble().formatCurrency(),
@@ -142,35 +139,17 @@ fun HomeContent(
                     backgroundColor = DeepSeaBlue,
                     foregroundColor = Color.White
                 )
-                VerticalSpacer(Dimens._16dp)
             }
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Monthly Report",
-                textAlign = TextAlign.Center,
-                fontSize = Dimens._16sp,
-                color = DeepSeaBlue
-            )
+        CountsCards(
+            counts = counts,
+            navigateToCounts = navigateToCounts,
+            loading = viewModel.state.loadingCounts
+        )
 
-            TextButton(
-                onClick = { navigateToCounts() },
-            ) {
-                Text("More...")
-            }
-        }
-
-        if (viewModel.state.loadingCounts) {
-            LoadingCircle()
-        }
-
-        CountsCards(counts = counts)
+        VerticalSpacer(Dimens._16dp)
+        SaleRevenueGraph(viewModel = viewModel)
 
         Row(
             modifier = Modifier
@@ -203,23 +182,83 @@ fun HomeContent(
     }
 }
 
+@Composable
+fun SaleRevenueGraph(viewModel: HomeViewModel) {
+    VerticalSpacer(Dimens._10dp)
+
+    if (!viewModel.state.loadingSaleByPeriod) {
+        val reports = viewModel.state.salePeriodReport
+        val dataOne = reports.map { it.total.toFloat() }
+        val dataTwo = reports.map { it.revenue.toFloat() }
+        val xData = reports.indices.map { it.toFloat() }
+        val xLabels = reports.map { it.period }.toTypedArray()
+
+        CombinedBarGraph(
+            xData = xData,
+            firstValues = dataOne,
+            secondValues = dataTwo,
+            xLabels = xLabels,
+            legendEnabled = true,
+            graphOneLabel = "Sales",
+            graphTwoLabel = "Revenue"
+        )
+    } else {
+        LoadingCircle()
+    }
+}
 
 @Composable
 fun CountsCards(
     counts: List<CountCardModel>,
+    loading: Boolean,
+    navigateToCounts: (() -> Unit)? = null,
 ) {
-
-    if (counts.isNotEmpty()) {
-        LazyVerticalGrid(
-            modifier = Modifier.heightIn(max = 1000.dp),
-            columns = GridCells.Fixed(2),
-            horizontalArrangement = Arrangement.spacedBy(Dimens._16dp),
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            items(counts) { item ->
-                InsightCard(title = item.title, value = item.content)
+            Text(
+                text = "Reports",
+                textAlign = TextAlign.Center,
+                fontSize = Dimens._16sp,
+                color = DeepSeaBlue
+            )
+
+            if (navigateToCounts != null) {
+                TextButton(
+                    onClick = { navigateToCounts() },
+                ) {
+                    Text("More...")
+                }
+            }
+        }
+
+        if (loading) {
+            LoadingCircle()
+        }
+
+        if (counts.isNotEmpty()) {
+            LazyVerticalGrid(
+                modifier = Modifier.heightIn(max = 1000.dp),
+                columns = GridCells.Fixed(2),
+                horizontalArrangement = Arrangement.spacedBy(Dimens._16dp),
+            ) {
+                items(counts) { item ->
+                    val index = counts.indexOf(item)
+                    InsightCard(
+                        title = item.title,
+                        value = item.content,
+                        backgroundColor = if (index == 0) TruliBlue else TruliOrange,
+                        foregroundColor = Color.White
+                    )
+                }
             }
         }
     }
+
 
 }
 
@@ -229,6 +268,10 @@ private fun RecentSales(
     viewModel: HomeViewModel,
 ) {
     val list = viewModel.state.sales
+
+    if (!viewModel.state.loadingSales && list.isEmpty()) {
+        EmptyComponent()
+    }
 
     if (list.isNotEmpty()) {
         LazyRow(

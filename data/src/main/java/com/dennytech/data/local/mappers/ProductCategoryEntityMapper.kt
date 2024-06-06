@@ -9,7 +9,8 @@ class ProductCategoryEntityMapper @Inject constructor(): BaseLocalMapper<Product
         return ProductCategoryDomainModel(
             id = entity.id,
             storeId = entity.storeId,
-            name = entity.name
+            name = entity.name,
+            description = ""
         )
     }
 

@@ -10,6 +10,7 @@ import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.CalendarToday
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Store
@@ -25,7 +26,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.dennytech.resamopro.R
+import com.dennytech.resamopro.ui.navigation.MainScreen
 import com.dennytech.resamopro.ui.theme.Black800
+import com.dennytech.resamopro.ui.theme.TruliBlue
 
 @Composable
 fun QrIcon(
@@ -39,6 +42,19 @@ fun QrIcon(
         contentScale = ContentScale.Fit,
         colorFilter = ColorFilter.tint(color = tint),
         modifier = modifier
+    )
+}
+
+
+@Composable
+fun DiamondIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = Color.Gray
+) {
+    Icon(
+        painter = painterResource(id = R.drawable.ic_diamond),
+        contentDescription = stringResource(id = R.string.home),
+        tint = tint,
     )
 }
 
@@ -108,6 +124,19 @@ fun UpwardArrowIcon(
     Icon(
         imageVector = Icons.Rounded.ArrowUpward,
         contentDescription = stringResource(id = R.string.home),
+        tint = tint,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun CloseIcon(
+    modifier: Modifier = Modifier,
+    tint: Color = Color.Gray
+) {
+    Icon(
+        imageVector = Icons.Rounded.Close,
+        contentDescription = "Close Icon",
         tint = tint,
         modifier = modifier
     )

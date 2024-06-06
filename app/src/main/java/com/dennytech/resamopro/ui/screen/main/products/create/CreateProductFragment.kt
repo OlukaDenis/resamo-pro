@@ -123,7 +123,7 @@ fun CreateProductFragment(
             )
         }
 
-        LaunchedEffect(true) {
+        LaunchedEffect(Unit) {
             if (isUpdate) {
                 product?.let { model ->
                     viewModel.onEvent(CreateProductEvent.SetProductState(model))
@@ -204,7 +204,6 @@ fun CreateProductFragment(
                         selectedValue = viewModel.state.type?.value.orEmpty(),
                         onValueChange = { value ->
                             val model = viewModel.state.productTypes.find { it.key == value }
-                            Timber.d("Selected type: %s", model)
                             model?.let {
                                 viewModel.onEvent(CreateProductEvent.TypeChanged(it))
                             }

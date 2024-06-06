@@ -1,17 +1,15 @@
 package com.dennytech.resamopro.ui.screen.main.home.counts
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,11 +33,16 @@ import com.dennytech.resamopro.ui.components.DateFilter
 import com.dennytech.resamopro.ui.components.InsightCard
 import com.dennytech.resamopro.ui.components.LoadingCircle
 import com.dennytech.resamopro.ui.components.VerticalSpacer
+import com.dennytech.resamopro.ui.components.charts.BarGraph
+import com.dennytech.resamopro.ui.components.charts.CombinedBarGraph
+import com.dennytech.resamopro.ui.components.charts.FilledLineGraph
+import com.dennytech.resamopro.ui.components.charts.PieGraph
 import com.dennytech.resamopro.ui.screen.main.home.CountsCards
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
-import com.dennytech.resamopro.ui.theme.TruliBlue
+import com.dennytech.resamopro.utils.Helpers.capitalize
 import com.dennytech.resamopro.utils.Helpers.formatCurrency
+import com.github.mikephil.charting.data.PieEntry
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,15 +79,25 @@ fun CountsFragment(
         }
     ) { values ->
 
-        Column(
-            modifier = Modifier.padding(values)
+        Box(
+            modifier = Modifier
+                .padding(values)
         ) {
 
             val counts = viewModel.state.counts
 
+            LaunchedEffect(key1 = true) {
+                mainViewModel.state.user?.let {
+                    if (it.isAdmin()) {
+                        viewModel.getAdminReports()
+                    }
+                }
+            }
+
             Column(
                 modifier = Modifier
-                    .padding(Dimens._16dp),
+                    .padding(Dimens._16dp)
+                    .verticalScroll(rememberScrollState()),
             ) {
 
                 VerticalSpacer(Dimens._16dp)
@@ -91,39 +105,180 @@ fun CountsFragment(
                 DateFilter(
                     startDate = viewModel.state.startDate,
                     endDate = viewModel.state.endDate,
-                    endDateChange = {viewModel.onEvent(CountsEvent.EndDateChanged(it))},
-                    startDateChange = {viewModel.onEvent(CountsEvent.StartDateChanged(it))},
-                    onSubmit = {viewModel.onEvent(CountsEvent.SubmitFilter)}
+                    endDateChange = { viewModel.onEvent(CountsEvent.EndDateChanged(it)) },
+                    startDateChange = { viewModel.onEvent(CountsEvent.StartDateChanged(it)) },
+                    onSubmit = { viewModel.onEvent(CountsEvent.SubmitFilter) }
                 )
 
                 VerticalSpacer(Dimens._16dp)
 
-                Text(
-                    text = "Report",
-                    textAlign = TextAlign.Center,
-                    fontSize = Dimens._16sp,
-                    color = DeepSeaBlue
+                CountsCards(
+                    counts = counts,
+                    loading = viewModel.state.loadingCounts
                 )
 
-                VerticalSpacer(Dimens._16dp)
+                mainViewModel.state.user?.let {
+                    if (it.isAdmin()) {
+                        VerticalSpacer(Dimens._16dp)
 
-                if (viewModel.state.loadingCounts) {
-                    LoadingCircle()
+                        InsightCard(
+                            title = "Generated Revenue",
+                            value = viewModel.state.revenue.toDouble().formatCurrency()
+                        )
+
+                        AdminReports(viewModel = viewModel)
+                    }
                 }
-
-                CountsCards(counts = counts)
-
-               mainViewModel.state.user?.let {
-                   if(it.isAdmin()) {
-                       VerticalSpacer(Dimens._16dp)
-
-                       InsightCard(
-                           title = "Generated Revenue",
-                           value = viewModel.state.revenue.toDouble().formatCurrency()
-                       )
-                   }
-               }
             }
         }
+
+    }
+}
+
+@Composable
+fun AdminReports(viewModel: CountsViewModel) {
+    Column {
+//        VerticalSpacer(Dimens._24dp)
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth(),
+//            horizontalArrangement = Arrangement.SpaceBetween,
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Text(
+//                text = "Monthly Sales and Revenue",
+//                textAlign = TextAlign.Center,
+//                fontSize = Dimens._18sp,
+//                color = DeepSeaBlue
+//            )
+//        }
+//        VerticalSpacer(Dimens._10dp)
+//        SalesAndRevenueGraph(viewModel = viewModel)
+
+
+        VerticalSpacer(Dimens._24dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Sales by Month",
+                textAlign = TextAlign.Center,
+                fontSize = Dimens._18sp,
+                color = DeepSeaBlue
+            )
+        }
+        VerticalSpacer(Dimens._10dp)
+        SalesByPeriodLineGraph(viewModel = viewModel)
+
+
+
+//        VerticalSpacer(Dimens._24dp)
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth(),
+//            horizontalArrangement = Arrangement.SpaceBetween,
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Text(
+//                text = "Revenue by Month",
+//                textAlign = TextAlign.Center,
+//                fontSize = Dimens._18sp,
+//                color = DeepSeaBlue
+//            )
+//        }
+//        VerticalSpacer(Dimens._10dp)
+//        SalesByPeriodBarGraph(viewModel = viewModel)
+
+        VerticalSpacer(Dimens._24dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Popular Product Types",
+                textAlign = TextAlign.Center,
+                fontSize = Dimens._18sp,
+                color = DeepSeaBlue
+            )
+        }
+        VerticalSpacer(Dimens._10dp)
+        PopularTypesPieGraph(viewModel = viewModel)
+    }
+}
+
+@Composable
+private fun SalesAndRevenueGraph(viewModel: CountsViewModel) {
+    if (!viewModel.state.loadingSaleByPeriod) {
+        val reports = viewModel.state.salePeriodReport
+        val dataOne = reports.map { it.total.toFloat() }
+        val dataTwo = reports.map { it.revenue.toFloat() }
+        val xData = reports.indices.map { it.toFloat() }
+        val xLabels = reports.map { it.period }.toTypedArray()
+
+        CombinedBarGraph(
+            xData = xData,
+            firstValues = dataOne,
+            secondValues = dataTwo,
+            xLabels = xLabels,
+            legendEnabled = true,
+            graphOneLabel = "Sales",
+            graphTwoLabel = "Revenue"
+        )
+    }
+}
+
+@Composable
+private fun SalesByPeriodLineGraph(viewModel: CountsViewModel) {
+    if (!viewModel.state.loadingSaleByPeriod) {
+        val reports = viewModel.state.salePeriodReport
+        val yData = reports.map { it.total.toFloat() }
+        val xData = reports.indices.map { it.toFloat() }
+        val xLabels = reports.map { it.period }.toTypedArray()
+
+        FilledLineGraph(
+            xData = xData,
+            yData = yData,
+            xLabels = xLabels
+        )
+    } else {
+        LoadingCircle()
+    }
+}
+
+@Composable
+private fun SalesByPeriodBarGraph(viewModel: CountsViewModel) {
+    if (!viewModel.state.loadingSaleByPeriod) {
+        val reports = viewModel.state.salePeriodReport
+        val yData = reports.map { it.revenue.toFloat() }
+        val xData = reports.indices.map { it.toFloat() }
+        val xLabels = reports.map { it.period }.toTypedArray()
+
+        BarGraph(
+            xData = xData,
+            yData = yData,
+            xLabels = xLabels
+        )
+    }
+}
+
+
+@Composable
+private fun PopularTypesPieGraph(viewModel: CountsViewModel) {
+    if (!viewModel.state.loadingPopularTypes) {
+        val reports = viewModel.state.popularTypes
+        val values = reports.map {
+            PieEntry(it.count.toFloat(), "${it.type.capitalize()}(${it.count})")
+        }
+
+        PieGraph(
+            entries = values
+        )
+    } else {
+        LoadingCircle()
     }
 }

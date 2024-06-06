@@ -6,20 +6,20 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dennytech.domain.models.Resource
-import com.dennytech.domain.models.SaleCountsDomainModel
 import com.dennytech.domain.models.SaleDomainModel
+import com.dennytech.domain.models.SaleReportDomainModel
 import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.usecases.account.FetchCurrentUserUseCase
+import com.dennytech.domain.usecases.reports.FetchSaleByPeriodUseCase
 import com.dennytech.domain.usecases.sales.GetRecentSalesUseCase
 import com.dennytech.domain.usecases.sales.GetRevenueUseCase
 import com.dennytech.domain.usecases.sales.GetSaleCountsUseCase
 import com.dennytech.domain.usecases.store.GetSelectedStoreUseCase
 import com.dennytech.domain.usecases.store.GetUserStoreListUseCase
 import com.dennytech.domain.usecases.store.SetSelectedStoreUseCase
+import com.dennytech.resamopro.ui.screen.main.home.counts.CountsEvent
 import com.dennytech.resamopro.utils.Helpers.formatCurrency
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
@@ -33,7 +33,8 @@ class HomeViewModel @Inject constructor(
     private val getSelectedStoreUseCase: GetSelectedStoreUseCase,
     private val getUserStoreListUseCase: GetUserStoreListUseCase,
     private val setSelectedStoreUseCase: SetSelectedStoreUseCase,
-    private val fetchCurrentUserUseCase: FetchCurrentUserUseCase
+    private val fetchCurrentUserUseCase: FetchCurrentUserUseCase,
+    private val fetchSaleByPeriodUseCase: FetchSaleByPeriodUseCase,
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeState())
@@ -43,13 +44,17 @@ class HomeViewModel @Inject constructor(
     }
 
     fun initialize() {
-        onEvent(HomeEvent.GetRevenue)
         onEvent(HomeEvent.GetSaleCounts)
         onEvent(HomeEvent.GetSales)
         onEvent(HomeEvent.GetUserStores)
 
         loadCurrentStore()
         fetchCurrentUser()
+    }
+
+    fun adminInitialize() {
+        onEvent(HomeEvent.GetRevenue)
+        onEvent(HomeEvent.GetSaleByPeriod)
     }
 
     fun loadCurrentStore() {
@@ -74,6 +79,8 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.GetUserStores -> getUserStores()
 
             is HomeEvent.SetCurrentStore -> setCurrentStore(event.storeId)
+
+            is HomeEvent.GetSaleByPeriod -> getSalesReportByPeriod()
         }
     }
 
@@ -104,6 +111,24 @@ class HomeViewModel @Inject constructor(
             getSelectedStoreUseCase().collect {
                 state = state.copy(currentStore = it)
                 Timber.d("Current store: %s", it)
+            }
+        }
+    }
+
+    private fun getSalesReportByPeriod() {
+        viewModelScope.launch {
+            fetchSaleByPeriodUseCase().collect {
+                state = when(it) {
+                    is Resource.Loading -> {
+                        state.copy(loadingSaleByPeriod = true)
+                    }
+                    is Resource.Error -> {
+                        state.copy(loadingSaleByPeriod = false)
+                    }
+                    is Resource.Success -> {
+                        state.copy(loadingSaleByPeriod = false, salePeriodReport = it.data)
+                    }
+                }
             }
         }
     }
@@ -201,7 +226,9 @@ data class HomeState(
     val loadingRevenue: Boolean = false,
     val loadingSales: Boolean = false,
     val currentStore: StoreDomainModel? = null,
-    val showStoreBottomSheet: Boolean = false
+    val showStoreBottomSheet: Boolean = false,
+    val loadingSaleByPeriod: Boolean = false,
+    val salePeriodReport: List<SaleReportDomainModel> = emptyList(),
 )
 
 data class CountCardModel(
@@ -217,4 +244,5 @@ sealed class HomeEvent {
     data object GetUserStores : HomeEvent()
     data object ToggleStoreBottomSheet: HomeEvent()
     data class SetCurrentStore(val storeId: String): HomeEvent()
+    data object GetSaleByPeriod : HomeEvent()
 }

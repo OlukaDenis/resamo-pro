@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -48,6 +50,7 @@ import com.dennytech.domain.models.UserDomainModel.Companion.isAdmin
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.models.ProductFilerModel.Companion.isNoEmpty
 import com.dennytech.resamopro.ui.MainViewModel
+import com.dennytech.resamopro.ui.components.EmptyComponent
 import com.dennytech.resamopro.ui.components.ErrorLabel
 import com.dennytech.resamopro.ui.components.dialogs.FilterDialog
 import com.dennytech.resamopro.ui.components.LoadingCircle
@@ -58,6 +61,7 @@ import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.Grey100
 import com.dennytech.resamopro.ui.theme.TruliBlue
 import com.google.gson.GsonBuilder
+import timber.log.Timber
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -138,10 +142,21 @@ fun ProductsFragment(
                 LoadingCircle()
             }
 
+//            if (viewModel.state.empty) {
+//               Column(
+//                   horizontalAlignment = Alignment.CenterHorizontally,
+//                   verticalArrangement = Arrangement.Center,
+//                   modifier = Modifier.fillMaxSize()
+//               ) {
+//                   EmptyComponent()
+//               }
+//            }
+
             val cellCount = 2
 
             val products: LazyPagingItems<ProductDomainModel> =
                 viewModel.productsState.collectAsLazyPagingItems()
+
             LazyVerticalStaggeredGrid(
                 modifier = Modifier
                     .padding(horizontal = Dimens._16dp, vertical = Dimens._14dp),
@@ -188,16 +203,20 @@ fun ProductsFragment(
 
                 products.apply {
                     when {
+                        loadState.append is LoadState.NotLoading && loadState.append.endOfPaginationReached -> {
+                            viewModel.state = viewModel.state.copy(empty = true, loading = false)
+                        }
+
                         loadState.refresh is LoadState.Loading -> {
-                            viewModel.state = viewModel.state.copy(loading = true)
+                            viewModel.state = viewModel.state.copy(loading = true, empty = false)
                         }
 
                         loadState.source.refresh is LoadState.NotLoading -> {
-                            viewModel.state = viewModel.state.copy(loading = false)
+                            viewModel.state = viewModel.state.copy(loading = false, empty = false)
                         }
 
                         loadState.refresh is LoadState.Error -> {
-                            viewModel.state = viewModel.state.copy(loading = false)
+                            viewModel.state = viewModel.state.copy(loading = false, empty = false)
                             val error = products.loadState.refresh as LoadState.Error
                             item {
                                 ErrorLabel(

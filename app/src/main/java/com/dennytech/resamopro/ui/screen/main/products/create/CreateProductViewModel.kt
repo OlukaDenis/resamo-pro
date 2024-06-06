@@ -86,7 +86,7 @@ class CreateProductViewModel @Inject constructor(
             is CreateProductEvent.SetProductState -> {
                 state = state.copy(
                     productId = event.value.id,
-                    name = event.value.name.replace("+", " ").orEmpty(),
+                    name = event.value.name.replace("+", " "),
                     brand = event.value.brand,
                     size = if (event.value.size < 0) "" else event.value.size.toString(),
                     color = event.value.color,
@@ -129,8 +129,6 @@ class CreateProductViewModel @Inject constructor(
                 if (product != null && types.isNotEmpty()) {
                     val type = types.find { it.key == product.type}
                     state = state.copy(type = type)
-                    Timber.d("Types: %s", store.productTypes)
-                    Timber.d("Type: %s", product)
                 }
 
                 if (product != null && categories.isNotEmpty()) {

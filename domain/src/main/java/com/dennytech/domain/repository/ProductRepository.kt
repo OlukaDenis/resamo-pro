@@ -22,4 +22,6 @@ interface ProductRepository {
     suspend fun createProductSale(request: HashMap<String, Any>): Int
 
     suspend fun createProductType(storeId: String, request: HashMap<String, Any>): String
+
+    suspend fun createProductCategory(request: HashMap<String, Any>): String
 }

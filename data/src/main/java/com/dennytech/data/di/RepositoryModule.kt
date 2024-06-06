@@ -5,6 +5,7 @@ import com.dennytech.data.impl.PreferenceRepositoryImpl
 import com.dennytech.data.impl.ProfileRepositoryImpl
 import com.dennytech.data.impl.SyncRepositoryImpl
 import com.dennytech.data.impl.ProductRepositoryImpl
+import com.dennytech.data.impl.ReportsRepositoryImpl
 import com.dennytech.data.impl.SalesRepositoryImpl
 import com.dennytech.data.impl.StoreRepositoryImpl
 import com.dennytech.data.impl.UtilRepositoryImpl
@@ -13,6 +14,7 @@ import com.dennytech.domain.repository.PreferenceRepository
 import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.SyncRepository
 import com.dennytech.domain.repository.ProductRepository
+import com.dennytech.domain.repository.ReportsRepository
 import com.dennytech.domain.repository.SalesRepository
 import com.dennytech.domain.repository.StoreRepository
 import com.dennytech.domain.repository.UtilRepository
@@ -57,5 +59,10 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindStoreRepository(impl: StoreRepositoryImpl): StoreRepository
+
+
+    @Singleton
+    @Binds
+    fun bindReportsRepository(impl: ReportsRepositoryImpl): ReportsRepository
 
 }

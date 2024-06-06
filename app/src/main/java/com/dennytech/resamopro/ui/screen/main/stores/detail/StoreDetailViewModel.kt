@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.dennytech.domain.models.Resource
 import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.models.UserDomainModel
+import com.dennytech.domain.usecases.products.CreateProductCategoryUseCase
 import com.dennytech.domain.usecases.products.CreateProductTypeUseCase
 import com.dennytech.domain.usecases.store.AssignUserToStoreUseCase
 import com.dennytech.domain.usecases.store.GetStoreByIdUseCase
@@ -25,10 +26,12 @@ class StoreDetailViewModel @Inject constructor(
     private val getStoreByIdUseCase: GetStoreByIdUseCase,
     private val unAssignedStoreUsersUseCase: UnAssignedStoreUsersUseCase,
     private val assignUserToStoreUseCase: AssignUserToStoreUseCase,
-    private val createProductTypeUseCase: CreateProductTypeUseCase
+    private val createProductTypeUseCase: CreateProductTypeUseCase,
+    private val createProductCategoryUseCase: CreateProductCategoryUseCase
 ): ViewModel() {
 
     var state by mutableStateOf(StoreDetailState())
+    var userIdSelected by mutableStateOf("")
 
     fun onEvent(event: StoreDetailEvent) {
         when(event) {
@@ -48,10 +51,22 @@ class StoreDetailViewModel @Inject constructor(
                 state = state.copy(showCreateTypeDialog = !state.showCreateTypeDialog)
             }
 
+            is StoreDetailEvent.ToggleCreateCategoryDialog -> {
+                state = state.copy(showCreateCategoryDialog = !state.showCreateCategoryDialog)
+            }
+
             is StoreDetailEvent.AssignUser -> assignUserToStore(event.userId, event.storeId)
 
             is StoreDetailEvent.TypeChanged -> {
                 state = state.copy(type = event.value, typeError = "")
+            }
+
+            is StoreDetailEvent.CategoryNameChanged -> {
+                state = state.copy(categoryName = event.value, categoryNameError = "")
+            }
+
+            is StoreDetailEvent.CategoryDescriptionChanged -> {
+                state = state.copy(categoryDescription = event.value)
             }
 
             is StoreDetailEvent.SubmitType -> {
@@ -59,6 +74,49 @@ class StoreDetailViewModel @Inject constructor(
                     state = state.copy(typeError = "Enter product type")
                 } else {
                     createProductType()
+                }
+            }
+
+            is StoreDetailEvent.SubmitCategory -> {
+                if (state.categoryName.isEmpty()) {
+                    state = state.copy(categoryNameError = "Enter category name")
+                } else {
+                    createProductCategory()
+                }
+            }
+
+
+        }
+    }
+
+    private fun createProductCategory() {
+        viewModelScope.launch {
+
+            val param = CreateProductCategoryUseCase.Param(
+                storeId = state.selectedStore,
+                name = state.categoryName.trim(),
+                description = state.categoryDescription.ifEmpty { null }
+            )
+
+            createProductCategoryUseCase(param).collect {
+                state = when(it) {
+                    is Resource.Loading -> {
+                        state.copy(loading = true)
+                    }
+
+                    is Resource.Error -> {
+                        state.copy(loading = false)
+                    }
+
+                    is Resource.Success -> {
+                        getStore(state.selectedStore)
+                        state.copy(
+                            loading = false,
+                            categoryName = "",
+                            categoryDescription = "",
+                            showCreateCategoryDialog = false
+                        )
+                    }
                 }
             }
         }
@@ -109,6 +167,8 @@ class StoreDetailViewModel @Inject constructor(
     }
 
     private fun assignUserToStore(userId: String, storeId: String) {
+        userIdSelected = userId
+
         viewModelScope.launch {
             assignUserToStoreUseCase(AssignUserToStoreUseCase.Param(userId = userId, storeId = storeId)).collect {
             when(it) {
@@ -131,8 +191,9 @@ class StoreDetailViewModel @Inject constructor(
 
     private fun getStore(storeId: String) {
         viewModelScope.launch {
-            getStoreByIdUseCase(GetStoreByIdUseCase.Param(storeId = storeId)).collect {
-                state = state.copy(store = it)
+            getStoreByIdUseCase(GetStoreByIdUseCase.Param(storeId = storeId)).collect { store ->
+                val item = store.copy(productTypes = store.productTypes.filter { it.isNotEmpty() })
+                state = state.copy(store = item)
             }
         }
     }
@@ -147,7 +208,11 @@ data class StoreDetailState(
     val assigningUser: Boolean = false,
     val type: String = "",
     val typeError: String = "",
-    val showCreateTypeDialog: Boolean = false
+    val categoryName: String = "",
+    val categoryNameError: String = "",
+    val categoryDescription: String = "",
+    val showCreateTypeDialog: Boolean = false,
+    val showCreateCategoryDialog: Boolean = false
 )
 
 sealed class StoreDetailEvent {
@@ -155,8 +220,12 @@ sealed class StoreDetailEvent {
     data class GetStore(val storeId: String): StoreDetailEvent()
     data object ToggleUnAssignedDialog: StoreDetailEvent()
     data object ToggleCreateTypeDialog: StoreDetailEvent()
+    data object ToggleCreateCategoryDialog: StoreDetailEvent()
     data class FetchUnAssignedUsers(val storeId: String): StoreDetailEvent()
     data class AssignUser(val userId: String, val storeId: String): StoreDetailEvent()
     data class TypeChanged(val value: String): StoreDetailEvent()
+    data class CategoryNameChanged(val value: String): StoreDetailEvent()
+    data class CategoryDescriptionChanged(val value: String): StoreDetailEvent()
     data object SubmitType: StoreDetailEvent()
+    data object SubmitCategory: StoreDetailEvent()
 }

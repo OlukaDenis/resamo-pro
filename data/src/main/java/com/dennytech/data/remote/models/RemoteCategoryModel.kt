@@ -4,14 +4,16 @@ import com.dennytech.domain.models.ProductCategoryDomainModel
 
 data class RemoteCategoryModel(
     val id: String,
-    val name: String?
+    val name: String?,
+    val description: String?
 ) {
     companion object {
         fun RemoteCategoryModel.toDomain(storeId: String): ProductCategoryDomainModel {
             return ProductCategoryDomainModel(
                 id = this.id,
                 storeId = storeId,
-                name = this.name.orEmpty()
+                name = this.name.orEmpty(),
+                description = this.description.orEmpty()
             )
         }
     }

@@ -1,18 +1,23 @@
 package com.dennytech.resamopro.utils
 
 import android.os.Build
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import androidx.annotation.RequiresApi
 import com.dennytech.resamopro.models.KeyValueModel
+import com.github.mikephil.charting.utils.ColorTemplate
 import java.text.NumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
-import java.util.Calendar
 import java.util.Currency
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+
 
 object Helpers {
 

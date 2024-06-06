@@ -100,7 +100,8 @@ data class ProductState(
     val selectedImage: String = "",
     val filters: ProductFilerModel = ProductFilerModel(),
     val loading: Boolean = false,
-    val error: String = ""
+    val error: String = "",
+    val empty: Boolean = false
 )
 
 sealed class ProductEvent {

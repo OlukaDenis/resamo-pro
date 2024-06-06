@@ -2,6 +2,7 @@ package com.dennytech.resamopro.ui.screen.main.sales
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -17,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -30,6 +32,7 @@ import com.dennytech.domain.models.SaleDomainModel
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.DateFilter
+import com.dennytech.resamopro.ui.components.EmptyComponent
 import com.dennytech.resamopro.ui.components.ErrorLabel
 import com.dennytech.resamopro.ui.components.LoadingCircle
 import com.dennytech.resamopro.ui.components.SaleItem
@@ -111,6 +114,16 @@ fun SalesFragment(
                     LoadingCircle()
                 }
 
+                if (viewModel.state.empty) {
+//                    Column(
+//                        horizontalAlignment = Alignment.CenterHorizontally,
+//                        verticalArrangement = Arrangement.Center,
+//                        modifier = Modifier.fillMaxSize()
+//                    ) {
+//                        EmptyComponent()
+//                    }
+                }
+
                 LazyVerticalStaggeredGrid(
                     modifier = Modifier
                         .padding(horizontal = Dimens._16dp, vertical = Dimens._14dp),
@@ -136,13 +149,16 @@ fun SalesFragment(
 
                     products.apply {
                         when {
+                            loadState.append is LoadState.NotLoading && loadState.append.endOfPaginationReached -> {
+                                viewModel.state = viewModel.state.copy(empty = true, loading = false)
+                            }
 
                             loadState.refresh is LoadState.Loading -> {
-                                viewModel.state = viewModel.state.copy(loading = true)
+                                viewModel.state = viewModel.state.copy(loading = true, empty = false)
                             }
 
                             loadState.source.refresh is LoadState.NotLoading -> {
-                                viewModel.state = viewModel.state.copy(loading = false)
+                                viewModel.state = viewModel.state.copy(loading = false, empty = false)
                             }
 
                             loadState.refresh is LoadState.Error -> {

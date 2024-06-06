@@ -174,4 +174,15 @@ class ProductRepositoryImpl @Inject constructor(
             throw throwable
         }
     }
+
+    override suspend fun createProductCategory(
+        request: HashMap<String, Any>
+    ): String {
+        return try {
+            apiService.createCategory(request)
+            "Success"
+        } catch (throwable: Throwable) {
+            throw throwable
+        }
+    }
 }
