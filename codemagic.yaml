@@ -29,7 +29,7 @@ workflows:
       - name: Assemble Release APK
         script: ./gradlew assembleRelease
       - name: Install Firebase CLI
-        script: npm install -g firebase-tools
+        script: npm install -g firebase-tools --force
       - name: Deploy to Firebase App Distribution
         script: |
           firebase appdistribution:distribute $ANDROID_BUILD_DIR/app-release.apk \
