@@ -148,8 +148,12 @@ fun HomeContent(
             loading = viewModel.state.loadingCounts
         )
 
-        VerticalSpacer(Dimens._16dp)
-        SaleRevenueGraph(viewModel = viewModel)
+        mainViewModel.state.user?.let {
+            if (it.isAdmin()) {
+                VerticalSpacer(Dimens._16dp)
+                SaleRevenueGraph(viewModel = viewModel)
+            }
+        }
 
         Row(
             modifier = Modifier
@@ -171,8 +175,6 @@ fun HomeContent(
                 Text("See All")
             }
         }
-
-        VerticalSpacer(Dimens._10dp)
 
         if (viewModel.state.loadingSales) {
             LoadingCircle()
@@ -241,6 +243,7 @@ fun CountsCards(
         }
 
         if (counts.isNotEmpty()) {
+            VerticalSpacer(Dimens._8dp)
             LazyVerticalGrid(
                 modifier = Modifier.heightIn(max = 1000.dp),
                 columns = GridCells.Fixed(2),

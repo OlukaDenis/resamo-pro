@@ -1,0 +1,46 @@
+workflows:
+  android-workflow:
+    name: Android Workflow
+    instance_type: mac_mini_m1
+    max_build_duration: 120
+    environment:
+      java: 17
+      android_signing:
+        - upload
+      groups:
+        - google_credentials
+      vars:
+        PACKAGE_NAME: "com.dennytech.resamopro"
+        GOOGLE_PLAY_TRACK: "alpha"
+        JAVA_HOME: "/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
+        FIREBASE_PROJECT_ID: "resamo-pro"
+        ANDROID_BUILD_DIR: "app/build/outputs/apk/release"
+    triggering:
+      events:
+        - push
+    scripts:
+      - name: Install dependencies
+        script: ./gradlew build
+      - name: Add secrets to local.properties
+        script: |
+          echo "DEV_URL=${DEV_URL}" >> ./local.properties
+          echo "PROD_URL=${PROD_URL}" >> ./local.properties
+      - name: Assemble Release APK
+        script: ./gradlew assembleRelease
+      - name: Install Firebase CLI
+        script: npm install -g firebase-tools
+      - name: Deploy to Firebase App Distribution
+        script: |
+          firebase appdistribution:distribute $ANDROID_BUILD_DIR/app-release.apk \
+            --app $FIREBASE_PROJECT_ID \
+            --token $FIREBASE_TOKEN \
+            --groups "testers" # Adjust to match your Firebase tester group
+    artifacts:
+      - $ANDROID_BUILD_DIR/app-release.apk
+    publishing:
+      email:
+        recipients:
+          - olukadeno@gmail.com
+        notify:
+          success: true
+          failure: false
