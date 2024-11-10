@@ -27,6 +27,11 @@ workflows:
           echo "PROD_URL=${PROD_URL}" >> ./local.properties
       - name: Assemble Release APK
         script: ./gradlew assembleRelease
+      - name: Rename APK with Version Info
+        script: |
+          VERSION_NAME=$(./gradlew -q printVersionName)
+          VERSION_CODE=$(./gradlew -q printVersionCode)
+          mv $ANDROID_BUILD_DIR/app-release.apk $ANDROID_BUILD_DIR/app-release-v${VERSION_NAME}-${VERSION_CODE}.apk
       - name: Install Firebase CLI
         script: npm install -g firebase-tools
       - name: Deploy to Firebase App Distribution
@@ -34,7 +39,7 @@ workflows:
           firebase appdistribution:distribute $ANDROID_BUILD_DIR/app-release.apk \
             --app $FIREBASE_PROJECT_ID \
             --token $FIREBASE_TOKEN \
-            --groups "testers" # Adjust to match your Firebase tester group
+            --groups "testers"
     artifacts:
       - $ANDROID_BUILD_DIR/app-release.apk
     publishing:
