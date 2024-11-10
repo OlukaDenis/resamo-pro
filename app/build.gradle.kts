@@ -121,6 +121,18 @@ android {
     tasks.getByName("preBuild").dependsOn("incrementVersion")
 }
 
+tasks.register("printVersionName") {
+    doLast {
+        println android.defaultConfig.versionName
+    }
+}
+
+tasks.register("printVersionCode") {
+    doLast {
+        println android.defaultConfig.versionCode
+    }
+}
+
 tasks.register("incrementVersion") {
     doLast {
         try {

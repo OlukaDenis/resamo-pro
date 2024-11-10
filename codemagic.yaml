@@ -6,7 +6,7 @@ workflows:
     environment:
       java: 17
       android_signing:
-        - upload
+        - resamo_pro_keystore
       groups:
         - google_credentials
       vars:
@@ -41,7 +41,7 @@ workflows:
             --token $FIREBASE_TOKEN \
             --groups "testers"
     artifacts:
-      - $ANDROID_BUILD_DIR/app-release.apk
+      - $ANDROID_BUILD_DIR/app-release-v${VERSION_NAME}-${VERSION_CODE}.apk
     publishing:
       email:
         recipients:
