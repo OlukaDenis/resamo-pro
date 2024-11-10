@@ -8,7 +8,8 @@ workflows:
       android_signing:
         - resamo_pro_keystore
       groups:
-        - google_credentials
+        - base_urls
+        - tokens
       vars:
         PACKAGE_NAME: "com.dennytech.resamopro"
         GOOGLE_PLAY_TRACK: "alpha"
