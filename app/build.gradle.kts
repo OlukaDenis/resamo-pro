@@ -123,13 +123,13 @@ android {
 
 tasks.register("printVersionName") {
     doLast {
-        println android.defaultConfig.versionName
+        println("Version name: ${android.defaultConfig.versionName}")
     }
 }
 
 tasks.register("printVersionCode") {
     doLast {
-        println android.defaultConfig.versionCode
+        println("Version code: ${android.defaultConfig.versionCode}")
     }
 }
 
