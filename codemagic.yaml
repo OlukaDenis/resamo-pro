@@ -40,7 +40,7 @@ workflows:
         android:
           app_id: 1:14896196544:android:25d1351bf5dcb2dbc17625
           groups:
-            - androidTesters
+            - testers
           artifact_type: 'apk'
       email:
         recipients:
