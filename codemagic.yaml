@@ -16,6 +16,7 @@ workflows:
         JAVA_HOME: "/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home"
         FIREBASE_PROJECT_ID: "resamo-pro"
         ANDROID_BUILD_DIR: "app/build/outputs/apk/release"
+        GOOGLE_APPLICATION_CREDENTIALS: "$GOOGLE_APPLICATION_CREDENTIALS"
     triggering:
       events:
         - push
@@ -34,7 +35,6 @@ workflows:
         script: |
           firebase appdistribution:distribute $ANDROID_BUILD_DIR/app-release.apk \
             --app $FIREBASE_PROJECT_ID \
-            --token $FIREBASE_TOKEN \
             --groups "testers"
     artifacts:
       - $ANDROID_BUILD_DIR/app-release.apk
