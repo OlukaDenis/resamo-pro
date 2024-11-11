@@ -10,6 +10,7 @@ workflows:
       groups:
         - base_urls
         - tokens
+        - google_credentials
       vars:
         PACKAGE_NAME: "com.dennytech.resamopro"
         GOOGLE_PLAY_TRACK: "alpha"
