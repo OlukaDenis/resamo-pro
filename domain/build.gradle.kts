@@ -48,15 +48,14 @@ android {
 
 dependencies {
 
-    implementation("com.google.dagger:hilt-android:2.48")
-    ksp("com.google.dagger:hilt-android-compiler:2.48")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation(libs.timber)
 
-    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation(libs.androidx.paging.runtime.ktx)
 
-    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics")
-
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 }

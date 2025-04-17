@@ -12,11 +12,14 @@ plugins {
 
 android {
     signingConfigs {
-        create("resamoConfig") {
-            storeFile = file("$rootDir/resamo.jks")
-            storePassword = "FkhHU4QKxvbS"
-            keyAlias = "resamoKey"
-            keyPassword = "FkhHU4QKxvbS"
+        val keystoreFile = readProperties("../keystore.properties")
+        if (!keystoreFile.isNullOrEmpty()) {
+            create("resamoConfig") {
+                storeFile = file("$rootDir/resamo.jks")
+                storePassword = "FkhHU4QKxvbS"
+                keyAlias = "resamoKey"
+                keyPassword = "FkhHU4QKxvbS"
+            }
         }
     }
 
@@ -35,18 +38,15 @@ android {
             useSupportLibrary = true
         }
 
-        val versionPropsFile = file("../version.properties")
+        val versionPropsFile = readProperties("../version.properties")
 
-        if (versionPropsFile.exists()) {
-            val versionProps = Properties()
-            versionProps.load(versionPropsFile.inputStream())
-
-            val versionCodeMajor = versionProps.getProperty("VERSION_CODE_MAJOR").toInt()
-            val versionCodeMinor = versionProps.getProperty("VERSION_CODE_MINOR").toInt()
+        if (!versionPropsFile.isNullOrEmpty()) {
+            val versionCodeMajor = versionPropsFile.getProperty("VERSION_CODE_MAJOR").toInt()
+            val versionCodeMinor = versionPropsFile.getProperty("VERSION_CODE_MINOR").toInt()
 
             defaultConfig {
                 versionCode = versionCodeMajor * 100 + versionCodeMinor
-                versionName = versionProps.getProperty("VERSION_NAME")
+                versionName = versionPropsFile.getProperty("VERSION_NAME")
             }
         }
 
@@ -146,36 +146,44 @@ tasks.register("incrementVersion") {
 }
 
 fun getVersionCode(): Int {
-    val versionPropsFile = file("../version.properties")
-    if (versionPropsFile.exists()) {
-        val versionProps = Properties()
-        versionProps.load(versionPropsFile.inputStream())
-
-        val versionCodeMajor = versionProps.getProperty("VERSION_CODE_MAJOR").toInt()
-        val versionCodeMinor = versionProps.getProperty("VERSION_CODE_MINOR").toInt()
-
+    val versionPropsFile = readProperties("../version.properties")
+    return if (!versionPropsFile.isNullOrEmpty()) {
+        val versionCodeMajor = versionPropsFile.getProperty("VERSION_CODE_MAJOR").toInt()
+        val versionCodeMinor = versionPropsFile.getProperty("VERSION_CODE_MINOR").toInt()
         return versionCodeMajor * 10000 + versionCodeMinor
-    }
-    return 4 // Default version code if version properties file doesn't exist
+    } else 4
 }
 
 
 fun getVersionName(): String {
     println("Getting version name......")
-    val versionPropsFile = file("../version.properties")
-//    val properties = readProperties(file("../version.properties"))
-    if (versionPropsFile.exists()) {
-        val versionProps = Properties()
-        versionProps.load(versionPropsFile.inputStream())
-        return versionProps.getProperty("VERSION_NAME")
-    }
+    val versionPropsFile = readProperties("../version.properties")
+    return if(!versionPropsFile.isNullOrEmpty()) {
+        versionPropsFile.getProperty("VERSION_NAME")
+    } else "1.0.4"
+//    if (versionPropsFile.exists()) {
+//        val versionProps = Properties()
+//        versionProps.load(versionPropsFile.inputStream())
+//
+//    }
 //    println("Getting version name: NAme exists.... ${properties["VERSION_NAME"]}")
-    return "1.0.4" // Default version name if version properties file doesn't exist
+//    return "1.0.4" // Default version name if version properties file doesn't exist
 }
 
-fun readProperties(propertiesFile: File) = Properties().apply {
-    propertiesFile.inputStream().use { fis ->
-        load(fis)
+fun getFile(filePath: String): File {
+    return file(filePath)
+}
+
+fun readProperties(filePath: String): Properties? {
+    val file = getFile(filePath)
+    return if (file.exists()) {
+        Properties().apply {
+            file.inputStream().use { fis ->
+                load(fis)
+            }
+        }
+    } else {
+        null
     }
 }
 
@@ -184,54 +192,51 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
 
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-    implementation("androidx.activity:activity-compose:1.8.2")
-    implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
 
-    implementation(platform("androidx.compose:compose-bom:2023.10.00"))
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material:material-icons-core")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.material.icons)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.core.splashscreen)
 
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation(libs.gson)
+    implementation(libs.coil.compose)
 
-    implementation("androidx.paging:paging-compose:3.2.1")
+    implementation(libs.androidx.paging.compose)
 
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
-    implementation("androidx.window:window:1.2.0")
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.androidx.window)
 
-    implementation("com.google.dagger:hilt-android:2.48")
-    ksp("com.google.dagger:hilt-android-compiler:2.48")
-    implementation("androidx.hilt:hilt-work:1.1.0")
-    ksp("androidx.hilt:hilt-compiler:1.1.0")
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.navigation.compose)
 
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation(libs.timber)
+    implementation(libs.spark.utils)
 
-    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
-//    implementation("com.patrykandpatrick.vico:core:2.0.0-alpha.21")
-//    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.21")
-//    implementation("com.github.tehras:charts:0.2.4-alpha")
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation(libs.mpAndroidchart)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }

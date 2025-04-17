@@ -8,6 +8,7 @@ import android.text.style.StyleSpan
 import androidx.annotation.RequiresApi
 import com.dennytech.resamopro.models.KeyValueModel
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.github.mikephil.charting.utils.Utils.formatNumber
 import java.text.NumberFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
