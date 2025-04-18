@@ -9,7 +9,6 @@ import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class UnAssignedStoreUsersUseCase @Inject constructor(
@@ -32,7 +31,7 @@ class UnAssignedStoreUsersUseCase @Inject constructor(
                 this["storeId"] = param.storeId
             }
 
-            val users = runBlocking { profileRepository.fetchUnassignedUsers(request) }
+            val users = profileRepository.fetchUnassignedUsers(request) 
 
             emit(Resource.Success(users))
 

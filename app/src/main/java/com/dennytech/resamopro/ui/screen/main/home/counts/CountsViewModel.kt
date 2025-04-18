@@ -9,7 +9,6 @@ import com.dennytech.domain.models.ReportDomainModel
 import com.dennytech.domain.models.Resource
 import com.dennytech.domain.models.SaleReportDomainModel
 import com.dennytech.domain.usecases.reports.FetchPopularProductTypesUseCase
-import com.dennytech.domain.usecases.reports.FetchAndObserveSaleReportUseCase
 import com.dennytech.domain.usecases.sales.GetSaleCountsUseCase
 import com.dennytech.resamopro.ui.screen.main.home.CountCardModel
 import com.dennytech.resamopro.utils.Helpers.formatCurrency
@@ -20,7 +19,6 @@ import javax.inject.Inject
 @HiltViewModel
 class CountsViewModel @Inject constructor(
     private val getSaleCountsUseCase: GetSaleCountsUseCase,
-    private val fetchAndObserveSaleReportUseCase: FetchAndObserveSaleReportUseCase,
     private val fetchPopularProductTypesUseCase: FetchPopularProductTypesUseCase
 ): ViewModel() {
 
@@ -31,7 +29,6 @@ class CountsViewModel @Inject constructor(
     }
 
     fun getAdminReports() {
-        onEvent(CountsEvent.GetSaleByPeriod)
         onEvent(CountsEvent.GetPopularTypes)
     }
 
@@ -58,8 +55,6 @@ class CountsViewModel @Inject constructor(
                 }
             }
 
-            is CountsEvent.GetSaleByPeriod -> getSalesReportByPeriod()
-
             is CountsEvent.GetPopularTypes -> getPopularTypes()
         }
     }
@@ -81,25 +76,6 @@ class CountsViewModel @Inject constructor(
             }
         }
     }
-
-    private fun getSalesReportByPeriod() {
-        viewModelScope.launch {
-            fetchAndObserveSaleReportUseCase().collect {
-                state = when(it) {
-                    is Resource.Loading -> {
-                        state.copy(loadingSaleByPeriod = true)
-                    }
-                    is Resource.Error -> {
-                        state.copy(loadingSaleByPeriod = false)
-                    }
-                    is Resource.Success -> {
-                        state.copy(loadingSaleByPeriod = false, salePeriodReport = it.data)
-                    }
-                }
-            }
-        }
-    }
-
 
     private fun getCounts(param: GetSaleCountsUseCase.Param?) {
         viewModelScope.launch {
@@ -153,7 +129,6 @@ sealed class CountsEvent {
     data class StartDateChanged(val value: String): CountsEvent()
     data class EndDateChanged(val value: String): CountsEvent()
     data object SubmitFilter: CountsEvent()
-    data object GetSaleByPeriod : CountsEvent()
     data object GetPopularTypes: CountsEvent()
 }
 

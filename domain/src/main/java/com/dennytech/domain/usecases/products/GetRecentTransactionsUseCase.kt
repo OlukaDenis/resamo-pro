@@ -8,7 +8,6 @@ import com.dennytech.domain.repository.ProductRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class GetRecentTransactionsUseCase @Inject constructor(
@@ -22,7 +21,7 @@ class GetRecentTransactionsUseCase @Inject constructor(
 
         try {
 
-            val response = runBlocking { productRepository.fetchRecentProducts() }
+            val response = productRepository.fetchRecentProducts()
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {

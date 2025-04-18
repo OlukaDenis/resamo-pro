@@ -42,14 +42,14 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             val userResult = runCatching { getCurrentUserUseCase() }
 
-            if (userResult.isFailure) {
-                state = state.copy(error = "User not found")
-            }
-
             if (userResult.isSuccess) {
                 state = state.copy(user = userResult.getOrNull())
             }
         }
+    }
+
+    fun refreshUser() {
+        getCurrentUser()
     }
 
     private fun getUserStores() {

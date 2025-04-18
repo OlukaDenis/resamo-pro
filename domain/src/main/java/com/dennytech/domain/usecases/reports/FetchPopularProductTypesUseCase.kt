@@ -8,7 +8,6 @@ import com.dennytech.domain.repository.ReportsRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class FetchPopularProductTypesUseCase @Inject constructor(
@@ -20,7 +19,7 @@ class FetchPopularProductTypesUseCase @Inject constructor(
         emit(Resource.Loading)
 
         try {
-            val response = runBlocking { reportsRepository.fetchPopularProductTypes() }
+            val response =  reportsRepository.fetchPopularProductTypes()
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {

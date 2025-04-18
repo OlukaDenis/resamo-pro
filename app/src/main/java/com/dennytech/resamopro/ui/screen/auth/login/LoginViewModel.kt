@@ -11,7 +11,6 @@ import com.dennytech.domain.repository.PreferenceRepository
 import com.dennytech.domain.usecases.auth.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel

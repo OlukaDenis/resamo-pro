@@ -5,7 +5,6 @@ import com.dennytech.domain.dispacher.AppDispatcher
 import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class GetCurrentUserUseCase @Inject constructor(

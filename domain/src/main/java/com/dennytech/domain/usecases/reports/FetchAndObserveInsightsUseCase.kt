@@ -9,6 +9,7 @@ import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
 class FetchAndObserveInsightsUseCase @Inject constructor(
@@ -21,8 +22,8 @@ class FetchAndObserveInsightsUseCase @Inject constructor(
         send(Resource.Loading)
         val defaultInsight = InsightCountsDomainModel(profit = 0L, salesCount = 0L, salesTotal = 0L)
         // Preload the cached data
-        val cached = reportsRepository.getInsights().first() ?: defaultInsight
-        send(Resource.Success(cached))
+        val cached = reportsRepository.getInsights().firstOrNull()
+        cached?.let { send(Resource.Success(it)) }
 
         try {
             // Fetch remote data

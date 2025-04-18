@@ -5,7 +5,6 @@ import com.dennytech.data.remote.services.AuthService
 import com.dennytech.domain.repository.PreferenceRepository
 import com.dennytech.domain.repository.SyncRepository
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -16,18 +15,18 @@ class SyncRepositoryImpl @Inject constructor(
     override suspend fun refreshToken(): String {
         return try {
 
-            val token = runBlocking { preferenceRepository.getAccessToken().first() }
+            val token = preferenceRepository.getAccessToken().first()
             val headers = HashMap<String, Any>().apply {
                 this["Authorization"] = "Bearer $token"
             }
 
             Timber.d("Refreshing token: %s", token)
 
-            val response = runBlocking {   authService.refreshToken(headers) }
+            val response = authService.refreshToken(headers)
             val data  = response.data;
 
-            runBlocking { preferenceRepository.setAccessToken(data.refreshToken.orEmpty()) }
-            runBlocking { preferenceRepository.setTokenExpiry(data.expiresIn ?: 0L) }
+            preferenceRepository.setAccessToken(data.refreshToken.orEmpty()) 
+            preferenceRepository.setTokenExpiry(data.expiresIn ?: 0L) 
 
             data.refreshToken.orEmpty()
         } catch (throwable: Throwable) {

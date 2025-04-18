@@ -14,7 +14,6 @@ import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 class LoginUseCase @Inject constructor(
@@ -40,7 +39,7 @@ class LoginUseCase @Inject constructor(
             map["password"] = param.password
             map["email"] = param.email
 
-            val response = runBlocking { authRepository.login(map) }
+            val response =  authRepository.login(map)
 
             if (response.stores.isNotEmpty()) {
                 storeRepository.saveStores(response.stores)
@@ -59,8 +58,6 @@ class LoginUseCase @Inject constructor(
                     preferenceRepository.setCurrentStore(response.stores[0].id)
                 }
             }
-
-//            runBlocking {profileRepository.fetchUser(HashMap())  }
 
             emit(Resource.Success(response))
 

@@ -21,7 +21,6 @@ import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.StoreRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
@@ -32,10 +31,10 @@ class ProfileRepositoryImpl @Inject constructor(
 ) : ProfileRepository {
     override suspend fun fetchCurrentUser(): UserDomainModel {
         return try {
-            val response = runBlocking { apiService.getCurrentUser() }
+            val response = apiService.getCurrentUser()
             val user = response.data.toDomainUser()
 
-            runBlocking { saveCurrentUser(user) }
+            saveCurrentUser(user) 
 
             if (user.stores.isNotEmpty()) {
                 storeRepository.saveStores(user.stores)

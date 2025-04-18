@@ -7,19 +7,15 @@ import com.dennytech.data.local.mappers.ProductCategoryEntityMapper
 import com.dennytech.data.local.mappers.StoreEntityMapper
 import com.dennytech.data.local.mappers.StoreUserEntityMapper
 import com.dennytech.data.remote.models.RemoteStoreModel.Companion.toDomain
-import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomainUser
 import com.dennytech.data.remote.services.ApiService
 import com.dennytech.domain.models.ProductCategoryDomainModel
 import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.models.StoreUserDomainModel
-import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.repository.StoreRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
-import timber.log.Timber
 import javax.inject.Inject
 
 class StoreRepositoryImpl @Inject constructor(
@@ -33,7 +29,7 @@ class StoreRepositoryImpl @Inject constructor(
 ) : StoreRepository {
     override suspend fun createStore(request: HashMap<String, Any>): StoreDomainModel {
         return try {
-            val response = runBlocking { apiService.createStore(request)}.data
+            val response = apiService.createStore(request).data
             response.toDomain("")
         } catch (throwable: Throwable) {
             throw throwable
@@ -44,8 +40,8 @@ class StoreRepositoryImpl @Inject constructor(
         storeDao.get().map {list ->
             emit(list.map { entity ->
                 val store = storeEntityMapper.toDomain(entity)
-                val usersList = runBlocking { storeUserDao.getStoreUsers(entity.id).first() } // Pick store users
-                val categoryList = runBlocking { productCategoryDao.getStoreCategories(entity.id).first() } // Pick store categories
+                val usersList = storeUserDao.getStoreUsers(entity.id).first()  // Pick store users
+                val categoryList =  productCategoryDao.getStoreCategories(entity.id).first()  // Pick store categories
                 store.copy(
                     users = usersList.map { storeUserEntityMapper.toDomain(it) },
                     categories = categoryList.map { categoryEntityMapper.toDomain(it) }
@@ -60,8 +56,8 @@ class StoreRepositoryImpl @Inject constructor(
         if (stores.isEmpty()) throw Exception("store not found")
 
         val store = stores[0]
-        val usersList = runBlocking { storeUserDao.getStoreUsers(store.id).first() } // Pick store users
-        val categoryList = runBlocking { productCategoryDao.getStoreCategories(store.id).first() } // Pick store categories
+        val usersList = storeUserDao.getStoreUsers(store.id).first()  // Pick store users
+        val categoryList = productCategoryDao.getStoreCategories(store.id).first()  // Pick store categories
         return store.copy(
             users = usersList.map { storeUserEntityMapper.toDomain(it) },
             categories = categoryList.map { categoryEntityMapper.toDomain(it) }
@@ -74,13 +70,13 @@ class StoreRepositoryImpl @Inject constructor(
 
         if (store.users.isNotEmpty()) {
             store.users.map {
-                runBlocking { saveStoreUser(it) }
+                 saveStoreUser(it)
             }
         }
 
         if (store.categories.isNotEmpty()) {
             store.categories.map {
-                runBlocking { saveProductCategory(it) }
+                saveProductCategory(it)
             }
         }
     }
@@ -94,9 +90,9 @@ class StoreRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveStores(stores: List<StoreDomainModel>) {
-        runBlocking { storeDao.clear() }
-        runBlocking { storeUserDao.clear() }
-        runBlocking { productCategoryDao.clear() }
+        storeDao.clear()
+       storeUserDao.clear()
+       productCategoryDao.clear()
 
         stores.map {
             saveStore(it)

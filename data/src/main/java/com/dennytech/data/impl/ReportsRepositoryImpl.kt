@@ -57,7 +57,13 @@ class ReportsRepositoryImpl @Inject constructor(
 
     override fun getInsights(): Flow<InsightCountsDomainModel?> {
         return try {
-            insightCountPreference.data.map { insightCountMapper.toDomain(it) }
+            insightCountPreference.data.map { 
+                if (it == InsightCounts.getDefaultInstance()) {
+                    null
+                } else {
+                    insightCountMapper.toDomain(it)
+                }
+            }
         } catch (throwable: Throwable) {
             throw throwable
         }

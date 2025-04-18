@@ -10,7 +10,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OnBoardingViewModel @Inject constructor(
     private val preferenceRepository: PreferenceRepository
-) :ViewModel(){
+) : ViewModel(){
 
     val expiryTime = runBlocking { preferenceRepository.getTokenExpiry().first() }
     val currentStore = runBlocking { preferenceRepository.getCurrentStore().first() }

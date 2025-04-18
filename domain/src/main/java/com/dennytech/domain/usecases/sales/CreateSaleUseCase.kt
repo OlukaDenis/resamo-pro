@@ -7,7 +7,6 @@ import com.dennytech.domain.repository.ProductRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class CreateSaleUseCase @Inject constructor(
@@ -36,8 +35,7 @@ class CreateSaleUseCase @Inject constructor(
                 this["quantity"] = param.quantity
             }
 
-            val response =
-                runBlocking { productRepository.createProductSale(request) }
+            val response = productRepository.createProductSale(request) 
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {

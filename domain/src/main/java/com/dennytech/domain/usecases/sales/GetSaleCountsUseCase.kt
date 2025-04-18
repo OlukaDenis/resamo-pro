@@ -9,7 +9,6 @@ import com.dennytech.domain.repository.SalesRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class GetSaleCountsUseCase @Inject constructor(
@@ -40,7 +39,7 @@ class GetSaleCountsUseCase @Inject constructor(
 
             }
 
-            val response = runBlocking { repository.fetchCounts(hashMap) }
+            val response = repository.fetchCounts(hashMap)
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {

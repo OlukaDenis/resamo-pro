@@ -8,7 +8,6 @@ import com.dennytech.data.remote.services.AuthService
 import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.repository.AuthRepository
 import com.dennytech.domain.repository.PreferenceRepository
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -38,10 +37,10 @@ class AuthRepositoryImpl @Inject constructor(
             val response = authService.login(request)
             val user  = response.data;
 
-            runBlocking { saveUser(user.toDomainUser()) }
+            saveUser(user.toDomainUser())
 
-            runBlocking { preferenceRepository.setAccessToken(user.token.orEmpty()) }
-            runBlocking { preferenceRepository.setTokenExpiry(user.expiresIn ?: 0L) }
+            preferenceRepository.setAccessToken(user.token.orEmpty())
+            preferenceRepository.setTokenExpiry(user.expiresIn ?: 0L) 
 
             user.toDomainUser()
         } catch (throwable: Throwable) {
@@ -52,9 +51,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun signup(request: HashMap<String, Any>): String {
         return try {
 
-            val response = runBlocking {  authService.signup(request) }
-
-//            runBlocking { saveToken(remoteTokenMapper.toDomain(response.data)) }
+            val response =  authService.signup(request) 
             "Success"
         } catch (throwable: Throwable) {
             throw throwable

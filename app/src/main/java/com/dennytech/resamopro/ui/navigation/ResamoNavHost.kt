@@ -16,7 +16,6 @@ import com.google.gson.GsonBuilder
 
 @Composable
 fun ResamoNavHost(navHostController: NavHostController) {
-//    val authShareViewModel: AuthShareViewModel = hiltViewModel()
 
     NavHost(
         navController = navHostController,
@@ -24,7 +23,6 @@ fun ResamoNavHost(navHostController: NavHostController) {
         startDestination = Graph.AUTH,
     ) {
         authNavGraph(navController = navHostController)
-//        mainNavGraph(navController = navHostController)
 
 
         composable(Graph.MAIN) {

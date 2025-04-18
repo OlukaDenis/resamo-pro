@@ -161,13 +161,6 @@ fun getVersionName(): String {
     return if(!versionPropsFile.isNullOrEmpty()) {
         versionPropsFile.getProperty("VERSION_NAME")
     } else "1.0.4"
-//    if (versionPropsFile.exists()) {
-//        val versionProps = Properties()
-//        versionProps.load(versionPropsFile.inputStream())
-//
-//    }
-//    println("Getting version name: NAme exists.... ${properties["VERSION_NAME"]}")
-//    return "1.0.4" // Default version name if version properties file doesn't exist
 }
 
 fun getFile(filePath: String): File {

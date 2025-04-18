@@ -38,7 +38,7 @@ class SalePagingSource(
             return LoadResult.Error(e)
         } catch (e: HttpException) {
             return LoadResult.Error(e)
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             return LoadResult.Error(e)
         }
     }

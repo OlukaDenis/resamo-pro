@@ -7,7 +7,6 @@ import com.dennytech.domain.repository.SalesRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class GetRevenueByPeriodUseCase @Inject constructor(
@@ -38,7 +37,7 @@ class GetRevenueByPeriodUseCase @Inject constructor(
 
             }
 
-            val response = runBlocking { repository.fetchRevenue(hashMap) }
+            val response = repository.fetchRevenue(hashMap) 
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {
