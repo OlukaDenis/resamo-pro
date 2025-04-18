@@ -1,7 +1,7 @@
 package com.dennytech.domain.models
 
-data class SaleCountsDomainModel(
-    val profit: Int,
-    val salesCount: Int,
-    val salesTotal: Int
+data class InsightCountsDomainModel(
+    val profit: Long,
+    val salesCount: Long,
+    val salesTotal: Long
 )

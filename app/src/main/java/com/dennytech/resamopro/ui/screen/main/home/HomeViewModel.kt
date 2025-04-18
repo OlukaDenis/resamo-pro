@@ -10,51 +10,37 @@ import com.dennytech.domain.models.SaleDomainModel
 import com.dennytech.domain.models.SaleReportDomainModel
 import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.usecases.account.FetchCurrentUserUseCase
-import com.dennytech.domain.usecases.reports.FetchSaleByPeriodUseCase
 import com.dennytech.domain.usecases.sales.GetRecentSalesUseCase
-import com.dennytech.domain.usecases.sales.GetRevenueUseCase
+import com.dennytech.domain.usecases.reports.GetRevenueByPeriodUseCase
 import com.dennytech.domain.usecases.sales.GetSaleCountsUseCase
 import com.dennytech.domain.usecases.store.GetSelectedStoreUseCase
 import com.dennytech.domain.usecases.store.GetUserStoreListUseCase
 import com.dennytech.domain.usecases.store.SetSelectedStoreUseCase
-import com.dennytech.resamopro.ui.screen.main.home.counts.CountsEvent
 import com.dennytech.resamopro.utils.Helpers.formatCurrency
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getSaleCountsUseCase: GetSaleCountsUseCase,
-    private val getRevenueUseCase: GetRevenueUseCase,
     private val getRecentSalesUseCase: GetRecentSalesUseCase,
     private val getSelectedStoreUseCase: GetSelectedStoreUseCase,
     private val getUserStoreListUseCase: GetUserStoreListUseCase,
     private val setSelectedStoreUseCase: SetSelectedStoreUseCase,
-    private val fetchCurrentUserUseCase: FetchCurrentUserUseCase,
-    private val fetchSaleByPeriodUseCase: FetchSaleByPeriodUseCase,
+    private val fetchCurrentUserUseCase: FetchCurrentUserUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeState())
 
-    init {
-//        initialize()
-    }
-
     fun initialize() {
-        onEvent(HomeEvent.GetSaleCounts)
         onEvent(HomeEvent.GetSales)
         onEvent(HomeEvent.GetUserStores)
 
         loadCurrentStore()
         fetchCurrentUser()
-    }
-
-    fun adminInitialize() {
-        onEvent(HomeEvent.GetRevenue)
-        onEvent(HomeEvent.GetSaleByPeriod)
     }
 
     fun loadCurrentStore() {
@@ -64,10 +50,6 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.GetSaleCounts -> getCounts()
-
-            is HomeEvent.GetRevenue -> getRevenue()
-
             is HomeEvent.GetSales -> getRecentSales()
 
             is HomeEvent.GetCurrentStore -> getCurrentStore()
@@ -79,15 +61,12 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.GetUserStores -> getUserStores()
 
             is HomeEvent.SetCurrentStore -> setCurrentStore(event.storeId)
-
-            is HomeEvent.GetSaleByPeriod -> getSalesReportByPeriod()
         }
     }
 
     private fun setCurrentStore(storeId: String) {
         viewModelScope.launch {
-            runBlocking { setSelectedStoreUseCase(SetSelectedStoreUseCase.Param(storeId = storeId)) }
-
+            setSelectedStoreUseCase(SetSelectedStoreUseCase.Param(storeId = storeId))
             initialize()
         }
     }
@@ -111,83 +90,6 @@ class HomeViewModel @Inject constructor(
             getSelectedStoreUseCase().collect {
                 state = state.copy(currentStore = it)
                 Timber.d("Current store: %s", it)
-            }
-        }
-    }
-
-    private fun getSalesReportByPeriod() {
-        viewModelScope.launch {
-            fetchSaleByPeriodUseCase().collect {
-                state = when(it) {
-                    is Resource.Loading -> {
-                        state.copy(loadingSaleByPeriod = true)
-                    }
-                    is Resource.Error -> {
-                        state.copy(loadingSaleByPeriod = false)
-                    }
-                    is Resource.Success -> {
-                        state.copy(loadingSaleByPeriod = false, salePeriodReport = it.data)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getCounts() {
-        viewModelScope.launch {
-            getSaleCountsUseCase().collect {
-                state = when (it) {
-                    is Resource.Loading -> state.copy(loadingCounts = true)
-                    is Resource.Success -> {
-                        val model = it.data
-                        val list = mutableListOf<CountCardModel>().apply {
-                            this.add(
-                                CountCardModel(
-                                    "Month Sales Total",
-                                    model.salesTotal.toDouble().formatCurrency()
-                                )
-                            )
-                            this.add(
-                                CountCardModel(
-                                    "Month Sales Count",
-                                    model.salesCount.toString()
-                                )
-                            )
-                        }
-                        state.copy(
-                            loadingCounts = false,
-                            counts = list.toList()
-                        )
-                    }
-
-                    is Resource.Error -> {
-                        state.copy(
-                            loadingCounts = false,
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getRevenue() {
-        viewModelScope.launch {
-            getRevenueUseCase().collect {
-                state = when (it) {
-                    is Resource.Loading -> state.copy(loadingRevenue = true)
-                    is Resource.Success -> {
-                        state.copy(
-                            loadingRevenue = false,
-                            revenue = it.data
-                        )
-                    }
-
-                    is Resource.Error -> {
-                        state.copy(
-                            loadingRevenue = false,
-                        )
-                    }
-                }
             }
         }
     }
@@ -237,12 +139,9 @@ data class CountCardModel(
 )
 
 sealed class HomeEvent {
-    data object GetSaleCounts : HomeEvent()
-    data object GetRevenue : HomeEvent()
     data object GetSales : HomeEvent()
     data object GetCurrentStore : HomeEvent()
     data object GetUserStores : HomeEvent()
     data object ToggleStoreBottomSheet: HomeEvent()
     data class SetCurrentStore(val storeId: String): HomeEvent()
-    data object GetSaleByPeriod : HomeEvent()
 }

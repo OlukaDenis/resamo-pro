@@ -13,8 +13,6 @@ class GetCurrentUserUseCase @Inject constructor(
     private val profileRepository: ProfileRepository
 ): BaseSuspendUseCase<Unit, UserDomainModel>(dispatcher){
     override suspend fun run(param: Unit?): UserDomainModel {
-        return runBlocking {
-            profileRepository.getCurrentUser()
-        }.first() ?: throw Exception("User is null")
+        return profileRepository.getCurrentUser().first() ?: throw Exception("User is null")
     }
 }

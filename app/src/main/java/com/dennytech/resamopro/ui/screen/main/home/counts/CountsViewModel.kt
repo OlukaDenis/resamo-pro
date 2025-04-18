@@ -9,10 +9,9 @@ import com.dennytech.domain.models.ReportDomainModel
 import com.dennytech.domain.models.Resource
 import com.dennytech.domain.models.SaleReportDomainModel
 import com.dennytech.domain.usecases.reports.FetchPopularProductTypesUseCase
-import com.dennytech.domain.usecases.reports.FetchSaleByPeriodUseCase
+import com.dennytech.domain.usecases.reports.FetchAndObserveSaleReportUseCase
 import com.dennytech.domain.usecases.sales.GetSaleCountsUseCase
 import com.dennytech.resamopro.ui.screen.main.home.CountCardModel
-import com.dennytech.resamopro.ui.screen.main.home.HomeEvent
 import com.dennytech.resamopro.utils.Helpers.formatCurrency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -21,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CountsViewModel @Inject constructor(
     private val getSaleCountsUseCase: GetSaleCountsUseCase,
-    private val fetchSaleByPeriodUseCase: FetchSaleByPeriodUseCase,
+    private val fetchAndObserveSaleReportUseCase: FetchAndObserveSaleReportUseCase,
     private val fetchPopularProductTypesUseCase: FetchPopularProductTypesUseCase
 ): ViewModel() {
 
@@ -85,7 +84,7 @@ class CountsViewModel @Inject constructor(
 
     private fun getSalesReportByPeriod() {
         viewModelScope.launch {
-            fetchSaleByPeriodUseCase().collect {
+            fetchAndObserveSaleReportUseCase().collect {
                 state = when(it) {
                     is Resource.Loading -> {
                         state.copy(loadingSaleByPeriod = true)
@@ -141,7 +140,7 @@ class CountsViewModel @Inject constructor(
 data class CountsState(
     val counts: List<CountCardModel> = emptyList(),
     val loadingCounts: Boolean = false,
-    val revenue: Int = 0,
+    val revenue: Long = 0,
     val endDate: String = "",
     val startDate: String = "",
     val loadingSaleByPeriod: Boolean = false,

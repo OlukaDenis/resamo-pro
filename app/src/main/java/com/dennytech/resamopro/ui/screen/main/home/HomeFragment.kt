@@ -37,6 +37,9 @@ import com.dennytech.resamopro.ui.components.home.CurrentStoreInfo
 import com.dennytech.resamopro.ui.components.home.HomeUserInfo
 import com.dennytech.resamopro.ui.components.home.NotActivatedCard
 import com.dennytech.resamopro.ui.components.home.StoresBottomSheet
+import com.dennytech.resamopro.ui.screen.main.home.components.insightCounts.InsightReportComponent
+import com.dennytech.resamopro.ui.screen.main.home.components.revenue.RevenueComponent
+import com.dennytech.resamopro.ui.screen.main.home.components.saleReport.SaleReportComponent
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.TruliBlue
@@ -123,58 +126,30 @@ fun HomeContent(
 ) {
     Column {
 
-        val counts = viewModel.state.counts
-
         mainViewModel.state.user?.let {
             if (it.isAdmin()) {
-
-                LaunchedEffect(key1 = true) {
-                    viewModel.adminInitialize()
-                }
-
-                InsightCard(
-                    title = "Total Revenue",
-                    value = viewModel.state.revenue.toDouble().formatCurrency(),
-                    valueTextSize = Dimens._28sp,
-                    backgroundColor = DeepSeaBlue,
-                    foregroundColor = Color.White
-                )
+                RevenueComponent()
             }
         }
 
-        CountsCards(
-            counts = counts,
-            navigateToCounts = navigateToCounts,
-            loading = viewModel.state.loadingCounts
-        )
+        InsightsDivider(
+            leftText = "Reports",
+            rightText = "More...",
+            onNavigateClick = navigateToCounts)
+        InsightReportComponent()
 
         mainViewModel.state.user?.let {
             if (it.isAdmin()) {
                 VerticalSpacer(Dimens._16dp)
-                SaleRevenueGraph(viewModel = viewModel)
+//                SaleRevenueGraph(viewModel = viewModel)
+                SaleReportComponent()
             }
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Recent Sales",
-                textAlign = TextAlign.Center,
-                fontSize = Dimens._16sp,
-                color = DeepSeaBlue
-            )
-
-            TextButton(
-                onClick = { navigateToSales() },
-                modifier = Modifier.padding(Dimens._12dp),
-            ) {
-                Text("See All")
-            }
-        }
+        InsightsDivider(
+            leftText = "Recent Sales",
+            rightText = "See All",
+            onNavigateClick = navigateToCounts)
 
         if (viewModel.state.loadingSales) {
             LoadingCircle()
@@ -184,36 +159,12 @@ fun HomeContent(
     }
 }
 
-@Composable
-fun SaleRevenueGraph(viewModel: HomeViewModel) {
-    VerticalSpacer(Dimens._10dp)
-
-    if (!viewModel.state.loadingSaleByPeriod) {
-        val reports = viewModel.state.salePeriodReport
-        val dataOne = reports.map { it.total.toFloat() }
-        val dataTwo = reports.map { it.revenue.toFloat() }
-        val xData = reports.indices.map { it.toFloat() }
-        val xLabels = reports.map { it.period }.toTypedArray()
-
-        CombinedBarGraph(
-            xData = xData,
-            firstValues = dataOne,
-            secondValues = dataTwo,
-            xLabels = xLabels,
-            legendEnabled = true,
-            graphOneLabel = "Sales",
-            graphTwoLabel = "Revenue"
-        )
-    } else {
-        LoadingCircle()
-    }
-}
 
 @Composable
-fun CountsCards(
-    counts: List<CountCardModel>,
-    loading: Boolean,
-    navigateToCounts: (() -> Unit)? = null,
+private fun InsightsDivider(
+    leftText: String,
+    rightText: String,
+    onNavigateClick: (() -> Unit)? = null,
 ) {
     Column {
         Row(
@@ -223,46 +174,21 @@ fun CountsCards(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Reports",
+                text = leftText,
                 textAlign = TextAlign.Center,
                 fontSize = Dimens._16sp,
                 color = DeepSeaBlue
             )
 
-            if (navigateToCounts != null) {
+            if (onNavigateClick != null) {
                 TextButton(
-                    onClick = { navigateToCounts() },
+                    onClick = { onNavigateClick() },
                 ) {
-                    Text("More...")
-                }
-            }
-        }
-
-        if (loading) {
-            LoadingCircle()
-        }
-
-        if (counts.isNotEmpty()) {
-            VerticalSpacer(Dimens._8dp)
-            LazyVerticalGrid(
-                modifier = Modifier.heightIn(max = 1000.dp),
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(Dimens._16dp),
-            ) {
-                items(counts) { item ->
-                    val index = counts.indexOf(item)
-                    InsightCard(
-                        title = item.title,
-                        value = item.content,
-                        backgroundColor = if (index == 0) TruliBlue else TruliOrange,
-                        foregroundColor = Color.White
-                    )
+                    Text(rightText)
                 }
             }
         }
     }
-
-
 }
 
 @Composable

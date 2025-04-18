@@ -11,9 +11,7 @@ class LogoutUseCase @Inject constructor(
     private val preferenceRepository: PreferenceRepository
 ) : BaseSuspendUseCase<Unit, Unit>(dispatcher) {
     override suspend fun run(param: Unit?) {
-        return runBlocking {
-            preferenceRepository.setTokenExpiry(0L)
-            preferenceRepository.setCurrentStore("")
-        }
+        preferenceRepository.setTokenExpiry(0L)
+        preferenceRepository.setCurrentStore("")
     }
 }
