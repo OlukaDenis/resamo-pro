@@ -10,6 +10,7 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("com.google.protobuf") version "0.9.4"
     id("com.google.devtools.ksp")
+    id("jacoco")
 //    id("com.google.firebase.crashlytics")
 }
 
@@ -32,6 +33,8 @@ android {
         debug {
             val baseUrl = getProperty("DEV_URL")
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
 
         create("staging") {
@@ -69,6 +72,78 @@ android {
     buildFeatures {
         buildConfig = true
     }
+}
+
+tasks.withType<Test> {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
+}
+
+//  ./gradlew :data:jacocoTestReport
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val excludes = listOf(
+        "**/R.class",
+        "**/R\$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "**/*Binding.class",
+        "**/*Binding*.*",
+        "**/*Dao_Impl*.class",
+        "**/*Args.class",
+        "**/*Args.Builder.class",
+        "**/*Directions*.class",
+        "**/*Creator.class",
+        "**/*Builder.class",
+        "**/R$*.class",
+        "**/*_MembersInjector.class",
+        "**/Dagger*Component.class",
+        "**/Dagger*Component*Builder.class",
+        "**/*Module_*Factory.class",
+        "**/*Module_*Provide*Factory.class",
+        "**/di/**",
+        "**/hilt/**",
+        "**/*\$ViewInjector*.*",
+        "**/*\$ViewBinder*.*",
+        "**/*Factory*",
+        "**/*_MembersInjector*",
+        "**/*Module*",
+        "**/*Component*",
+        "**android**",
+        "**/BR.class",
+        "**/model/**",
+        "**/models/**",
+        "**/*Dto.class",
+        "**/*Model*.*",
+        "**/*Entity*.*",
+        "**/*State*.*",
+        "**/*Event*.*"
+    )
+
+    val kotlinClasses = fileTree("$buildDir/tmp/kotlin-classes/debug") {
+        exclude(excludes)
+    }
+
+    val mainSrc = "$projectDir/src/main/kotlin"
+
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(files(kotlinClasses))
+    executionData.setFrom(fileTree(buildDir) {
+        include(
+            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+            "jacoco/testDebugUnitTest.exec"
+            )
+    })
 }
 
 dependencies {
@@ -148,4 +223,21 @@ fun getProperty(key: String): String {
     val properties = localProperties()
     val res = properties.getProperty(key)
     return if (res != null) res else ""
+}
+
+afterEvaluate {
+    tasks.withType<Test> {
+        doLast {
+            println("Test task ${this.name} completed")
+        }
+    }
+
+    tasks.withType<JacocoReport> {
+        doFirst {
+            println("Generating JaCoCo report for ${project.name}")
+            println("Execution data: ${executionData.files}")
+            println("Class directories: ${classDirectories.files}")
+            println("Source directories: ${sourceDirectories.files}")
+        }
+    }
 }

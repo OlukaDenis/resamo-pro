@@ -1,6 +1,6 @@
 # ResamoPro
 
-ResamoPro is an Android application built with modern Android development practices and architecture.
+ResamoPro is an Android application that tracks inventory products. It is built with modern Android development practices and architecture.
 
 ## Project Structure
 
@@ -55,17 +55,24 @@ To run all Android tests:
 ./gradlew connectedAndroidTest
 ```
 
-### Generating Code Coverage Report
+### Generating Code Coverage Report with Jacoco
 The project uses JaCoCo for code coverage. To generate a coverage report:
 
-1. Run the tests with coverage:
+1. To run generate coverage for a specific module:
 ```bash
-./gradlew jacocoTestReport
+./gradlew :app:jacocoTestReport
+./gradlew :domain:jacocoTestReport
+./gradlew :data:jacocoTestReport
 ```
 
-2. The coverage report will be generated in:
-   - For unit tests: `app/build/reports/jacoco/jacocoTestReport/html/index.html`
-   - For Android tests: `app/build/reports/jacoco/connectedAndroidTest/html/index.html`
+2. Run the tests with coverage:
+```bash
+./gradlew jacocoFullReport
+```
+
+3. The coverage report will be generated in:
+   - For unit tests: `<module-name>/build/reports/jacoco/jacocoTestReport/html/index.html`
+   - For Android tests: `<module-name>/build/reports/jacoco/connectedAndroidTest/html/index.html`
 
 3. To view the report, open the `index.html` file in a web browser.
 
@@ -78,10 +85,28 @@ The project uses JaCoCo for code coverage. To generate a coverage report:
 
 The project uses the following configuration files:
 
-- `keystore.properties` - Contains signing configuration
-- `version.properties` - Manages version information
-- `gradle.properties` - Gradle configuration
-- `local.properties` - Local development settings
+`keystore.properties` - Contains signing configuration
+```bash
+  storeFile=<store>.jks
+  storePassword=<store_password>
+  keyAlias=<keyAlias>
+  keyPassword=<key_password>
+```
+`version.properties` - Manages version information
+```bash
+  VERSION_NAME=<vesion_name>
+  VERSION_CODE_MAJOR=<major_version_number>
+  VERSION_CODE_MINOR=<minor_version_number>
+```
+
+`local.properties` - Local development settings
+```bash
+  sdk.dir=/Volumes/Data/Programs/SDK
+  DEV_URL=<dev_api_base_url>
+  PROD_URL=<prod_api_base_url>
+```
+ `gradle.properties` - Gradle configuration
+
 
 ## Author
 

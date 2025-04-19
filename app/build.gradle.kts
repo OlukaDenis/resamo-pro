@@ -1,5 +1,3 @@
-import com.android.build.gradle.internal.tasks.factory.dependsOn
-import java.util.Locale
 import java.util.Properties
 
 plugins {
@@ -13,18 +11,15 @@ plugins {
     id("jacoco")
 }
 
-// Register the main JaCoCo task to later depend on the per-variant tasks
-val jacocoTestReport = tasks.register("jacocoTestReport")
-
 android {
     signingConfigs {
         val keystoreFile = readProperties("../keystore.properties")
         if (!keystoreFile.isNullOrEmpty()) {
             create("resamoConfig") {
-                storeFile = file("$rootDir/resamo.jks")
-                storePassword = "FkhHU4QKxvbS"
-                keyAlias = "resamoKey"
-                keyPassword = "FkhHU4QKxvbS"
+                storeFile = file("$rootDir/${keystoreFile.getProperty("storeFile")}")
+                storePassword = keystoreFile.getProperty("storePassword")
+                keyAlias = keystoreFile.getProperty("keyAlias")
+                keyPassword = keystoreFile.getProperty("keyPassword")
             }
         }
     }
@@ -130,77 +125,78 @@ android {
             isReturnDefaultValues = true
         }
     }
+}
 
-    applicationVariants.all {
-        val testTaskName = "test${this.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(
-            Locale.getDefault()) else it.toString() }}UnitTest"
-
-        val excludes = listOf(
-            "**/R.class",
-            "**/R\$*.class",
-            "**/BuildConfig.*",
-            "**/Manifest*.*",
-            "**/*Test*.*",
-            "android/**/*.*",
-            "**/*Binding.class",
-            "**/*Binding*.*",
-            "**/*Dao_Impl*.class",
-            "**/*Args.class",
-            "**/*Args.Builder.class",
-            "**/*Directions*.class",
-            "**/*Creator.class",
-            "**/*Builder.class",
-            "**/R$*.class",
-            "**/*_MembersInjector.class",
-            "**/Dagger*Component.class",
-            "**/Dagger*Component*Builder.class",
-            "**/*Module_*Factory.class",
-            "**/*Module_*Provide*Factory.class",
-            "**/di/**",
-            "**/hilt/**",
-            "**/*\$ViewInjector*.*",
-            "**/*\$ViewBinder*.*",
-            "**/*Factory*",
-            "**/*_MembersInjector*",
-            "**/*Module*",
-            "**/*Component*",
-            "**android**",
-            "**/BR.class",
-            "**/model/**",
-            "**/*Dto.class",
-            "**/*Model.class",
-            "**/*Entity.class"
-        )
-
-        val reportTask = tasks.register("jacoco${testTaskName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}Report", JacocoReport::class) {
-            group = "Reporting"
-            description = "Generate Jacoco coverage reports for the ${testTaskName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} build."
-            dependsOn(testTaskName)
-
-            reports {
-                xml.required.set(true)
-                html.required.set(true)
-            }
-
-            classDirectories.setFrom(
-                files(
-                    fileTree(javaCompileProvider.get().destinationDirectory) {
-                        exclude(excludes)
-                    },
-                    fileTree("$buildDir/tmp/kotlin-classes/${this.name}") {
-                        exclude(excludes)
-                    }
-                )
-            )
-
-
-            // Code underneath /src/{variant}/kotlin will also be picked up here
-            sourceDirectories.setFrom(sourceSets.flatMap { it.javaDirectories })
-            executionData.setFrom(file("$buildDir/jacoco/$testTaskName.exec"))
-        }
-
-        jacocoTestReport.dependsOn(reportTask)
+tasks.withType<Test> {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
     }
+}
+
+//  ./gradlew :app:jacocoTestReport
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val excludes = listOf(
+        "**/R.class",
+        "**/R\$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "**/*Binding.class",
+        "**/*Binding*.*",
+        "**/*Dao_Impl*.class",
+        "**/*Args.class",
+        "**/*Args.Builder.class",
+        "**/*Directions*.class",
+        "**/*Creator.class",
+        "**/*Builder.class",
+        "**/R$*.class",
+        "**/*_MembersInjector.class",
+        "**/Dagger*Component.class",
+        "**/Dagger*Component*Builder.class",
+        "**/*Module_*Factory.class",
+        "**/*Module_*Provide*Factory.class",
+        "**/di/**",
+        "**/hilt/**",
+        "**/*\$ViewInjector*.*",
+        "**/*\$ViewBinder*.*",
+        "**/*Factory*",
+        "**/*_MembersInjector*",
+        "**/*Module*",
+        "**/*Component*",
+        "**android**",
+        "**/BR.class",
+        "**/model/**",
+        "**/models/**",
+        "**/*Dto.class",
+        "**/*Model*.*",
+        "**/*Entity*.*",
+        "**/*State*.*",
+        "**/*Event*.*"
+    )
+
+    val kotlinClasses = fileTree("$buildDir/tmp/kotlin-classes/debug") {
+        exclude(excludes)
+    }
+
+    val mainSrc = "$projectDir/src/main/kotlin"
+
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(files(kotlinClasses))
+    executionData.setFrom(fileTree(buildDir) {
+        include(
+            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+            "jacoco/testDebugUnitTest.exec"
+        )
+    })
 }
 
 dependencies {
@@ -315,84 +311,19 @@ fun readProperties(filePath: String): Properties? {
     }
 }
 
+afterEvaluate {
+    tasks.withType<Test> {
+        doLast {
+            println("Test task ${this.name} completed")
+        }
+    }
 
-tasks.withType<Test> {
-    configure<JacocoTaskExtension> {
-        isIncludeNoLocationClasses = true
-        excludes = listOf("jdk.internal.*")
+    tasks.withType<JacocoReport> {
+        doFirst {
+            println("Generating JaCoCo report for ${project.name}")
+            println("Execution data: ${executionData.files}")
+            println("Class directories: ${classDirectories.files}")
+            println("Source directories: ${sourceDirectories.files}")
+        }
     }
 }
-
-//tasks.register<JacocoReport>("jacocoTestReport") {
-//    dependsOn("testDebugUnitTest")
-//    group = "Reporting"
-//    description = "Generate Jacoco coverage reports"
-//
-//    reports {
-//        xml.required.set(false)
-//        html.required.set(true)
-//        html.outputLocation.set(file("$buildDir/reports/coverage"))
-//    }
-//
-//    val fileFilter = listOf(
-//        "**/R.class",
-//        "**/R$*.class",
-//        "**/BuildConfig.*",
-//        "**/Manifest*.*",
-//        "**/*Test*.*",
-//        "**/*_MembersInjector.class",
-//        "**/Dagger*Component.class",
-//        //        "**/Dagger*Component$Builder.class",
-//        "**/*Module_*Factory.class",
-//        "**/*Module_*Provide*Factory.class",
-//        "**/di/**",
-//        "**/hilt/**",
-//        "**/*\$ViewInjector*.*",
-//        "**/*\$ViewBinder*.*",
-//        "**/*Factory*",
-//        "**/*_MembersInjector*",
-//        "**/*Module*",
-//        "**/*Component*",
-//        "**android**",
-//        "**/BR.class"
-//    )
-//
-//    // Get all modules
-//    val modules = listOf(":app", ":domain", ":data")
-//
-//    // Collect all source directories
-//    val sourceDirs = modules.map { module ->
-//        file("${project.rootDir}/${module}/src/main/java")
-//    }
-//
-//    // Collect all class directories
-//    val classDirs = modules.map { module ->
-//        fileTree("${project.rootDir}/${module}/build/tmp/kotlin-classes/debug") {
-//            exclude(fileFilter)
-//        }
-//    }
-//
-//    // Collect all execution data
-//    val executionDataDirs = modules.map { module ->
-//        fileTree("${project.rootDir}/${module}/build") {
-//            include("jacoco/testDebugUnitTest.exec")
-//        }
-//    }
-//
-//    sourceDirectories.setFrom(sourceDirs)
-//    classDirectories.setFrom(classDirs)
-//    executionData.setFrom(executionDataDirs)
-//}
-//
-//tasks.register<JacocoCoverageVerification>("jacocoCoverageVerification") {
-//    group = "verification"
-//    description = "Verifies code coverage"
-//    dependsOn("jacocoTestReport")
-//    // Set the minimum coverage requirement
-//
-////    minimumCoverage {
-////        classCoverage.required = 0.8 // Example: 80% class coverage
-////        branchCoverage.required = 0.8 // Example: 80% branch coverage
-////        // Add other coverage levels as needed
-////    }
-//}

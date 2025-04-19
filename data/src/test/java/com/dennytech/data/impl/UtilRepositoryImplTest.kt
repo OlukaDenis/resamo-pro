@@ -1,16 +1,9 @@
 package com.dennytech.data.impl
 
-import com.dennytech.data.utils.extractErrorBody
-import com.dennytech.data.utils.resolveError
-import com.dennytech.domain.models.Error
-import com.dennytech.domain.models.ErrorBody
 import com.google.common.truth.Truth.assertThat
-import io.mockk.every
-import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class UtilRepositoryImplTest {
