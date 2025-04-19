@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
+import java.util.Locale
 import java.util.Properties
 
 plugins {
@@ -8,7 +10,11 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+    id("jacoco")
 }
+
+// Register the main JaCoCo task to later depend on the per-variant tasks
+val jacocoTestReport = tasks.register("jacocoTestReport")
 
 android {
     signingConfigs {
@@ -65,15 +71,17 @@ android {
         debug {
             signingConfig = signingConfigs.getByName("resamoConfig")
             applicationIdSuffix = ".uat"
-
             resValue("string", "app_name", "Resamo Pro Dev")
-
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
 
         create("staging") {
             signingConfig = signingConfigs.getByName("resamoConfig")
             applicationIdSuffix = ".uat"
             isDebuggable = false
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
             resValue("string", "app_name", "Resamo Pro Dev")
 
             isMinifyEnabled = false
@@ -93,10 +101,6 @@ android {
                 "proguard-rules.pro"
             )
         }
-    }
-
-    applicationVariants.all {
-
     }
 
     compileOptions {
@@ -119,64 +123,83 @@ android {
     }
 
     tasks.getByName("preBuild").dependsOn("incrementVersion")
-}
 
-tasks.register("incrementVersion") {
-    doLast {
-        try {
-            val versionPropsFile = file("../version.properties")
-            if (versionPropsFile.exists()) {
-                val versionProps = Properties()
-                versionProps.load(versionPropsFile.inputStream())
-
-                val versionCodeMajor = versionProps.getProperty("VERSION_CODE_MAJOR").toInt()
-                val versionCodeMinor = versionProps.getProperty("VERSION_CODE_MINOR").toInt() + 1
-//                val versionName = versionProps.getProperty("VERSION_NAME")
-
-                versionProps.setProperty("VERSION_CODE_MINOR", versionCodeMinor.toString())
-                versionProps.setProperty("VERSION_NAME", "$versionCodeMajor.$versionCodeMinor")
-                versionProps.store(versionPropsFile.writer(), null)
-
-                println("Version code incremented to $versionCodeMajor.$versionCodeMinor")
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
         }
     }
-}
 
-fun getVersionCode(): Int {
-    val versionPropsFile = readProperties("../version.properties")
-    return if (!versionPropsFile.isNullOrEmpty()) {
-        val versionCodeMajor = versionPropsFile.getProperty("VERSION_CODE_MAJOR").toInt()
-        val versionCodeMinor = versionPropsFile.getProperty("VERSION_CODE_MINOR").toInt()
-        return versionCodeMajor * 10000 + versionCodeMinor
-    } else 4
-}
+    applicationVariants.all {
+        val testTaskName = "test${this.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(
+            Locale.getDefault()) else it.toString() }}UnitTest"
 
+        val excludes = listOf(
+            "**/R.class",
+            "**/R\$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "**/*Test*.*",
+            "android/**/*.*",
+            "**/*Binding.class",
+            "**/*Binding*.*",
+            "**/*Dao_Impl*.class",
+            "**/*Args.class",
+            "**/*Args.Builder.class",
+            "**/*Directions*.class",
+            "**/*Creator.class",
+            "**/*Builder.class",
+            "**/R$*.class",
+            "**/*_MembersInjector.class",
+            "**/Dagger*Component.class",
+            "**/Dagger*Component*Builder.class",
+            "**/*Module_*Factory.class",
+            "**/*Module_*Provide*Factory.class",
+            "**/di/**",
+            "**/hilt/**",
+            "**/*\$ViewInjector*.*",
+            "**/*\$ViewBinder*.*",
+            "**/*Factory*",
+            "**/*_MembersInjector*",
+            "**/*Module*",
+            "**/*Component*",
+            "**android**",
+            "**/BR.class",
+            "**/model/**",
+            "**/*Dto.class",
+            "**/*Model.class",
+            "**/*Entity.class"
+        )
 
-fun getVersionName(): String {
-    println("Getting version name......")
-    val versionPropsFile = readProperties("../version.properties")
-    return if(!versionPropsFile.isNullOrEmpty()) {
-        versionPropsFile.getProperty("VERSION_NAME")
-    } else "1.0.4"
-}
+        val reportTask = tasks.register("jacoco${testTaskName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}Report", JacocoReport::class) {
+            group = "Reporting"
+            description = "Generate Jacoco coverage reports for the ${testTaskName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} build."
+            dependsOn(testTaskName)
 
-fun getFile(filePath: String): File {
-    return file(filePath)
-}
-
-fun readProperties(filePath: String): Properties? {
-    val file = getFile(filePath)
-    return if (file.exists()) {
-        Properties().apply {
-            file.inputStream().use { fis ->
-                load(fis)
+            reports {
+                xml.required.set(true)
+                html.required.set(true)
             }
+
+            classDirectories.setFrom(
+                files(
+                    fileTree(javaCompileProvider.get().destinationDirectory) {
+                        exclude(excludes)
+                    },
+                    fileTree("$buildDir/tmp/kotlin-classes/${this.name}") {
+                        exclude(excludes)
+                    }
+                )
+            )
+
+
+            // Code underneath /src/{variant}/kotlin will also be picked up here
+            sourceDirectories.setFrom(sourceSets.flatMap { it.javaDirectories })
+            executionData.setFrom(file("$buildDir/jacoco/$testTaskName.exec"))
         }
-    } else {
-        null
+
+        jacocoTestReport.dependsOn(reportTask)
     }
 }
 
@@ -233,3 +256,143 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }
+
+tasks.register("incrementVersion") {
+    doLast {
+        try {
+            val versionPropsFile = file("../version.properties")
+            if (versionPropsFile.exists()) {
+                val versionProps = Properties()
+                versionProps.load(versionPropsFile.inputStream())
+
+                val versionCodeMajor = versionProps.getProperty("VERSION_CODE_MAJOR").toInt()
+                val versionCodeMinor = versionProps.getProperty("VERSION_CODE_MINOR").toInt() + 1
+//                val versionName = versionProps.getProperty("VERSION_NAME")
+
+                versionProps.setProperty("VERSION_CODE_MINOR", versionCodeMinor.toString())
+                versionProps.setProperty("VERSION_NAME", "$versionCodeMajor.$versionCodeMinor")
+                versionProps.store(versionPropsFile.writer(), null)
+
+                println("Version code incremented to $versionCodeMajor.$versionCodeMinor")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
+fun getVersionCode(): Int {
+    val versionPropsFile = readProperties("../version.properties")
+    return if (!versionPropsFile.isNullOrEmpty()) {
+        val versionCodeMajor = versionPropsFile.getProperty("VERSION_CODE_MAJOR").toInt()
+        val versionCodeMinor = versionPropsFile.getProperty("VERSION_CODE_MINOR").toInt()
+        return versionCodeMajor * 10000 + versionCodeMinor
+    } else 4
+}
+
+fun getVersionName(): String {
+    println("Getting version name......")
+    val versionPropsFile = readProperties("../version.properties")
+    return if(!versionPropsFile.isNullOrEmpty()) {
+        versionPropsFile.getProperty("VERSION_NAME")
+    } else "1.0.4"
+}
+
+fun getFile(filePath: String): File {
+    return file(filePath)
+}
+
+fun readProperties(filePath: String): Properties? {
+    val file = getFile(filePath)
+    return if (file.exists()) {
+        Properties().apply {
+            file.inputStream().use { fis ->
+                load(fis)
+            }
+        }
+    } else {
+        null
+    }
+}
+
+
+tasks.withType<Test> {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
+}
+
+//tasks.register<JacocoReport>("jacocoTestReport") {
+//    dependsOn("testDebugUnitTest")
+//    group = "Reporting"
+//    description = "Generate Jacoco coverage reports"
+//
+//    reports {
+//        xml.required.set(false)
+//        html.required.set(true)
+//        html.outputLocation.set(file("$buildDir/reports/coverage"))
+//    }
+//
+//    val fileFilter = listOf(
+//        "**/R.class",
+//        "**/R$*.class",
+//        "**/BuildConfig.*",
+//        "**/Manifest*.*",
+//        "**/*Test*.*",
+//        "**/*_MembersInjector.class",
+//        "**/Dagger*Component.class",
+//        //        "**/Dagger*Component$Builder.class",
+//        "**/*Module_*Factory.class",
+//        "**/*Module_*Provide*Factory.class",
+//        "**/di/**",
+//        "**/hilt/**",
+//        "**/*\$ViewInjector*.*",
+//        "**/*\$ViewBinder*.*",
+//        "**/*Factory*",
+//        "**/*_MembersInjector*",
+//        "**/*Module*",
+//        "**/*Component*",
+//        "**android**",
+//        "**/BR.class"
+//    )
+//
+//    // Get all modules
+//    val modules = listOf(":app", ":domain", ":data")
+//
+//    // Collect all source directories
+//    val sourceDirs = modules.map { module ->
+//        file("${project.rootDir}/${module}/src/main/java")
+//    }
+//
+//    // Collect all class directories
+//    val classDirs = modules.map { module ->
+//        fileTree("${project.rootDir}/${module}/build/tmp/kotlin-classes/debug") {
+//            exclude(fileFilter)
+//        }
+//    }
+//
+//    // Collect all execution data
+//    val executionDataDirs = modules.map { module ->
+//        fileTree("${project.rootDir}/${module}/build") {
+//            include("jacoco/testDebugUnitTest.exec")
+//        }
+//    }
+//
+//    sourceDirectories.setFrom(sourceDirs)
+//    classDirectories.setFrom(classDirs)
+//    executionData.setFrom(executionDataDirs)
+//}
+//
+//tasks.register<JacocoCoverageVerification>("jacocoCoverageVerification") {
+//    group = "verification"
+//    description = "Verifies code coverage"
+//    dependsOn("jacocoTestReport")
+//    // Set the minimum coverage requirement
+//
+////    minimumCoverage {
+////        classCoverage.required = 0.8 // Example: 80% class coverage
+////        branchCoverage.required = 0.8 // Example: 80% branch coverage
+////        // Add other coverage levels as needed
+////    }
+//}

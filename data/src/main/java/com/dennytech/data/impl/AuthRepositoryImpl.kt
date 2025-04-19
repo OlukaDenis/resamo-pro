@@ -50,8 +50,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signup(request: HashMap<String, Any>): String {
         return try {
-
-            val response =  authService.signup(request) 
+            authService.signup(request)
             "Success"
         } catch (throwable: Throwable) {
             throw throwable

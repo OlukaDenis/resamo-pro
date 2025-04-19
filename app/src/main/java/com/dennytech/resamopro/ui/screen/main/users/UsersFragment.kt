@@ -49,8 +49,6 @@ fun UsersFragment(
     navigateUp: () -> Unit,
 ) {
 
-    val context = LocalContext.current
-
     Scaffold(
         topBar = {
             TopAppBar(

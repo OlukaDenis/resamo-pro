@@ -5,18 +5,12 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.dennytech.data.UserPreferences
-import com.dennytech.data.local.dao.StoreDao
-import com.dennytech.data.local.dao.StoreUserDao
-import com.dennytech.data.local.mappers.StoreEntityMapper
-import com.dennytech.data.local.mappers.StoreUserEntityMapper
 import com.dennytech.data.local.mappers.UserPreferencesMapper
 import com.dennytech.data.remote.datasource.UserPagingSource
 import com.dennytech.data.remote.models.UserRemoteModel.Companion.toDomainUser
 import com.dennytech.data.remote.services.ApiService
 import com.dennytech.data.utils.MAX_PAGE_SIZE
-import com.dennytech.domain.models.StoreUserDomainModel
 import com.dennytech.domain.models.UserDomainModel
-import com.dennytech.domain.repository.PreferenceRepository
 import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.StoreRepository
 import kotlinx.coroutines.flow.Flow
@@ -98,16 +92,16 @@ class ProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveCurrentUser(entity: UserDomainModel) {
+    override suspend fun saveCurrentUser(user: UserDomainModel) {
         userPreferences.updateData { prefs ->
             prefs.toBuilder()
-                .setEmail(entity.email)
-                .setId(entity.id)
-                .setStatus(entity.status)
-                .setPhone(entity.phone)
-                .setFirstName(entity.firstName)
-                .setLastName(entity.lastName)
-                .setRole(entity.role)
+                .setEmail(user.email)
+                .setId(user.id)
+                .setStatus(user.status)
+                .setPhone(user.phone)
+                .setFirstName(user.firstName)
+                .setLastName(user.lastName)
+                .setRole(user.role)
                 .build()
         }
     }

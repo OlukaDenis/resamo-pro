@@ -1,4 +1,6 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import java.io.FileInputStream
+import java.util.Locale
 import java.util.Properties
 
 plugins {
@@ -67,7 +69,6 @@ android {
     buildFeatures {
         buildConfig = true
     }
-
 }
 
 dependencies {

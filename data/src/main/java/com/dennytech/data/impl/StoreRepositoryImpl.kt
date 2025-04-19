@@ -37,11 +37,12 @@ class StoreRepositoryImpl @Inject constructor(
     }
 
     override fun getUserStores(): Flow<List<StoreDomainModel>> = flow {
-        storeDao.get().map {list ->
+        storeDao.get().map { list ->
             emit(list.map { entity ->
                 val store = storeEntityMapper.toDomain(entity)
                 val usersList = storeUserDao.getStoreUsers(entity.id).first()  // Pick store users
-                val categoryList =  productCategoryDao.getStoreCategories(entity.id).first()  // Pick store categories
+                val categoryList = productCategoryDao.getStoreCategories(entity.id)
+                    .first()  // Pick store categories
                 store.copy(
                     users = usersList.map { storeUserEntityMapper.toDomain(it) },
                     categories = categoryList.map { categoryEntityMapper.toDomain(it) }
@@ -57,7 +58,8 @@ class StoreRepositoryImpl @Inject constructor(
 
         val store = stores[0]
         val usersList = storeUserDao.getStoreUsers(store.id).first()  // Pick store users
-        val categoryList = productCategoryDao.getStoreCategories(store.id).first()  // Pick store categories
+        val categoryList =
+            productCategoryDao.getStoreCategories(store.id).first()  // Pick store categories
         return store.copy(
             users = usersList.map { storeUserEntityMapper.toDomain(it) },
             categories = categoryList.map { categoryEntityMapper.toDomain(it) }
@@ -70,7 +72,7 @@ class StoreRepositoryImpl @Inject constructor(
 
         if (store.users.isNotEmpty()) {
             store.users.map {
-                 saveStoreUser(it)
+                saveStoreUser(it)
             }
         }
 
@@ -91,8 +93,8 @@ class StoreRepositoryImpl @Inject constructor(
 
     override suspend fun saveStores(stores: List<StoreDomainModel>) {
         storeDao.clear()
-       storeUserDao.clear()
-       productCategoryDao.clear()
+        storeUserDao.clear()
+        productCategoryDao.clear()
 
         stores.map {
             saveStore(it)

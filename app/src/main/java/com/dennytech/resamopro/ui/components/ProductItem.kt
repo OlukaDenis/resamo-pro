@@ -79,7 +79,6 @@ fun ProductItem(
 
                 Column {
                     ConstraintLayout {
-                        val (button, text) = createRefs()
 
                         TranImage(product = product, onClick = {})
 

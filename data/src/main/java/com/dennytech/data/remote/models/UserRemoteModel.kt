@@ -44,7 +44,7 @@ data class UserRemoteModel(
                 phone = this.phone.orEmpty(),
                 email = this.email.orEmpty(),
                 role = this.role ?: -1,
-                status = this.status ?: 0,
+                status = this.status ?: -1,
                 fullName = "$firstName $lastName",
                 lastLogin = this.lastLogin.orEmpty(),
                 stores = stores?.map { it.toDomain(this.id) }.orEmpty(),

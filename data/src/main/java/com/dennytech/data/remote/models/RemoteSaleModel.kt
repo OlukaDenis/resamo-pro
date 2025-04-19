@@ -12,13 +12,13 @@ data class ConfirmSaleResponse(
 )
 
 data class RemoteSaleModel(
-    val id: String,
-    val product: RemoteProductModel?,
-    val profit: Int?,
-    val sellingPrice: Int?,
-    val quantity: Int?,
-    val saleDate: String?,
-    val collected: Boolean?
+    val id: String = "",
+    val product: RemoteProductModel? = null,
+    val profit: Int?= null,
+    val sellingPrice: Int?= null,
+    val quantity: Int?= null,
+    val saleDate: String?= null,
+    val collected: Boolean?= null
 ) {
     companion object {
         fun RemoteSaleModel.toDomain() : SaleDomainModel {
