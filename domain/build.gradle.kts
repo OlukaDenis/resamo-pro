@@ -60,6 +60,7 @@ tasks.withType<Test> {
     }
 }
 
+// ./gradlew :domain:jacocoTestReport
 tasks.register<JacocoReport>("jacocoTestReport") {
     dependsOn("testDebugUnitTest")
 

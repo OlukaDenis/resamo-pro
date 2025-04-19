@@ -18,5 +18,4 @@ class FetchCurrentUserUseCase @Inject constructor(
             throwable.printStackTrace()
         }
     }
-
 }
