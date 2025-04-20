@@ -27,12 +27,14 @@ The project follows a clean architecture approach with the following main compon
 - Android SDK 34 (Android 14)
 - Minimum SDK version: 21
 
-## Building the Project
+## Run the Project
 
 1. Clone the repository
 2. Open the project in Android Studio
-3. Sync the project with Gradle files
-4. Build and run the application
+3. Create `keystore.properties` file with the required configuration
+4. Add the base urls to the `local.properties` file
+5. Sync the project with Gradle files
+6. Build and run the application
 
 ## Running Tests and Code Coverage
 
