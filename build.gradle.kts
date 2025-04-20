@@ -57,7 +57,9 @@ task<JacocoReport>("jacocoFullReport") {
         "**/*Model*.*",
         "**/*Entity*.*",
         "**/*State*.*",
-        "**/*Event*.*"
+        "**/*Event*.*",
+//        "**/*Kt$*",
+//        "**/*Kt.class"
     )
 
     dependsOn(
@@ -107,7 +109,10 @@ task<JacocoReport>("jacocoFullReport") {
             )
             exclude(excludes)
         }
-    ))
+    ).filter { file ->
+        val className = file.nameWithoutExtension
+        !seenClasses.contains(className).also { seenClasses.add(className) }
+    })
 
     executionData.setFrom(fileTree(rootDir) {
         include(
@@ -131,6 +136,9 @@ task<JacocoReport>("jacocoFullReport") {
         }
     }
 }
+
+// Add a set to track seen classes
+val seenClasses = mutableSetOf<String>()
 
 // ./gradlew debugJacoco
 task("debugJacoco") {

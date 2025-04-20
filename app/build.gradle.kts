@@ -182,8 +182,10 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*Entity*.*",
         "**/*State*.*",
         "**/*Event*.*",
-        "**/*Fragment*.*",
-        "**/*Screen*.*"
+//        "**/*FragmentKt*.*",
+        "**/*Screen*.*",
+//        "**/*Kt$*",
+//        "**/*Kt.class"
     )
 
     val kotlinClasses = fileTree("$buildDir/tmp/kotlin-classes/debug") {
