@@ -8,7 +8,6 @@ import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class GetStoreUsersUseCase @Inject constructor(
@@ -20,7 +19,7 @@ class GetStoreUsersUseCase @Inject constructor(
         emit(Resource.Loading)
 
         try {
-            val response = runBlocking { profileRepository.fetchStoreUserList() }
+            val response =profileRepository.fetchStoreUserList() 
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {

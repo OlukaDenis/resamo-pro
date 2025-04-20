@@ -5,7 +5,6 @@ import com.dennytech.domain.dispacher.AppDispatcher
 import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class GetCurrentUserUseCase @Inject constructor(
@@ -13,8 +12,6 @@ class GetCurrentUserUseCase @Inject constructor(
     private val profileRepository: ProfileRepository
 ): BaseSuspendUseCase<Unit, UserDomainModel>(dispatcher){
     override suspend fun run(param: Unit?): UserDomainModel {
-        return runBlocking {
-            profileRepository.getCurrentUser()
-        }.first() ?: throw Exception("User is null")
+        return profileRepository.getCurrentUser().first() ?: throw Exception("User is null")
     }
 }

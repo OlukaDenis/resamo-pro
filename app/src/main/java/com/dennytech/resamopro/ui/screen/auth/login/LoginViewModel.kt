@@ -9,9 +9,10 @@ import com.dennytech.domain.models.Resource
 import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.repository.PreferenceRepository
 import com.dennytech.domain.usecases.auth.LoginUseCase
+import com.dennytech.resamopro.ui.models.events.LoginEvent
+import com.dennytech.resamopro.ui.models.states.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -89,22 +90,4 @@ class LoginViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
     }
-}
-
-data class LoginState(
-    val email: String = "",
-    val emailError: String = "",
-    val password: String = "",
-    val passwordError: String = "",
-    val loading: Boolean = false,
-    val error: String = "",
-    val errorDialog: Boolean = false,
-    val user: UserDomainModel? = null
-)
-
-sealed class LoginEvent {
-    data class EmailChanged(val email: String) : LoginEvent()
-    data class PasswordChanged(val password: String) : LoginEvent()
-    data object DismissErrorDialog: LoginEvent()
-    data object Submit : LoginEvent()
 }

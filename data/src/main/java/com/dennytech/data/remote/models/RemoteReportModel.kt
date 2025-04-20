@@ -12,11 +12,11 @@ data class ReportModelResponse(
 )
 
 data class RemoteSaleReportModel(
-    val count: Int?,
-    val monthYear: String?,
-    val period: String?,
-    val revenue: Int?,
-    val total: Int?
+    val count: Int? = -1,
+    val monthYear: String? = "",
+    val period: String? = "",
+    val revenue: Int? = -1,
+    val total: Int? = -1
 ) {
 
     companion object {

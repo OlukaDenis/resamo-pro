@@ -6,9 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dennytech.domain.models.Resource
-import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.usecases.store.GetSelectedStoreUseCase
 import com.dennytech.domain.usecases.user.CreateUserUseCase
+import com.dennytech.resamopro.ui.models.events.CreateUserEvent
+import com.dennytech.resamopro.ui.models.states.CreateUserState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -130,33 +131,4 @@ class CreateUserViewModel @Inject constructor(
             state = state.copy(passwordError = "Field required", dirty = true)
         }
     }
-}
-
-data class CreateUserState(
-    val email: String = "",
-    val emailError: String = "",
-    val phone: String = "",
-    val phoneError: String = "",
-    val firstName: String = "",
-    val firstNameError: String = "",
-    val lastName: String = "",
-    val lastNameError: String = "",
-    val password: String = "",
-    val passwordError: String = "",
-    val loading: Boolean = false,
-    val error: String = "",
-    val dirty: Boolean = false,
-    val showSuccessDialog: Boolean = false,
-    val errorDialog: Boolean = false,
-    val currentStore: StoreDomainModel? = null
-)
-
-sealed class CreateUserEvent {
-    data object ToggleSuccessDialog: CreateUserEvent()
-    data class FirstNameChanged(val value: String): CreateUserEvent()
-    data class LastNameChanged(val value: String): CreateUserEvent()
-    data class PhoneChanged(val value: String): CreateUserEvent()
-    data class EmailChanged(val value: String): CreateUserEvent()
-    data class PasswordChanged(val value: String): CreateUserEvent()
-    data object Submit: CreateUserEvent()
 }

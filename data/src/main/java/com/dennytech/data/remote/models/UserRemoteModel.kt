@@ -21,18 +21,18 @@ data class UserResponse(
 )
 
 data class UserRemoteModel(
-    val id: String,
-    val firstName: String?,
-    val lastName: String?,
-    val email: String?,
-    val token: String?,
-    val expiresIn: Long?,
-    val status: Int?,
-    val lastLogin: String?,
-    val phone: String?,
-    val role: Int?,
-    val stores: List<RemoteStoreModel>?,
-    val defaultStore: String?
+    val id: String = "",
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val email: String? = null,
+    val token: String? = null,
+    val expiresIn: Long? = null,
+    val status: Int? = null,
+    val lastLogin: String? = null,
+    val phone: String? = null,
+    val role: Int? = null,
+    val stores: List<RemoteStoreModel>? = null,
+    val defaultStore: String? = null
 ) {
 
     companion object {
@@ -44,7 +44,7 @@ data class UserRemoteModel(
                 phone = this.phone.orEmpty(),
                 email = this.email.orEmpty(),
                 role = this.role ?: -1,
-                status = this.status ?: 0,
+                status = this.status ?: -1,
                 fullName = "$firstName $lastName",
                 lastLogin = this.lastLogin.orEmpty(),
                 stores = stores?.map { it.toDomain(this.id) }.orEmpty(),

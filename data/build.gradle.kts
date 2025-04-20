@@ -1,4 +1,6 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import java.io.FileInputStream
+import java.util.Locale
 import java.util.Properties
 
 plugins {
@@ -8,6 +10,7 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("com.google.protobuf") version "0.9.4"
     id("com.google.devtools.ksp")
+    id("jacoco")
 //    id("com.google.firebase.crashlytics")
 }
 
@@ -30,6 +33,8 @@ android {
         debug {
             val baseUrl = getProperty("DEV_URL")
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
 
         create("staging") {
@@ -67,44 +72,119 @@ android {
     buildFeatures {
         buildConfig = true
     }
+}
 
+tasks.withType<Test> {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
+}
+
+//  ./gradlew :data:jacocoTestReport
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val excludes = listOf(
+        "**/R.class",
+        "**/R\$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "**/*Binding.class",
+        "**/*Binding*.*",
+        "**/*Dao_Impl*.class",
+        "**/*Args.class",
+        "**/*Args.Builder.class",
+        "**/*Directions*.class",
+        "**/*Creator.class",
+        "**/*Builder.class",
+        "**/R$*.class",
+        "**/*_MembersInjector.class",
+        "**/Dagger*Component.class",
+        "**/Dagger*Component*Builder.class",
+        "**/*Module_*Factory.class",
+        "**/*Module_*Provide*Factory.class",
+        "**/di/**",
+        "**/hilt/**",
+        "**/*\$ViewInjector*.*",
+        "**/*\$ViewBinder*.*",
+        "**/*Factory*",
+        "**/*_MembersInjector*",
+        "**/*Module*",
+        "**/*Component*",
+        "**android**",
+        "**/BR.class",
+        "**/model/**",
+        "**/models/**",
+        "**/*Dto.class",
+        "**/*Model*.*",
+        "**/*Entity*.*",
+        "**/*State*.*",
+        "**/*Event*.*"
+    )
+
+    val kotlinClasses = fileTree("$buildDir/tmp/kotlin-classes/debug") {
+        exclude(excludes)
+    }
+
+    val mainSrc = "$projectDir/src/main/kotlin"
+
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(files(kotlinClasses))
+    executionData.setFrom(fileTree(buildDir) {
+        include(
+            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+            "jacoco/testDebugUnitTest.exec"
+            )
+    })
 }
 
 dependencies {
     implementation(project(":domain"))
 
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation(libs.timber)
 
-    implementation("androidx.datastore:datastore-core:1.0.0")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation(libs.androidx.datastore.core)
+    implementation(libs.androidx.datastore.preferences)
 
-    implementation("androidx.room:room-runtime:2.6.0")
-    implementation("androidx.room:room-ktx:2.6.0")
-    ksp("androidx.room:room-compiler:2.6.0")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
-    implementation("com.google.protobuf:protobuf-javalite:3.23.4")
-    implementation("com.google.protobuf:protobuf-kotlin-lite:3.23.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation(libs.protobuf.javalite)
+    implementation(libs.protobuf.kotlin.lite)
+    implementation(libs.kotlinx.serialization.json)
 
-    implementation("com.google.dagger:hilt-android:2.48")
-    ksp("com.google.dagger:hilt-android-compiler:2.48")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 
-    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation(libs.androidx.paging.runtime.ktx)
 
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.truth)
+    testImplementation(libs.test.core.ktx)
 
-    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
+    implementation(libs.androidx.security.crypto.ktx)
 
-    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-crashlytics")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 }
 
 protobuf {
@@ -143,4 +223,21 @@ fun getProperty(key: String): String {
     val properties = localProperties()
     val res = properties.getProperty(key)
     return if (res != null) res else ""
+}
+
+afterEvaluate {
+    tasks.withType<Test> {
+        doLast {
+            println("Test task ${this.name} completed")
+        }
+    }
+
+    tasks.withType<JacocoReport> {
+        doFirst {
+            println("Generating JaCoCo report for ${project.name}")
+            println("Execution data: ${executionData.files}")
+            println("Class directories: ${classDirectories.files}")
+            println("Source directories: ${sourceDirectories.files}")
+        }
+    }
 }

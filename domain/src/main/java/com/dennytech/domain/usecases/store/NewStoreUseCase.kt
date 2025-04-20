@@ -10,7 +10,6 @@ import com.dennytech.domain.repository.StoreRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -47,11 +46,11 @@ class NewStoreUseCase @Inject constructor(
                 }
             }
 
-            val response = runBlocking { storeRepository.createStore(request) }
-            runBlocking { preferenceRepository.setCurrentStore(response.id) }
+            val response = storeRepository.createStore(request) 
+            preferenceRepository.setCurrentStore(response.id)
 
             // update current user
-            runBlocking { profileRepository.fetchCurrentUser() }
+            profileRepository.fetchCurrentUser() 
 
             emit(Resource.Success(response))
 

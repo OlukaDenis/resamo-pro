@@ -8,7 +8,6 @@ import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -30,9 +29,9 @@ class ToggleUserActivationUseCase @Inject constructor(
             if (param == null) throw Exception("Invalid params")
 
             val response = if (param.userStatus == 1)
-                runBlocking { profileRepository.deactivate(param.userId) }
+             profileRepository.deactivate(param.userId)
             else
-                runBlocking { profileRepository.activate(param.userId) }
+               profileRepository.activate(param.userId)
 
             emit(Resource.Success(response))
 

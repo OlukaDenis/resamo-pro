@@ -7,7 +7,6 @@ import com.dennytech.domain.repository.SalesRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class ConfirmSaleUseCase @Inject constructor(
@@ -26,8 +25,7 @@ class ConfirmSaleUseCase @Inject constructor(
         try {
             if (param == null) throw Exception("Invalid params")
 
-            val response =
-                runBlocking { salesRepository.confirmSale(param.saleId) }
+            val response = salesRepository.confirmSale(param.saleId)
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {

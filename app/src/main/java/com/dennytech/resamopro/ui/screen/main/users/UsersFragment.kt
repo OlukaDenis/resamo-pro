@@ -1,6 +1,5 @@
 package com.dennytech.resamopro.ui.screen.main.users
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,23 +19,16 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import com.dennytech.data.utils.resolveError
-import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.models.UserDomainModel.Companion.isAdmin
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.MainViewModel
-import com.dennytech.resamopro.ui.components.ErrorLabel
 import com.dennytech.resamopro.ui.components.LoadingCircle
-import com.dennytech.resamopro.ui.components.LoadingMore
 import com.dennytech.resamopro.ui.components.UserItem
+import com.dennytech.resamopro.ui.models.events.UserEvent
 import com.dennytech.resamopro.ui.theme.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,8 +40,6 @@ fun UsersFragment(
     navigateToNewUser: () -> Unit,
     navigateUp: () -> Unit,
 ) {
-
-    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -115,7 +105,8 @@ fun UsersFragment(
                             user = item,
                             onClick = {},
                             onMenuClick = {
-                                viewModel.onEvent(UserEvent.ToggleUserActivation(
+                                viewModel.onEvent(
+                                    UserEvent.ToggleUserActivation(
                                     userId = item.id,
                                     userStatus = item.status
                                 ))

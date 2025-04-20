@@ -10,7 +10,6 @@ import com.dennytech.domain.repository.ProductRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -55,8 +54,7 @@ class CreateProductUseCase @Inject constructor(
                 }
             }
 
-            val response =
-                runBlocking { productRepository.createNewProduct(param.fileUri, request) }
+            val response = productRepository.createNewProduct(param.fileUri, request) 
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {

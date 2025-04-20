@@ -8,7 +8,6 @@ import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class CreateProductTypeUseCase @Inject constructor(
@@ -33,10 +32,10 @@ class CreateProductTypeUseCase @Inject constructor(
                 this["type"] = param.type
             }
 
-            runBlocking { productRepository.createProductType(param.storeId, request) }
+            productRepository.createProductType(param.storeId, request)
 
             // Fetch current user info
-            runBlocking { profileRepository.fetchCurrentUser() }
+            profileRepository.fetchCurrentUser()
 
             emit(Resource.Success("Success"))
 

@@ -8,7 +8,6 @@ import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class CreateUserUseCase @Inject constructor(
@@ -39,8 +38,7 @@ class CreateUserUseCase @Inject constructor(
                 this["password"] = param.password
             }
 
-            val response =
-                runBlocking { profileRepository.createUser(request) }
+            val response = profileRepository.createUser(request)
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {

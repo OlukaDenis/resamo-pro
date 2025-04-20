@@ -9,16 +9,16 @@ data class StoreResponseModel(
 )
 
 data class RemoteStoreModel(
-    val id: String,
-    val name: String?,
-    val description: String?,
-    val status: Int?,
-    val location: String?,
-    val createdBy: String?,
-    val users: List<UserRemoteModel>?,
-    val categories: List<RemoteCategoryModel>?,
-    val brands: List<String>?,
-    val productTypes: List<String>?
+    val id: String ="",
+    val name: String? = null,
+    val description: String?= null,
+    val status: Int?= null,
+    val location: String?= null,
+    val createdBy: String?= null,
+    val users: List<UserRemoteModel>?= null,
+    val categories: List<RemoteCategoryModel>?= null,
+    val brands: List<String>?= null,
+    val productTypes: List<String>?= null
 ) {
     companion object {
         fun RemoteStoreModel.toDomain(userId: String): StoreDomainModel {

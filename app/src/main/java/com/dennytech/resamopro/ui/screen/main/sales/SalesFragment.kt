@@ -2,7 +2,6 @@ package com.dennytech.resamopro.ui.screen.main.sales
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -18,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -32,11 +30,11 @@ import com.dennytech.domain.models.SaleDomainModel
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.DateFilter
-import com.dennytech.resamopro.ui.components.EmptyComponent
 import com.dennytech.resamopro.ui.components.ErrorLabel
 import com.dennytech.resamopro.ui.components.LoadingCircle
 import com.dennytech.resamopro.ui.components.SaleItem
 import com.dennytech.resamopro.ui.components.VerticalSpacer
+import com.dennytech.resamopro.ui.models.events.SaleEvent
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
 import timber.log.Timber

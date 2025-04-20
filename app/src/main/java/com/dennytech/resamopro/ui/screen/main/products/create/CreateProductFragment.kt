@@ -59,6 +59,7 @@ import com.dennytech.resamopro.ui.components.CustomTextField
 import com.dennytech.resamopro.ui.components.ErrorLabel
 import com.dennytech.resamopro.ui.components.dialogs.SuccessDialog
 import com.dennytech.resamopro.ui.components.VerticalSpacer
+import com.dennytech.resamopro.ui.models.events.CreateProductEvent
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.TruliBlueLight900

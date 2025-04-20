@@ -17,26 +17,26 @@ data class CreateSaleResponseModel(
 
 
 data class RemoteProductModel(
-    val brand: String?,
-    val categoryId: String?,
-    val color: String?,
-    val createdAt: String?,
-    val createdBy: String?,
-    val id: String?,
-    val image: String?,
-    val thumbnail: String?,
-    val inStock: Boolean?,
-    val name: String?,
-    val price: Int?,
-    val quantity: Int?,
-    val size: Int?,
-    val type: String?,
-    val updatedAt: String?,
-    val damaged: Boolean?,
-    val volume: Int?,
-    val volumeUnit: String?,
-    val weight: Int?,
-    val weightUnit: String?
+    val brand: String?= null,
+    val categoryId: String?= null,
+    val color: String?= null,
+    val createdAt: String?= null,
+    val createdBy: String?= null,
+    val id: String?= null,
+    val image: String?= null,
+    val thumbnail: String?= null,
+    val inStock: Boolean?= null,
+    val name: String?= null,
+    val price: Int?= null,
+    val quantity: Int?= null,
+    val size: Int?= null,
+    val type: String?= null,
+    val updatedAt: String?= null,
+    val damaged: Boolean?= null,
+    val volume: Int?= null,
+    val volumeUnit: String?= null,
+    val weight: Int?= null,
+    val weightUnit: String?= null
 ) {
 
     companion object {

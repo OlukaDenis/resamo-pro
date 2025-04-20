@@ -8,7 +8,7 @@ import com.dennytech.domain.repository.ProfileRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 import javax.inject.Inject
 
 class CreateProductCategoryUseCase @Inject constructor(
@@ -38,14 +38,15 @@ class CreateProductCategoryUseCase @Inject constructor(
                 }
             }
 
-            runBlocking { productRepository.createProductCategory(request) }
+            val result = productRepository.createProductCategory(request)
 
             // Fetch current user info
-            runBlocking { profileRepository.fetchCurrentUser() }
+            profileRepository.fetchCurrentUser()
 
-            emit(Resource.Success("Success"))
+            emit(Resource.Success(result))
 
         } catch (throwable: Throwable) {
+            Timber.e(throwable)
             emit(Resource.Error(exception = utilRepository.getNetworkError(throwable)))
         }
     }

@@ -14,6 +14,6 @@ class GetUsersUseCase @Inject constructor(
 ) : BaseSuspendUseCase<Unit, Flow<PagingData<UserDomainModel>>>(dispatcher) {
 
     override suspend fun run(param: Unit?): Flow<PagingData<UserDomainModel>> {
-        return   repository.fetchUserList()
+        return repository.fetchUserList()
     }
 }

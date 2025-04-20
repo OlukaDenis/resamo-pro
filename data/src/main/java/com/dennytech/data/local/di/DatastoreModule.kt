@@ -5,7 +5,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.dennytech.data.InsightCounts
 import com.dennytech.data.UserPreferences
+import com.dennytech.data.utils.insightCountsStore
 import com.dennytech.data.utils.userProtoDataStore
 import dagger.Module
 import dagger.Provides
@@ -25,6 +27,12 @@ class DataStoreModule {
     internal fun provideUserPreferenceDatastore(
         @ApplicationContext context: Context
     ): DataStore<UserPreferences> = context.userProtoDataStore
+
+    @Provides
+    @Singleton
+    internal fun provideInsightsDatastore(
+        @ApplicationContext context: Context
+    ): DataStore<InsightCounts> = context.insightCountsStore
 
 
     @Provides

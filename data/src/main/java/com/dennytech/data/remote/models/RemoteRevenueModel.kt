@@ -6,5 +6,5 @@ data class RemoteRevenueResponse(
 )
 
 data class RemoteRevenueModel(
-    val revenue: Int?
+    val revenue: Long?
 )

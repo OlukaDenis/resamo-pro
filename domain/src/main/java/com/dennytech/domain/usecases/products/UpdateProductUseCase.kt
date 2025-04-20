@@ -9,7 +9,6 @@ import com.dennytech.domain.repository.ProductRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -51,8 +50,7 @@ class UpdateProductUseCase @Inject constructor(
                 this["damaged"] =param.damaged
             }
 
-            val response =
-                runBlocking { productRepository.updateProduct(param.productId, param.fileUri, request) }
+            val response = productRepository.updateProduct(param.productId, param.fileUri, request)
             emit(Resource.Success(response))
 
         } catch (throwable: Throwable) {

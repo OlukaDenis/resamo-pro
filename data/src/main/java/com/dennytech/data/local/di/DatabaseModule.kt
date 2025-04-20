@@ -26,7 +26,7 @@ object DatabaseModule {
         AppDatabase::class.java,
         APP_DATABASE_DB
     )
-        .allowMainThreadQueries()
+//        .allowMainThreadQueries()
         .build()
 
     @Singleton
@@ -44,5 +44,9 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideProductCategoryDao(database: AppDatabase) = database.productCategoryDao()
+
+    @Singleton
+    @Provides
+    fun provideSaleReportDao(database: AppDatabase) = database.saleReportDao()
 
 }

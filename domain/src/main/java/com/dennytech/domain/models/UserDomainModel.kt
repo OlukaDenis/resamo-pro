@@ -12,17 +12,17 @@ open class PersonDomainModel(
 )
 
 data class UserDomainModel(
-    val id: String,
-    override val firstName: String,
-    override val lastName: String,
-    override val lastLogin: String,
-    override val email: String,
-    override val phone: String,
-    override val status: Int,
-    override val fullName: String,
-    override val role: Int,
-    val stores: List<StoreDomainModel>,
-    val defaultStore: String
+    val id: String = "",
+    override val firstName: String = "",
+    override val lastName: String = "",
+    override val lastLogin: String = "",
+    override val email: String = "",
+    override val phone: String = "",
+    override val status: Int = -1,
+    override val fullName: String = "",
+    override val role: Int = -1,
+    val stores: List<StoreDomainModel> = emptyList(),
+    val defaultStore: String = "",
 ) : PersonDomainModel(firstName, lastName, lastLogin, email, phone, status, fullName, role) {
 
     companion object {

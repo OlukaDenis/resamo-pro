@@ -39,9 +39,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.CustomTextField
-import com.dennytech.resamopro.ui.components.dialogs.SuccessDialog
 import com.dennytech.resamopro.ui.components.VerticalSpacer
-import com.dennytech.resamopro.ui.screen.main.users.UserEvent
+import com.dennytech.resamopro.ui.components.dialogs.SuccessDialog
+import com.dennytech.resamopro.ui.models.events.CreateUserEvent
+import com.dennytech.resamopro.ui.models.events.UserEvent
 import com.dennytech.resamopro.ui.screen.main.users.UserViewModel
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.TruliBlueLight900

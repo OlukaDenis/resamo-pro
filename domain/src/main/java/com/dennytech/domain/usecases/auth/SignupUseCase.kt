@@ -7,7 +7,6 @@ import com.dennytech.domain.repository.AuthRepository
 import com.dennytech.domain.repository.UtilRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class SignupUseCase @Inject constructor(
@@ -26,7 +25,7 @@ class SignupUseCase @Inject constructor(
         try {
             if (param == null) throw Exception("Invalid params")
 
-            val response = runBlocking { authRepository.signup(param.payload) }
+            val response =authRepository.signup(param.payload)
             emit(AppResource.Success(response))
 
         } catch (throwable: Throwable) {

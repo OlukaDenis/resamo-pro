@@ -37,7 +37,9 @@ import com.dennytech.resamopro.ui.components.charts.BarGraph
 import com.dennytech.resamopro.ui.components.charts.CombinedBarGraph
 import com.dennytech.resamopro.ui.components.charts.FilledLineGraph
 import com.dennytech.resamopro.ui.components.charts.PieGraph
-import com.dennytech.resamopro.ui.screen.main.home.CountsCards
+import com.dennytech.resamopro.ui.models.events.CountsEvent
+import com.dennytech.resamopro.ui.screen.main.home.components.insightCounts.InsightCardGrid
+import com.dennytech.resamopro.ui.screen.main.home.components.saleReport.SaleLineGraphReportComponent
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.utils.Helpers.capitalize
@@ -112,10 +114,7 @@ fun CountsFragment(
 
                 VerticalSpacer(Dimens._16dp)
 
-                CountsCards(
-                    counts = counts,
-                    loading = viewModel.state.loadingCounts
-                )
+                InsightCardGrid(insights = counts)
 
                 mainViewModel.state.user?.let {
                     if (it.isAdmin()) {
@@ -171,8 +170,7 @@ fun AdminReports(viewModel: CountsViewModel) {
             )
         }
         VerticalSpacer(Dimens._10dp)
-        SalesByPeriodLineGraph(viewModel = viewModel)
-
+        SaleLineGraphReportComponent()
 
 
 //        VerticalSpacer(Dimens._24dp)
@@ -229,24 +227,6 @@ private fun SalesAndRevenueGraph(viewModel: CountsViewModel) {
             graphOneLabel = "Sales",
             graphTwoLabel = "Revenue"
         )
-    }
-}
-
-@Composable
-private fun SalesByPeriodLineGraph(viewModel: CountsViewModel) {
-    if (!viewModel.state.loadingSaleByPeriod) {
-        val reports = viewModel.state.salePeriodReport
-        val yData = reports.map { it.total.toFloat() }
-        val xData = reports.indices.map { it.toFloat() }
-        val xLabels = reports.map { it.period }.toTypedArray()
-
-        FilledLineGraph(
-            xData = xData,
-            yData = yData,
-            xLabels = xLabels
-        )
-    } else {
-        LoadingCircle()
     }
 }
 

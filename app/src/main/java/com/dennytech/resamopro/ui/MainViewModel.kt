@@ -5,17 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dennytech.domain.models.StoreDomainModel
-import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.usecases.LogoutUseCase
 import com.dennytech.domain.usecases.account.GetCurrentUserUseCase
 import com.dennytech.domain.usecases.store.GetSelectedStoreUseCase
 import com.dennytech.domain.usecases.store.GetUserStoreListUseCase
 import com.dennytech.resamopro.models.KeyValueModel
+import com.dennytech.resamopro.ui.models.states.MainState
 import com.dennytech.resamopro.utils.Helpers.capitalize
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,14 +40,14 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             val userResult = runCatching { getCurrentUserUseCase() }
 
-            if (userResult.isFailure) {
-                state = state.copy(error = "User not found")
-            }
-
             if (userResult.isSuccess) {
                 state = state.copy(user = userResult.getOrNull())
             }
         }
+    }
+
+    fun refreshUser() {
+        getCurrentUser()
     }
 
     private fun getUserStores() {
@@ -89,11 +87,3 @@ class MainViewModel @Inject constructor(
     }
 }
 
-data class MainState(
-    val error: String = "",
-    val user: UserDomainModel? = null,
-    val userStores: List<StoreDomainModel> = emptyList(),
-    val currentStore: StoreDomainModel? = null,
-    val productTypes: List<KeyValueModel> = emptyList(),
-    val productCategories: List<KeyValueModel> = emptyList()
-)
