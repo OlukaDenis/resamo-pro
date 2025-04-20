@@ -1,6 +1,5 @@
 package com.dennytech.resamopro.ui.screen.main.stores.detail
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,24 +21,21 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.resamopro.R
-import com.dennytech.resamopro.ui.components.CloseIcon
-import com.dennytech.resamopro.ui.components.DiamondIcon
 import com.dennytech.resamopro.ui.components.EmptyComponent
 import com.dennytech.resamopro.ui.components.LeftRightLabel
 import com.dennytech.resamopro.ui.components.store.CreateProductCategoryBottomSheet
 import com.dennytech.resamopro.ui.components.store.CreateProductTypeBottomSheet
 import com.dennytech.resamopro.ui.components.store.StoreUserItem
 import com.dennytech.resamopro.ui.components.store.UnAssignedStoreUsersBottomSheet
+import com.dennytech.resamopro.ui.models.events.StoreDetailEvent
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.utils.Helpers.capitalize
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

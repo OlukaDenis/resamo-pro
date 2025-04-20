@@ -25,7 +25,7 @@ import com.dennytech.resamopro.ui.components.CloseIcon
 import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.CustomTextField
 import com.dennytech.resamopro.ui.components.VerticalSpacer
-import com.dennytech.resamopro.ui.screen.main.stores.detail.StoreDetailEvent
+import com.dennytech.resamopro.ui.models.events.StoreDetailEvent
 import com.dennytech.resamopro.ui.screen.main.stores.detail.StoreDetailViewModel
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.TruliBlue
@@ -40,7 +40,6 @@ fun CreateProductCategoryBottomSheet(
     val sheetState = rememberModalBottomSheetState(
         confirmValueChange = {false}
     )
-    val scope = rememberCoroutineScope()
 
     ModalBottomSheet(
         onDismissRequest = {  },

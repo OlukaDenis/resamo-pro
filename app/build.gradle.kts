@@ -176,11 +176,14 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/BR.class",
         "**/model/**",
         "**/models/**",
+        "**/theme/**",
         "**/*Dto.class",
         "**/*Model*.*",
         "**/*Entity*.*",
         "**/*State*.*",
-        "**/*Event*.*"
+        "**/*Event*.*",
+        "**/*Fragment*.*",
+        "**/*Screen*.*"
     )
 
     val kotlinClasses = fileTree("$buildDir/tmp/kotlin-classes/debug") {
@@ -251,6 +254,10 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.truth)
+    testImplementation(libs.test.core.ktx)
 }
 
 tasks.register("incrementVersion") {

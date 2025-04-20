@@ -16,6 +16,8 @@ import com.dennytech.domain.usecases.sales.GetSaleCountsUseCase
 import com.dennytech.domain.usecases.store.GetSelectedStoreUseCase
 import com.dennytech.domain.usecases.store.GetUserStoreListUseCase
 import com.dennytech.domain.usecases.store.SetSelectedStoreUseCase
+import com.dennytech.resamopro.ui.models.events.HomeEvent
+import com.dennytech.resamopro.ui.models.states.HomeState
 import com.dennytech.resamopro.utils.Helpers.formatCurrency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -115,33 +117,6 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
-
 }
 
-data class HomeState(
-    val revenue: Int = 0,
-    val counts: List<CountCardModel> = emptyList(),
-    val sales: List<SaleDomainModel> = emptyList(),
-    val userStores: List<StoreDomainModel> = emptyList(),
-    val loadingCounts: Boolean = false,
-    val loadingRevenue: Boolean = false,
-    val loadingSales: Boolean = false,
-    val currentStore: StoreDomainModel? = null,
-    val showStoreBottomSheet: Boolean = false,
-    val loadingSaleByPeriod: Boolean = false,
-    val salePeriodReport: List<SaleReportDomainModel> = emptyList(),
-)
 
-data class CountCardModel(
-    val title: String,
-    val content: String
-)
-
-sealed class HomeEvent {
-    data object GetSales : HomeEvent()
-    data object GetCurrentStore : HomeEvent()
-    data object GetUserStores : HomeEvent()
-    data object ToggleStoreBottomSheet: HomeEvent()
-    data class SetCurrentStore(val storeId: String): HomeEvent()
-}

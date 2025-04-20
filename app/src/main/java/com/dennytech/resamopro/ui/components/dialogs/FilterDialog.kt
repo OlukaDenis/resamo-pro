@@ -28,7 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.resamopro.ui.MainViewModel
 import com.dennytech.resamopro.ui.components.CustomExposedDropdown
 import com.dennytech.resamopro.ui.components.CustomTextField
-import com.dennytech.resamopro.ui.screen.main.products.ProductEvent
+import com.dennytech.resamopro.ui.models.events.ProductEvent
 import com.dennytech.resamopro.ui.screen.main.products.ProductViewModel
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.Grey100

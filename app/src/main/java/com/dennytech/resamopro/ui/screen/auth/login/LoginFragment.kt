@@ -34,6 +34,7 @@ import com.dennytech.resamopro.ui.components.AuthTop
 import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.CustomTextField
 import com.dennytech.resamopro.ui.components.ErrorLabel
+import com.dennytech.resamopro.ui.models.events.LoginEvent
 import com.dennytech.resamopro.ui.theme.Dimens
 
 @Composable

@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dennytech.domain.models.Resource
 import com.dennytech.domain.usecases.sales.CreateSaleUseCase
+import com.dennytech.resamopro.ui.models.events.RecordSaleEvent
+import com.dennytech.resamopro.ui.models.states.RecordSaleState
 import com.dennytech.resamopro.utils.Helpers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -115,28 +117,4 @@ class RecordSaleViewModel @Inject constructor(
         }
     }
 
-}
-
-data class RecordSaleState(
-    val productId: String = "",
-    val price: String = "",
-    val priceError: String = "",
-    val quantity: String = "1",
-    val quantityError: String = "",
-    val saleDate: String = System.currentTimeMillis().toString(),
-    val saleDateText: String = Helpers.millisecondsToDate(System.currentTimeMillis(), "dd MMM, yyyy"),
-    val saleDateError: String = "",
-    val dirty: Boolean = false,
-    val error: String = "",
-    val loading: Boolean = false,
-    val showSaleDatePicker: Boolean = false
-)
-
-sealed class RecordSaleEvent {
-    data class PriceChanged(val value: String): RecordSaleEvent()
-    data class QuantityChanged(val value: String): RecordSaleEvent()
-    data class SaleDateChanged(val value: String): RecordSaleEvent()
-    data class SetProduct(val value: String): RecordSaleEvent()
-    data object ToggleSaleDatePicker: RecordSaleEvent()
-    data object Submit: RecordSaleEvent()
 }

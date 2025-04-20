@@ -16,7 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.domain.models.Resource
 import com.dennytech.resamopro.ui.components.LoadingCircle
 import com.dennytech.resamopro.ui.components.VerticalSpacer
-import com.dennytech.resamopro.ui.screen.main.home.CountCardModel
+import com.dennytech.resamopro.ui.models.CountCardModel
 import com.dennytech.resamopro.ui.theme.Dimens
 import com.dennytech.resamopro.ui.theme.TruliBlue
 import com.dennytech.resamopro.ui.theme.TruliOrange

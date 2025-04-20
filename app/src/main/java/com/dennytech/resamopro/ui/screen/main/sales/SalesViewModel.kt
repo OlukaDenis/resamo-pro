@@ -7,15 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.dennytech.data.remote.models.ConfirmSaleResponse
 import com.dennytech.domain.models.Resource
 import com.dennytech.domain.models.SaleDomainModel
 import com.dennytech.domain.usecases.sales.ConfirmSaleUseCase
 import com.dennytech.domain.usecases.sales.GetSalesUseCase
-import com.dennytech.resamopro.ui.screen.main.home.CountCardModel
-import com.dennytech.resamopro.ui.screen.main.users.create.CreateUserEvent
-import com.dennytech.resamopro.ui.screen.main.users.create.CreateUserState
-import com.dennytech.resamopro.utils.Helpers.formatCurrency
+import com.dennytech.resamopro.ui.models.events.SaleEvent
+import com.dennytech.resamopro.ui.models.states.SalesState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -104,20 +101,4 @@ class SalesViewModel @Inject constructor(
                 }
         }
     }
-}
-
-data class SalesState(
-    val error: String = "",
-    val loading: Boolean = false,
-    val startDate: String = "",
-    val endDate: String = "",
-    val empty: Boolean = false
-)
-
-sealed class SaleEvent {
-    data object GetSales: SaleEvent()
-    data object FilterSales: SaleEvent()
-    data class ConfirmSale(val saleId: String): SaleEvent()
-     data class EndDateChanged(val value: String): SaleEvent()
-    data class StartDateChanged(val value: String): SaleEvent()
 }

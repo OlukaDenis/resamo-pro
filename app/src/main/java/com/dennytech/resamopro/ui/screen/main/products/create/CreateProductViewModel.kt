@@ -1,6 +1,5 @@
 package com.dennytech.resamopro.ui.screen.main.products.create
 
-import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,11 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.domain.models.Resource
-import com.dennytech.domain.models.StoreDomainModel
 import com.dennytech.domain.usecases.products.CreateProductUseCase
 import com.dennytech.domain.usecases.products.UpdateProductUseCase
 import com.dennytech.domain.usecases.store.GetSelectedStoreUseCase
 import com.dennytech.resamopro.models.KeyValueModel
+import com.dennytech.resamopro.ui.models.events.CreateProductEvent
+import com.dennytech.resamopro.ui.models.states.CreateProductState
 import com.dennytech.resamopro.utils.Helpers.capitalize
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -247,48 +247,4 @@ class CreateProductViewModel @Inject constructor(
     }
 }
 
-data class CreateProductState(
-    val productId: String = "",
-    val imageUri: Uri? = null,
-    val imageError: String = "",
-    val name: String = "",
-    val nameError: String = "",
-    val size: String = "",
-    val color: String = "",
-    val type: KeyValueModel? = null,
-    val typeError: String = "",
-    val brand: String = "",
-    val brandError: String = "",
-    val price: String = "",
-    val priceError: String = "",
-    val dirty: Boolean = false,
-    val damaged: Boolean = false,
-    val error: String = "",
-    val loading: Boolean = false,
-    val updateComplete: Boolean = false,
-    val showSuccessDialog: Boolean = false,
-    val category: KeyValueModel? = null,
-    val categoryError: String = "",
-    val quantity: String = "1",
-    val quantityError: String = "",
-    val currentStore: StoreDomainModel? = null,
-    val productTypes: List<KeyValueModel> = emptyList(),
-    val productCategories: List<KeyValueModel> = emptyList()
-)
 
-sealed class CreateProductEvent {
-    data class SetImageFile(val file: Uri?): CreateProductEvent()
-    data class SetProductState(val value: ProductDomainModel): CreateProductEvent()
-    data object ToggleSuccessDialog: CreateProductEvent()
-    data class NameChanged(val value: String): CreateProductEvent()
-    data class SizeChanged(val value: String): CreateProductEvent()
-    data class QuantityChanged(val value: String): CreateProductEvent()
-    data class ColorChanged(val value: String): CreateProductEvent()
-    data class TypeChanged(val value: KeyValueModel): CreateProductEvent()
-    data class CategoryChanged(val value: KeyValueModel): CreateProductEvent()
-    data class BrandChanged(val value: String): CreateProductEvent()
-    data class PriceChanged(val value: String): CreateProductEvent()
-    data class DamagedChanged(val value: Boolean): CreateProductEvent()
-    data object Submit: CreateProductEvent()
-    data object Reset: CreateProductEvent()
-}

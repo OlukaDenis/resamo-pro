@@ -37,6 +37,7 @@ import com.dennytech.resamopro.ui.components.charts.BarGraph
 import com.dennytech.resamopro.ui.components.charts.CombinedBarGraph
 import com.dennytech.resamopro.ui.components.charts.FilledLineGraph
 import com.dennytech.resamopro.ui.components.charts.PieGraph
+import com.dennytech.resamopro.ui.models.events.CountsEvent
 import com.dennytech.resamopro.ui.screen.main.home.components.insightCounts.InsightCardGrid
 import com.dennytech.resamopro.ui.screen.main.home.components.saleReport.SaleLineGraphReportComponent
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue

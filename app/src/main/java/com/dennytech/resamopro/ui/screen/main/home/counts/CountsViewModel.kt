@@ -5,12 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dennytech.domain.models.ReportDomainModel
 import com.dennytech.domain.models.Resource
-import com.dennytech.domain.models.SaleReportDomainModel
 import com.dennytech.domain.usecases.reports.FetchPopularProductTypesUseCase
 import com.dennytech.domain.usecases.sales.GetSaleCountsUseCase
-import com.dennytech.resamopro.ui.screen.main.home.CountCardModel
+import com.dennytech.resamopro.ui.models.CountCardModel
+import com.dennytech.resamopro.ui.models.events.CountsEvent
+import com.dennytech.resamopro.ui.models.states.CountsState
 import com.dennytech.resamopro.utils.Helpers.formatCurrency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -113,22 +113,4 @@ class CountsViewModel @Inject constructor(
 
 }
 
-data class CountsState(
-    val counts: List<CountCardModel> = emptyList(),
-    val loadingCounts: Boolean = false,
-    val revenue: Long = 0,
-    val endDate: String = "",
-    val startDate: String = "",
-    val loadingSaleByPeriod: Boolean = false,
-    val salePeriodReport: List<SaleReportDomainModel> = emptyList(),
-    val loadingPopularTypes: Boolean = false,
-    val popularTypes: List<ReportDomainModel> = emptyList()
-)
-
-sealed class CountsEvent {
-    data class StartDateChanged(val value: String): CountsEvent()
-    data class EndDateChanged(val value: String): CountsEvent()
-    data object SubmitFilter: CountsEvent()
-    data object GetPopularTypes: CountsEvent()
-}
 

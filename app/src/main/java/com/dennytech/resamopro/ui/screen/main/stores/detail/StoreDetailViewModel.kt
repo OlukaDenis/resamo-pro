@@ -3,21 +3,18 @@ package com.dennytech.resamopro.ui.screen.main.stores.detail
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dennytech.domain.models.Resource
-import com.dennytech.domain.models.StoreDomainModel
-import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.usecases.products.CreateProductCategoryUseCase
 import com.dennytech.domain.usecases.products.CreateProductTypeUseCase
 import com.dennytech.domain.usecases.store.AssignUserToStoreUseCase
 import com.dennytech.domain.usecases.store.GetStoreByIdUseCase
 import com.dennytech.domain.usecases.store.UnAssignedStoreUsersUseCase
+import com.dennytech.resamopro.ui.models.events.StoreDetailEvent
+import com.dennytech.resamopro.ui.models.states.StoreDetailState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
@@ -197,35 +194,4 @@ class StoreDetailViewModel @Inject constructor(
             }
         }
     }
-}
-
-data class StoreDetailState(
-    val store: StoreDomainModel? = null,
-    val selectedStore: String = "",
-    val unassignedUsers: List<UserDomainModel> = emptyList(),
-    val loading: Boolean = false,
-    val showUnAssignedDialog: Boolean = false,
-    val assigningUser: Boolean = false,
-    val type: String = "",
-    val typeError: String = "",
-    val categoryName: String = "",
-    val categoryNameError: String = "",
-    val categoryDescription: String = "",
-    val showCreateTypeDialog: Boolean = false,
-    val showCreateCategoryDialog: Boolean = false
-)
-
-sealed class StoreDetailEvent {
-    data class Init(val storeId: String): StoreDetailEvent()
-    data class GetStore(val storeId: String): StoreDetailEvent()
-    data object ToggleUnAssignedDialog: StoreDetailEvent()
-    data object ToggleCreateTypeDialog: StoreDetailEvent()
-    data object ToggleCreateCategoryDialog: StoreDetailEvent()
-    data class FetchUnAssignedUsers(val storeId: String): StoreDetailEvent()
-    data class AssignUser(val userId: String, val storeId: String): StoreDetailEvent()
-    data class TypeChanged(val value: String): StoreDetailEvent()
-    data class CategoryNameChanged(val value: String): StoreDetailEvent()
-    data class CategoryDescriptionChanged(val value: String): StoreDetailEvent()
-    data object SubmitType: StoreDetailEvent()
-    data object SubmitCategory: StoreDetailEvent()
 }

@@ -2,10 +2,9 @@ package com.dennytech.resamopro.ui.screen.main.home.components.insightCounts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dennytech.domain.models.InsightCountsDomainModel
 import com.dennytech.domain.models.Resource
 import com.dennytech.domain.usecases.reports.FetchAndObserveInsightsUseCase
-import com.dennytech.resamopro.ui.screen.main.home.CountCardModel
+import com.dennytech.resamopro.ui.models.CountCardModel
 import com.dennytech.resamopro.utils.Helpers.formatCurrency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

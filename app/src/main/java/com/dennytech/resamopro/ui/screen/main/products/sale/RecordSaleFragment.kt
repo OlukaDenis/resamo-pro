@@ -45,6 +45,7 @@ import com.dennytech.resamopro.ui.components.CalendarIcon
 import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.CustomTextField
 import com.dennytech.resamopro.ui.components.dialogs.SuccessDialog
+import com.dennytech.resamopro.ui.models.events.RecordSaleEvent
 import com.dennytech.resamopro.ui.theme.Dimens
 import timber.log.Timber
 

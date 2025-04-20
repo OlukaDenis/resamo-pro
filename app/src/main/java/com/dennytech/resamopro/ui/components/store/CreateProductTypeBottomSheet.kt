@@ -7,11 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -22,21 +19,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.components.CloseIcon
 import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.CustomTextField
 import com.dennytech.resamopro.ui.components.VerticalSpacer
-import com.dennytech.resamopro.ui.screen.main.products.create.CreateProductEvent
-import com.dennytech.resamopro.ui.screen.main.stores.detail.StoreDetailEvent
+import com.dennytech.resamopro.ui.models.events.StoreDetailEvent
 import com.dennytech.resamopro.ui.screen.main.stores.detail.StoreDetailViewModel
 import com.dennytech.resamopro.ui.theme.Dimens
-import com.dennytech.resamopro.ui.theme.LightGrey
 import com.dennytech.resamopro.ui.theme.TruliBlue
 import com.dennytech.resamopro.ui.theme.TruliBlueLight900
-import timber.log.Timber
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +42,6 @@ fun CreateProductTypeBottomSheet(
     val sheetState = rememberModalBottomSheetState(
         confirmValueChange = { false }
     )
-    val scope = rememberCoroutineScope()
 
     ModalBottomSheet(
         onDismissRequest = { },

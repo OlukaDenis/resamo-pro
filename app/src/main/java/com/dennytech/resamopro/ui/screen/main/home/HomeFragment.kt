@@ -37,6 +37,7 @@ import com.dennytech.resamopro.ui.components.home.CurrentStoreInfo
 import com.dennytech.resamopro.ui.components.home.HomeUserInfo
 import com.dennytech.resamopro.ui.components.home.NotActivatedCard
 import com.dennytech.resamopro.ui.components.home.StoresBottomSheet
+import com.dennytech.resamopro.ui.models.events.HomeEvent
 import com.dennytech.resamopro.ui.screen.main.home.components.insightCounts.InsightReportComponent
 import com.dennytech.resamopro.ui.screen.main.home.components.revenue.RevenueComponent
 import com.dennytech.resamopro.ui.screen.main.home.components.saleReport.SaleReportComponent

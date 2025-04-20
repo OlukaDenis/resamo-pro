@@ -34,7 +34,7 @@ import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.components.CircleIcon
 import com.dennytech.resamopro.ui.components.HorizontalSpacer
 import com.dennytech.resamopro.ui.components.VerticalSpacer
-import com.dennytech.resamopro.ui.screen.main.home.HomeEvent
+import com.dennytech.resamopro.ui.models.events.HomeEvent
 import com.dennytech.resamopro.ui.screen.main.home.HomeViewModel
 import com.dennytech.resamopro.ui.theme.DeepSeaBlue
 import com.dennytech.resamopro.ui.theme.Dimens

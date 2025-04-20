@@ -10,6 +10,8 @@ import androidx.paging.cachedIn
 import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.domain.usecases.products.GetProductsUseCase
 import com.dennytech.resamopro.models.ProductFilerModel
+import com.dennytech.resamopro.ui.models.events.ProductEvent
+import com.dennytech.resamopro.ui.models.states.ProductState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -92,26 +94,4 @@ class ProductViewModel @Inject constructor(
                 }
         }
     }
-}
-
-data class ProductState(
-    val showFilterDialog: Boolean = false,
-    val showPreviewDialog: Boolean = false,
-    val selectedImage: String = "",
-    val filters: ProductFilerModel = ProductFilerModel(),
-    val loading: Boolean = false,
-    val error: String = "",
-    val empty: Boolean = false
-)
-
-sealed class ProductEvent {
-    data object GetProducts : ProductEvent()
-    data object ToggleFilterDialog : ProductEvent()
-    data class SelectImage(val image: String): ProductEvent()
-    data object TogglePreviewDialog : ProductEvent()
-    data class SetBrandFilter(val value: String) : ProductEvent()
-    data class SetColorFilter(val value: String) : ProductEvent()
-    data class SetTypeFilter(val value: String) : ProductEvent()
-    data class SetSizeFilter(val value: String) : ProductEvent()
-    data object ClearFilters : ProductEvent()
 }

@@ -29,7 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.dennytech.resamopro.R
 import com.dennytech.resamopro.ui.components.CustomButton
 import com.dennytech.resamopro.ui.components.CustomTextField
-import com.dennytech.resamopro.ui.screen.main.users.create.CreateUserEvent
+import com.dennytech.resamopro.ui.models.events.CreateStoreEvent
 import com.dennytech.resamopro.ui.theme.Dimens
 import timber.log.Timber
 

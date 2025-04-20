@@ -7,7 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dennytech.domain.models.Resource
 import com.dennytech.domain.usecases.store.NewStoreUseCase
-import com.dennytech.domain.usecases.user.CreateUserUseCase
+import com.dennytech.resamopro.ui.models.events.CreateStoreEvent
+import com.dennytech.resamopro.ui.models.states.CreateStoreState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -97,26 +98,4 @@ class CreateStoreViewModel @Inject constructor(
     }
 }
 
-data class CreateStoreState(
-    val name: String = "",
-    val nameError: String = "",
-    val description: String = "",
-    val descriptionError: String = "",
-    val location: String = "",
-    val locationError: String = "",
-    val category: String? = null,
-    val categoryError: String = "",
-    val loading: Boolean = false,
-    val error: String = "",
-    val dirty: Boolean = false,
-    val showSuccessDialog: Boolean = false,
-    val errorDialog: Boolean = false,
-)
 
-sealed class CreateStoreEvent {
-    data class NameChanged(val value: String): CreateStoreEvent()
-    data class LocationChanged(val value: String): CreateStoreEvent()
-    data class CategoryChanged(val value: String): CreateStoreEvent()
-    data class DescriptionChanged(val value: String): CreateStoreEvent()
-    data object Submit: CreateStoreEvent()
-}

@@ -1,24 +1,18 @@
 package com.dennytech.resamopro.ui.screen.main.users
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import com.dennytech.domain.models.ProductDomainModel
 import com.dennytech.domain.models.Resource
-import com.dennytech.domain.models.StoreDomainModel
-import com.dennytech.domain.models.UserDomainModel
 import com.dennytech.domain.usecases.store.GetSelectedStoreUseCase
-import com.dennytech.domain.usecases.store.SetSelectedStoreUseCase
 import com.dennytech.domain.usecases.user.GetStoreUsersUseCase
 import com.dennytech.domain.usecases.user.GetUsersUseCase
 import com.dennytech.domain.usecases.user.ToggleUserActivationUseCase
-import com.dennytech.resamopro.ui.screen.main.products.ProductEvent
+import com.dennytech.resamopro.ui.models.events.UserEvent
+import com.dennytech.resamopro.ui.models.states.UserState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -102,16 +96,4 @@ class UserViewModel @Inject constructor(
     }
 
 
-}
-
-data class UserState(
-    val currentStore: StoreDomainModel? = null,
-    val storeUsers: List<UserDomainModel> = emptyList()
-)
-
-sealed class UserEvent {
-    data object GetUsers: UserEvent()
-    data class ToggleUserActivation(
-        val userId: String, val userStatus: Int
-    ): UserEvent()
 }
